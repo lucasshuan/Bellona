@@ -44,6 +44,7 @@ export const games = pgTable(
     description: text("description"),
     backgroundImageUrl: text("background_image_url"),
     thumbnailImageUrl: text("thumbnail_image_url"),
+    steamUrl: text("steam_url"),
     ...timestamps,
   },
   (table) => ({
