@@ -1,5 +1,6 @@
 import "server-only";
 
+import { eq } from "drizzle-orm";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import type { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
@@ -9,7 +10,9 @@ import { env } from "@/env";
 import { db } from "@/server/db";
 import {
   accounts,
+  permissions,
   sessions,
+  userPermissions,
   users,
   verificationTokens,
 } from "@/server/db/schema";
@@ -33,30 +36,40 @@ if (hasDiscordAuth) {
 
 export const authOptions = {
   secret: env.AUTH_SECRET,
-  pages: {
-    signIn: "/login",
-  },
   session: {
     strategy: "database",
   },
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }) as Adapter,
+  adapter: DrizzleAdapter(
+    db,
+    {
+      usersTable: users,
+      accountsTable: accounts,
+      sessionsTable: sessions,
+      verificationTokensTable: verificationTokens,
+    } as never,
+  ) as Adapter,
   providers,
   callbacks: {
-    session({ session, user }) {
+    async session({ session, user }) {
       const dbUser = user as typeof user & {
-        role?: "player" | "admin";
         username?: string | null;
       };
 
       if (session.user) {
+        const permissionRows = await db
+          .select({
+            id: permissions.id,
+            gameId: permissions.gameId,
+            key: permissions.key,
+            name: permissions.name,
+          })
+          .from(userPermissions)
+          .innerJoin(permissions, eq(permissions.id, userPermissions.permissionId))
+          .where(eq(userPermissions.userId, user.id));
+
         session.user.id = user.id;
-        session.user.role = dbUser.role ?? "player";
         session.user.username = dbUser.username ?? null;
+        session.user.permissions = permissionRows;
       }
 
       return session;

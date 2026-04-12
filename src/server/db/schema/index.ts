@@ -1,2 +1,3 @@
 export * from "./auth";
-export * from "./competition";
+export * from "./domain";
+export * from "./shared";

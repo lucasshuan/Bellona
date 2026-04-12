@@ -35,7 +35,7 @@ export default async function DashboardPage() {
   const session = await getServerAuthSession();
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/");
   }
 
   return (

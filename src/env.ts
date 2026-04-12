@@ -18,6 +18,17 @@ const inferredAppUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
   (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : undefined);
 
+if (authSecret) {
+  process.env.AUTH_SECRET ??= authSecret;
+  process.env.NEXTAUTH_SECRET ??= authSecret;
+}
+
+if (inferredAppUrl) {
+  process.env.NEXT_PUBLIC_APP_URL ??= inferredAppUrl;
+  process.env.NEXTAUTH_URL ??= inferredAppUrl;
+  process.env.AUTH_URL ??= inferredAppUrl;
+}
+
 export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
