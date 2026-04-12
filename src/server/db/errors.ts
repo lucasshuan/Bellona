@@ -3,6 +3,15 @@ type ErrorWithCause = Error & {
   code?: string;
 };
 
+const DATABASE_UNAVAILABLE_ERROR_CODES = new Set([
+  "ECONNREFUSED",
+  "ENOTFOUND",
+  "ETIMEDOUT",
+  "ECONNRESET",
+  "42P01",
+  "3F000",
+]);
+
 function getErrorCode(error: unknown): string | undefined {
   if (typeof error !== "object" || error === null) {
     return undefined;
@@ -11,10 +20,10 @@ function getErrorCode(error: unknown): string | undefined {
   return (error as ErrorWithCause).code;
 }
 
-export function isDatabaseConnectionError(error: unknown): boolean {
+export function isDatabaseUnavailableError(error: unknown): boolean {
   const code = getErrorCode(error);
 
-  if (code && ["ECONNREFUSED", "ENOTFOUND", "ETIMEDOUT", "ECONNRESET"].includes(code)) {
+  if (code && DATABASE_UNAVAILABLE_ERROR_CODES.has(code)) {
     return true;
   }
 
@@ -23,14 +32,16 @@ export function isDatabaseConnectionError(error: unknown): boolean {
   }
 
   if (error instanceof AggregateError) {
-    return error.errors.some((nestedError) => isDatabaseConnectionError(nestedError));
+    return error.errors.some((nestedError) => isDatabaseUnavailableError(nestedError));
   }
 
   const cause = (error as ErrorWithCause).cause;
 
   if (cause) {
-    return isDatabaseConnectionError(cause);
+    return isDatabaseUnavailableError(cause);
   }
 
   return false;
 }
+
+export const isDatabaseConnectionError = isDatabaseUnavailableError;

@@ -80,11 +80,6 @@ export default async function HomePage() {
                     Add games to the database or reconnect the current database to
                     load the list here.
                   </p>
-                  <div className="inline-flex items-center gap-2 text-sm text-muted">
-                    <span className="rounded-full border border-white/8 bg-white/4 px-3 py-1">
-                      Unavailable
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>

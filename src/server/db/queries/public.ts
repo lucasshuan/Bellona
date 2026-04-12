@@ -4,7 +4,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { cache } from "react";
 
 import { db } from "@/server/db";
-import { isDatabaseConnectionError } from "@/server/db/errors";
+import { isDatabaseUnavailableError } from "@/server/db/errors";
 import {
   games,
   players,
@@ -84,7 +84,7 @@ export const getPublicGames = cache(async () => {
       isDatabaseUnavailable: false,
     } satisfies PublicGamesState;
   } catch (error) {
-    if (isDatabaseConnectionError(error)) {
+    if (isDatabaseUnavailableError(error)) {
       return {
         games: [],
         isDatabaseUnavailable: true,
@@ -252,7 +252,7 @@ export const getGamePageData = cache(async (gameId: string): Promise<GamePageDat
       isDatabaseUnavailable: false,
     };
   } catch (error) {
-    if (isDatabaseConnectionError(error)) {
+    if (isDatabaseUnavailableError(error)) {
       return {
         game: null,
         rankings: [],
