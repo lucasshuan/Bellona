@@ -74,6 +74,7 @@ export const getPublicGames = cache(async () => {
         description: games.description,
         thumbnailImageUrl: games.thumbnailImageUrl,
         backgroundImageUrl: games.backgroundImageUrl,
+        steamUrl: games.steamUrl,
         createdAt: games.createdAt,
         updatedAt: games.updatedAt,
       })

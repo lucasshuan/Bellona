@@ -8,6 +8,7 @@ import { LoginErrorHandler } from "@/components/auth/login-error-handler";
 import { getPublicGames } from "@/server/db/queries/public";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,21 @@ export default async function HomePage() {
     <main className="grid-surface">
       <LoginErrorHandler />
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-12 sm:px-10 lg:px-12 lg:py-16">
-        <section className="flex flex-col items-center space-y-4 text-center">
-          <h1 className="text-primary text-5xl font-semibold tracking-[-0.06em] sm:text-6xl lg:text-7xl">
+        <section className="relative flex flex-col items-center space-y-4 text-center">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-square w-[500px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(186,17,47,0.08)_0%,transparent_70%)] sm:w-[800px]" />
+          <h1 className="text-primary flex items-center justify-center gap-4 sm:gap-6 text-5xl font-semibold tracking-[-0.06em] sm:text-6xl lg:text-7xl">
+            <Image
+              src="/icon.svg"
+              alt="Enyo"
+              width={80}
+              height={80}
+              priority
+              className="size-12 sm:size-14 lg:size-20"
+              style={{
+                filter:
+                  "brightness(0) saturate(100%) invert(16%) sepia(92%) saturate(4203%) hue-rotate(340deg) brightness(87%) contrast(97%)",
+              }}
+            />
             Enyo
           </h1>
           <p className="text-muted max-w-2xl text-base leading-8 sm:text-lg">
@@ -48,7 +62,7 @@ export default async function HomePage() {
         <section className="space-y-6">
           <SectionHeader
             title="Games"
-            description="Choose a game to view its rankings, performance history and professional ladders."
+            description="Choose a game to view its rankings, performance history and ladders."
           />
 
           {!showFallbackCard ? (
