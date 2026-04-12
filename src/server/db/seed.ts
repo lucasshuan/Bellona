@@ -1,14 +1,22 @@
 import "dotenv/config";
 
 import { db } from "@/server/db/client";
-import { games, INITIAL_PERMISSION_DEFINITIONS, permissions } from "@/server/db/schema";
+import {
+  games,
+  INITIAL_PERMISSION_DEFINITIONS,
+  permissions,
+} from "@/server/db/schema";
 
 const GAMES_TO_SEED = [
   {
     name: "Superfighters Deluxe",
-    description: "A fast-paced, pixel-art fighting game with tons of weapons and gameplay variety.",
-    thumbnailImageUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/855860/header.jpg?t=1774470652",
-    backgroundImageUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/855860/ss_0f1d0d077ce556fc003e2f2cd330d0fb8ce8dd7c.1920x1080.jpg?t=1774470652",
+    slug: "superfighters-deluxe",
+    description:
+      "A fast-paced, pixel-art fighting game with tons of weapons and gameplay variety.",
+    thumbnailImageUrl:
+      "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/855860/header.jpg?t=1774470652",
+    backgroundImageUrl:
+      "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/855860/ss_0f1d0d077ce556fc003e2f2cd330d0fb8ce8dd7c.1920x1080.jpg?t=1774470652",
     steamUrl: "https://store.steampowered.com/app/855860/Superfighters_Deluxe/",
   },
 ];

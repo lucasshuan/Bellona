@@ -39,15 +39,12 @@ export const authOptions = {
   session: {
     strategy: "database",
   },
-  adapter: DrizzleAdapter(
-    db,
-    {
-      usersTable: users,
-      accountsTable: accounts,
-      sessionsTable: sessions,
-      verificationTokensTable: verificationTokens,
-    } as never,
-  ) as Adapter,
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  } as never) as Adapter,
   pages: {
     error: "/?error=Callback",
   },
@@ -67,7 +64,10 @@ export const authOptions = {
             name: permissions.name,
           })
           .from(userPermissions)
-          .innerJoin(permissions, eq(permissions.id, userPermissions.permissionId))
+          .innerJoin(
+            permissions,
+            eq(permissions.id, userPermissions.permissionId),
+          )
           .where(eq(userPermissions.userId, user.id));
 
         session.user.id = user.id;

@@ -45,8 +45,8 @@ export function AuthModal({ isOpen, onClose, isPending }: AuthModalProps) {
       onClick={handleBackdropClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
     >
-      <div className="glass-panel w-full max-w-sm rounded-[1.8rem] p-8 mx-4 animate-in fade-in-0 zoom-in-95 duration-200">
-        <div className="flex items-center justify-between mb-6">
+      <div className="glass-panel animate-in fade-in-0 zoom-in-95 mx-4 w-full max-w-sm rounded-[1.8rem] p-8 duration-200">
+        <div className="mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-semibold tracking-[-0.04em]">
               Sign in or sign up
@@ -54,7 +54,7 @@ export function AuthModal({ isOpen, onClose, isPending }: AuthModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 hover:bg-white/8 transition-colors cursor-pointer"
+            className="cursor-pointer rounded-full p-2 transition-colors hover:bg-white/8"
             aria-label="Close"
           >
             <X className="size-5" />
@@ -63,11 +63,9 @@ export function AuthModal({ isOpen, onClose, isPending }: AuthModalProps) {
 
         <div className="space-y-3">
           <button
-            onClick={() =>
-              signIn("discord", { callbackUrl: "/" })
-            }
+            onClick={() => signIn("discord", { callbackUrl: "/" })}
             disabled={isPending}
-            className="w-full flex items-center justify-center gap-3 rounded-full border border-[#5865F2] bg-[#5865F2] text-white hover:bg-[#4752C4] transition-all px-6 py-3 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-[#5865F2] bg-[#5865F2] px-6 py-3 font-medium text-white transition-all hover:bg-[#4752C4] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? (
               <LoaderCircle className="size-5 animate-spin" />

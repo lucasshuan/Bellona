@@ -1,6 +1,6 @@
 import "server-only";
 
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, sql } from "drizzle-orm";
 import { cache } from "react";
 
 import { db } from "@/server/db";
@@ -70,6 +70,7 @@ export const getPublicGames = cache(async () => {
       .select({
         id: games.id,
         name: games.name,
+        slug: games.slug,
         description: games.description,
         thumbnailImageUrl: games.thumbnailImageUrl,
         backgroundImageUrl: games.backgroundImageUrl,
@@ -95,112 +96,122 @@ export const getPublicGames = cache(async () => {
   }
 });
 
-export const getGamePageData = cache(async (gameId: string): Promise<GamePageData> => {
-  try {
-    const [game] = await db
-      .select()
-      .from(games)
-      .where(eq(games.id, gameId))
-      .limit(1);
+export const getGamePageData = cache(
+  async (gameSlug: string): Promise<GamePageData> => {
+    console.log(`[getGamePageData] Fetching data for slug: "${gameSlug}"`);
+    try {
+      const [game] = await db
+        .select()
+        .from(games)
+        .where(eq(sql`lower(${games.slug})`, gameSlug.toLowerCase().trim()))
+        .limit(1);
 
-    if (!game) {
-      return null;
-    }
+      if (!game) {
+        console.log(`[getGamePageData] Game not found for slug: "${gameSlug}"`);
+        return null;
+      }
 
-    const rows = await db
-      .select({
-        rankingId: rankings.id,
-        rankingName: rankings.name,
-        entryId: rankingEntries.id,
-        currentElo: rankingEntries.currentElo,
-        entryUpdatedAt: rankingEntries.updatedAt,
-        playerId: players.id,
-        country: players.country,
-        primaryUsernameId: players.primaryUsernameId,
-        playerUsernameId: playerUsernames.id,
-        playerUsername: playerUsernames.username,
-        accountUsername: users.username,
-        accountName: users.name,
-      })
-      .from(rankings)
-      .leftJoin(rankingEntries, eq(rankingEntries.rankingId, rankings.id))
-      .leftJoin(players, eq(players.id, rankingEntries.playerId))
-      .leftJoin(users, eq(users.id, players.userId))
-      .leftJoin(playerUsernames, eq(playerUsernames.playerId, players.id))
-      .where(eq(rankings.gameId, game.id))
-      .orderBy(
-        asc(rankings.name),
-        desc(rankingEntries.currentElo),
-        asc(rankingEntries.updatedAt),
-        asc(players.id),
-        asc(playerUsernames.username),
+      console.log(
+        `[getGamePageData] Game found: ${game.name} (ID: ${game.id})`,
       );
 
-    const groupedRankings = new Map<
-      string,
-      {
-        id: string;
-        name: string;
-        entries: Map<string, GroupedRankingEntry>;
+      const rows = await db
+        .select({
+          rankingId: rankings.id,
+          rankingName: rankings.name,
+          entryId: rankingEntries.id,
+          currentElo: rankingEntries.currentElo,
+          entryUpdatedAt: rankingEntries.updatedAt,
+          playerId: players.id,
+          country: players.country,
+          primaryUsernameId: players.primaryUsernameId,
+          playerUsernameId: playerUsernames.id,
+          playerUsername: playerUsernames.username,
+          accountUsername: users.username,
+          accountName: users.name,
+        })
+        .from(rankings)
+        .leftJoin(rankingEntries, eq(rankingEntries.rankingId, rankings.id))
+        .leftJoin(players, eq(players.id, rankingEntries.playerId))
+        .leftJoin(users, eq(users.id, players.userId))
+        .leftJoin(playerUsernames, eq(playerUsernames.playerId, players.id))
+        .where(eq(rankings.gameId, game.id))
+        .orderBy(
+          asc(rankings.name),
+          desc(rankingEntries.currentElo),
+          asc(rankingEntries.updatedAt),
+          asc(players.id),
+          asc(playerUsernames.username),
+        );
+
+      const groupedRankings = new Map<
+        string,
+        {
+          id: string;
+          name: string;
+          entries: Map<string, GroupedRankingEntry>;
+        }
+      >();
+
+      for (const row of rows) {
+        const existingRanking = groupedRankings.get(row.rankingId);
+        const ranking =
+          existingRanking ??
+          (() => {
+            const created = {
+              id: row.rankingId,
+              name: row.rankingName,
+              entries: new Map<string, GroupedRankingEntry>(),
+            };
+
+            groupedRankings.set(row.rankingId, created);
+            return created;
+          })();
+
+        if (!row.entryId || !row.playerId) {
+          continue;
+        }
+
+        const existingEntry = ranking.entries.get(row.entryId);
+        const entry =
+          existingEntry ??
+          (() => {
+            const created = {
+              id: row.entryId,
+              playerId: row.playerId!,
+              country: row.country ?? null,
+              currentElo: row.currentElo ?? 0,
+              primaryUsernameId: row.primaryUsernameId ?? null,
+              usernames: [] as Array<{
+                id: string;
+                username: string;
+              }>,
+              fallbackName:
+                row.accountUsername ?? row.accountName ?? "Unknown player",
+              updatedAt: row.entryUpdatedAt ?? null,
+            };
+
+            ranking.entries.set(row.entryId, created);
+            return created;
+          })();
+
+        if (
+          row.playerUsernameId &&
+          row.playerUsername &&
+          !entry.usernames.some(
+            (username) => username.id === row.playerUsernameId,
+          )
+        ) {
+          entry.usernames.push({
+            id: row.playerUsernameId,
+            username: row.playerUsername,
+          });
+        }
       }
-    >();
 
-    for (const row of rows) {
-      const existingRanking = groupedRankings.get(row.rankingId);
-      const ranking =
-        existingRanking ??
-        (() => {
-          const created = {
-            id: row.rankingId,
-            name: row.rankingName,
-            entries: new Map<string, GroupedRankingEntry>(),
-          };
-
-          groupedRankings.set(row.rankingId, created);
-          return created;
-        })();
-
-      if (!row.entryId || !row.playerId) {
-        continue;
-      }
-
-      const existingEntry = ranking.entries.get(row.entryId);
-      const entry =
-        existingEntry ??
-        (() => {
-          const created = {
-            id: row.entryId,
-            playerId: row.playerId!,
-            country: row.country ?? null,
-            currentElo: row.currentElo ?? 0,
-            primaryUsernameId: row.primaryUsernameId ?? null,
-            usernames: [] as Array<{
-              id: string;
-              username: string;
-            }>,
-            fallbackName:
-              row.accountUsername ?? row.accountName ?? "Unknown player",
-            updatedAt: row.entryUpdatedAt ?? null,
-          };
-
-          ranking.entries.set(row.entryId, created);
-          return created;
-        })();
-
-      if (
-        row.playerUsernameId &&
-        row.playerUsername &&
-        !entry.usernames.some((username) => username.id === row.playerUsernameId)
-      ) {
-        entry.usernames.push({
-          id: row.playerUsernameId,
-          username: row.playerUsername,
-        });
-      }
-    }
-
-    const rankingList: PublicRanking[] = Array.from(groupedRankings.values()).map(
-      (ranking) => {
+      const rankingList: PublicRanking[] = Array.from(
+        groupedRankings.values(),
+      ).map((ranking) => {
         const entries = Array.from(ranking.entries.values())
           .sort((left, right) => {
             if (right.currentElo !== left.currentElo) {
@@ -208,8 +219,9 @@ export const getGamePageData = cache(async (gameId: string): Promise<GamePageDat
             }
 
             const leftPrimary =
-              left.usernames.find((username) => username.id === left.primaryUsernameId)
-                ?.username ??
+              left.usernames.find(
+                (username) => username.id === left.primaryUsernameId,
+              )?.username ??
               left.usernames[0]?.username ??
               left.fallbackName;
             const rightPrimary =
@@ -243,23 +255,23 @@ export const getGamePageData = cache(async (gameId: string): Promise<GamePageDat
           name: ranking.name,
           entries,
         };
-      },
-    );
+      });
 
-    return {
-      game,
-      rankings: rankingList,
-      isDatabaseUnavailable: false,
-    };
-  } catch (error) {
-    if (isDatabaseUnavailableError(error)) {
       return {
-        game: null,
-        rankings: [],
-        isDatabaseUnavailable: true,
+        game,
+        rankings: rankingList,
+        isDatabaseUnavailable: false,
       };
-    }
+    } catch (error) {
+      if (isDatabaseUnavailableError(error)) {
+        return {
+          game: null,
+          rankings: [],
+          isDatabaseUnavailable: true,
+        };
+      }
 
-    throw error;
-  }
-});
+      throw error;
+    }
+  },
+);

@@ -12,7 +12,7 @@ export function LoginErrorHandler() {
     if (error) {
       // Show alert with error message
       alert(`Login failed: ${error}. Please try again.`);
-      
+
       // Redirect to home without the error param
       router.replace("/");
     }

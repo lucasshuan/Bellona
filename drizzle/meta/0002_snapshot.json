@@ -1,6 +1,6 @@
 {
-  "id": "71e95c2c-a774-4cef-83b1-72fdd953dba2",
-  "prevId": "f38e8040-4937-40ee-83d3-cdedcb1e843d",
+  "id": "75786f89-8daa-4931-81af-641150eaec8b",
+  "prevId": "71e95c2c-a774-4cef-83b1-72fdd953dba2",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -425,6 +425,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -483,7 +489,13 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "games_slug_unique": {
+          "name": "games_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": ["slug"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

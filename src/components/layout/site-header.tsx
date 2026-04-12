@@ -11,7 +11,7 @@ export async function SiteHeader() {
   const session = await getServerAuthSession();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/6 bg-background/88 backdrop-blur-xl">
+    <header className="bg-background/88 sticky top-0 z-30 border-b border-white/6 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 sm:px-10 lg:px-12">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -19,10 +19,13 @@ export async function SiteHeader() {
             alt="Enyo"
             width={28}
             height={28}
-            style={{ filter: "brightness(0) saturate(100%) invert(16%) sepia(92%) saturate(4203%) hue-rotate(340deg) brightness(87%) contrast(97%)" }}
+            style={{
+              filter:
+                "brightness(0) saturate(100%) invert(16%) sepia(92%) saturate(4203%) hue-rotate(340deg) brightness(87%) contrast(97%)",
+            }}
             priority
           />
-          <p className="text-lg font-semibold tracking-[-0.04em] text-primary">
+          <p className="text-primary text-lg font-semibold tracking-[-0.04em]">
             Enyo
           </p>
         </Link>

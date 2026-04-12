@@ -32,7 +32,9 @@ export function isDatabaseUnavailableError(error: unknown): boolean {
   }
 
   if (error instanceof AggregateError) {
-    return error.errors.some((nestedError) => isDatabaseUnavailableError(nestedError));
+    return error.errors.some((nestedError) =>
+      isDatabaseUnavailableError(nestedError),
+    );
   }
 
   const cause = (error as ErrorWithCause).cause;

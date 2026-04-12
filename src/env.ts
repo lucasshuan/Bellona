@@ -31,7 +31,9 @@ if (inferredAppUrl) {
 
 export const env = createEnv({
   server: {
-    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
     DATABASE_URL: z.string().url(),
     AUTH_SECRET: z.string().min(32),
     AUTH_DISCORD_ID: z.string().min(1).optional(),

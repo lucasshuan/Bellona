@@ -23,7 +23,8 @@ export const INITIAL_PERMISSION_DEFINITIONS = [
   { key: "edit_ranking", name: "Edit Ranking" },
 ] as const;
 
-export type PermissionKey = (typeof INITIAL_PERMISSION_DEFINITIONS)[number]["key"];
+export type PermissionKey =
+  (typeof INITIAL_PERMISSION_DEFINITIONS)[number]["key"];
 
 export const resultAttachmentTypeEnum = pgEnum("result_attachment_type", [
   "image",
@@ -41,6 +42,7 @@ export const games = pgTable(
   {
     ...primaryId,
     name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
     description: text("description"),
     backgroundImageUrl: text("background_image_url"),
     thumbnailImageUrl: text("thumbnail_image_url"),
@@ -59,7 +61,9 @@ export const players = pgTable(
     gameId: text("game_id")
       .notNull()
       .references(() => games.id, { onDelete: "cascade" }),
-    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+    userId: text("user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
     country: text("country"),
     primaryUsernameId: text("primary_username_id"),
     ...timestamps,
@@ -171,10 +175,9 @@ export const resultEntries = pgTable(
     ...timestamps,
   },
   (table) => ({
-    resultEntriesResultPlayerIdx: uniqueIndex("result_entries_result_player_idx").on(
-      table.resultId,
-      table.playerId,
-    ),
+    resultEntriesResultPlayerIdx: uniqueIndex(
+      "result_entries_result_player_idx",
+    ).on(table.resultId, table.playerId),
     resultEntriesResultIdIdx: index("result_entries_result_id_idx").on(
       table.resultId,
     ),
@@ -200,7 +203,9 @@ export const resultAttachments = pgTable(
     resultAttachmentsResultIdIdx: index("result_attachments_result_id_idx").on(
       table.resultId,
     ),
-    resultAttachmentsTypeIdx: index("result_attachments_type_idx").on(table.type),
+    resultAttachmentsTypeIdx: index("result_attachments_type_idx").on(
+      table.type,
+    ),
   }),
 );
 
@@ -243,9 +248,9 @@ export const userPermissions = pgTable(
     userPermissionsUserIdIdx: index("user_permissions_user_id_idx").on(
       table.userId,
     ),
-    userPermissionsPermissionIdIdx: index("user_permissions_permission_id_idx").on(
-      table.permissionId,
-    ),
+    userPermissionsPermissionIdIdx: index(
+      "user_permissions_permission_id_idx",
+    ).on(table.permissionId),
   }),
 );
 
@@ -269,12 +274,15 @@ export const playersRelations = relations(players, ({ one, many }) => ({
   resultEntries: many(resultEntries),
 }));
 
-export const playerUsernamesRelations = relations(playerUsernames, ({ one }) => ({
-  player: one(players, {
-    fields: [playerUsernames.playerId],
-    references: [players.id],
+export const playerUsernamesRelations = relations(
+  playerUsernames,
+  ({ one }) => ({
+    player: one(players, {
+      fields: [playerUsernames.playerId],
+      references: [players.id],
+    }),
   }),
-}));
+);
 
 export const rankingsRelations = relations(rankings, ({ one, many }) => ({
   game: one(games, {
@@ -334,16 +342,19 @@ export const permissionsRelations = relations(permissions, ({ one, many }) => ({
   userPermissions: many(userPermissions),
 }));
 
-export const userPermissionsRelations = relations(userPermissions, ({ one }) => ({
-  user: one(users, {
-    fields: [userPermissions.userId],
-    references: [users.id],
+export const userPermissionsRelations = relations(
+  userPermissions,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userPermissions.userId],
+      references: [users.id],
+    }),
+    permission: one(permissions, {
+      fields: [userPermissions.permissionId],
+      references: [permissions.id],
+    }),
   }),
-  permission: one(permissions, {
-    fields: [userPermissions.permissionId],
-    references: [permissions.id],
-  }),
-}));
+);
 
 export type Game = typeof games.$inferSelect;
 export type NewGame = typeof games.$inferInsert;
