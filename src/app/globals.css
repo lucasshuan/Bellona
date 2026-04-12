@@ -5,17 +5,17 @@
     "Aptos", "Segoe UI Variable Display", "Trebuchet MS", "Segoe UI", sans-serif;
   --font-ibm-plex-mono:
     "Cascadia Mono", "IBM Plex Mono", "Consolas", "Liberation Mono", monospace;
-  --background: #07111f;
-  --background-soft: #0d1b2d;
-  --foreground: #f4f7fb;
-  --muted: #9fb0c7;
-  --border: rgb(159 176 199 / 0.18);
-  --card: rgb(9 22 38 / 0.82);
-  --card-strong: rgb(11 29 48 / 0.94);
-  --primary: #6ce2ff;
-  --primary-strong: #16a5d6;
-  --secondary: #ffd166;
-  --success: #6ef3c5;
+  --background: #0b080f;
+  --background-soft: #15101a;
+  --foreground: #f7f0f3;
+  --muted: #b9a8b0;
+  --border: rgb(186 17 47 / 0.18);
+  --card: rgb(19 13 21 / 0.84);
+  --card-strong: rgb(27 16 23 / 0.94);
+  --primary: #ba112f;
+  --primary-strong: #8f0c24;
+  --secondary: #f3d7de;
+  --success: #88d9b8;
   --danger: #ff7b7b;
 }
 
@@ -47,9 +47,10 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgb(108 226 255 / 0.14), transparent 28%),
-    radial-gradient(circle at top right, rgb(255 209 102 / 0.12), transparent 22%),
-    linear-gradient(180deg, #07111f 0%, #091427 45%, #050b14 100%);
+    radial-gradient(circle at top left, rgb(186 17 47 / 0.22), transparent 24%),
+    radial-gradient(circle at top right, rgb(186 17 47 / 0.1), transparent 20%),
+    radial-gradient(circle at bottom center, rgb(255 255 255 / 0.04), transparent 28%),
+    linear-gradient(180deg, #0b080f 0%, #120c14 42%, #08060b 100%);
   color: var(--foreground);
   font-family: var(--font-space-grotesk), sans-serif;
 }
@@ -69,23 +70,23 @@ button:hover {
 }
 
 ::selection {
-  background: rgb(108 226 255 / 0.26);
+  background: rgb(186 17 47 / 0.35);
   color: var(--foreground);
 }
 
 .grid-surface {
   background-image:
-    linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+    linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
   background-position: center;
   background-size: 42px 42px;
 }
 
 .glass-panel {
-  background: linear-gradient(180deg, rgb(9 22 38 / 0.9), rgb(6 14 26 / 0.86));
+  background: linear-gradient(180deg, rgb(20 13 22 / 0.92), rgb(11 8 15 / 0.92));
   border: 1px solid var(--border);
   box-shadow:
-    0 18px 80px rgb(0 0 0 / 0.22),
+    0 18px 80px rgb(0 0 0 / 0.35),
     inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
 
@@ -101,8 +102,8 @@ button:hover {
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgb(108 226 255 / 0.4),
-    rgb(255 209 102 / 0.18),
+    rgb(186 17 47 / 0.55),
+    rgb(186 17 47 / 0.18),
     transparent 60%
   );
   opacity: 0.65;

@@ -1,44 +1,13 @@
 import Link from "next/link";
-import {
-  CheckCircle2,
-  Database,
-  ShieldCheck,
-  Swords,
-  Trophy,
-} from "lucide-react";
+import { ChevronRight, Shield, Swords, Trophy } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { getServerAuthSession } from "@/server/auth";
-import { hasDiscordAuth } from "@/server/auth/config";
 
 export default async function Home() {
   const session = await getServerAuthSession();
   const displayName =
     session?.user.username ?? session?.user.name?.split(" ")[0] ?? "player";
-
-  const stack = [
-    {
-      title: "Auth.js + Discord",
-      description:
-        "Login social rápido para comunidade gamer, com adapter do Drizzle e sessão em banco.",
-      icon: ShieldCheck,
-      status: hasDiscordAuth ? "Configurado para uso" : "Aguardando credenciais",
-    },
-    {
-      title: "Drizzle + Postgres",
-      description:
-        "Tipagem forte, migrations simples e esquema inicial para usuários, torneios e ranking.",
-      icon: Database,
-      status: "Pronto para conectar na Vercel/Neon",
-    },
-    {
-      title: "App Router unificado",
-      description:
-        "Front e API no mesmo projeto, com base limpa para páginas públicas e áreas privadas.",
-      icon: Trophy,
-      status: "Estrutura pronta para crescer",
-    },
-  ];
 
   return (
     <main className="grid-surface relative overflow-hidden">
@@ -49,7 +18,7 @@ export default async function Home() {
               Enyo
             </p>
             <p className="mt-2 text-sm text-muted">
-              Ranking, torneios e comunidade no mesmo app.
+              Ranking, torneios e rivalidade organizada.
             </p>
           </div>
 
@@ -57,29 +26,29 @@ export default async function Home() {
             href={session ? "/dashboard" : "/login"}
             className={buttonVariants({ intent: "ghost", size: "sm" })}
           >
-            {session ? `Entrar, ${displayName}` : "Abrir login"}
+            {session ? `Entrar, ${displayName}` : "Acessar"}
           </Link>
         </header>
 
-        <section className="grid flex-1 items-center gap-10 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:py-20">
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.28em] text-secondary">
+        <section className="grid flex-1 items-center gap-12 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:py-20">
+          <div className="space-y-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.28em] text-secondary">
               <Swords className="size-3.5" />
-              Base inicial pronta para Vercel
+              Competitivo, limpo e direto
             </div>
 
             <div className="space-y-6">
               <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-balance sm:text-6xl lg:text-7xl">
-                Plataforma para organizar{" "}
-                <span className="text-primary">rankings competitivos</span> e{" "}
-                <span className="text-secondary">torneios</span> sem separar front
-                e API.
+                O lugar para subir no{" "}
+                <span className="text-primary">ranking</span>, entrar em{" "}
+                <span className="text-secondary">torneios</span> e deixar seu nome
+                marcado.
               </h1>
 
               <p className="max-w-2xl text-lg leading-8 text-muted sm:text-xl">
-                O projeto já nasce com Next.js, App Router, Auth.js, Drizzle,
-                Postgres e uma estrutura de pastas pensada para evoluir rápido sem
-                virar um monólito confuso.
+                Enyo foi pensado para comunidades de jogos que querem acompanhar
+                desempenho, organizar confrontos e transformar partidas em uma
+                temporada viva.
               </p>
             </div>
 
@@ -88,90 +57,96 @@ export default async function Home() {
                 href={session ? "/dashboard" : "/login"}
                 className={buttonVariants({ intent: "primary", size: "lg" })}
               >
-                {session ? "Ir para o dashboard" : "Configurar autenticação"}
+                {session ? "Ir para o dashboard" : "Entrar no Enyo"}
               </Link>
 
-              <a
-                href="#stack"
+              <Link
+                href="/login"
                 className={buttonVariants({ intent: "secondary", size: "lg" })}
               >
-                Ver o stack inicial
-              </a>
+                Ver acesso
+              </Link>
             </div>
 
-            <div className="grid gap-4 pt-4 sm:grid-cols-3">
+            <div className="grid gap-4 pt-2 sm:grid-cols-3">
               <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
                 <p className="font-mono text-xs uppercase tracking-[0.28em] text-primary">
-                  App
+                  Ranking
                 </p>
                 <p className="mt-3 text-sm leading-7 text-muted">
-                  `src/app` para páginas, rotas e handlers de API.
+                  Evolução por jogo, rivalidades e posição clara para cada player.
                 </p>
               </div>
               <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
                 <p className="font-mono text-xs uppercase tracking-[0.28em] text-primary">
-                  Server
+                  Torneios
                 </p>
                 <p className="mt-3 text-sm leading-7 text-muted">
-                  `src/server` separa auth, banco e regras de domínio.
+                  Inscrição, chaveamento e acompanhamento de cada etapa do evento.
                 </p>
               </div>
               <div className="rounded-3xl border border-white/10 bg-white/4 p-5">
                 <p className="font-mono text-xs uppercase tracking-[0.28em] text-primary">
-                  UI
+                  Identidade
                 </p>
                 <p className="mt-3 text-sm leading-7 text-muted">
-                  `src/components` e `src/lib` deixam o front reaproveitável.
+                  Um ambiente mais tenso, competitivo e focado no jogo em si.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="spotlight-ring glass-panel rounded-[2rem] p-6 sm:p-8">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-[0.28em] text-primary">
-                  Setup
-                </p>
-                <h2 className="mt-3 text-2xl font-semibold">O que já entrou na base</h2>
-              </div>
-              <Trophy className="size-8 text-secondary" />
-            </div>
-
-            <div id="stack" className="space-y-4">
-              {stack.map(({ title, description, icon: Icon, status }) => (
-                <article
-                  key={title}
-                  className="rounded-3xl border border-white/10 bg-white/4 p-5"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <Icon className="size-5 text-primary" />
-                        <h3 className="text-lg font-medium">{title}</h3>
-                      </div>
-                      <p className="text-sm leading-7 text-muted">{description}</p>
-                    </div>
-                    <CheckCircle2 className="mt-1 size-5 shrink-0 text-success" />
-                  </div>
-
-                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.24em] text-secondary">
-                    {status}
+          <div className="spotlight-ring glass-panel overflow-hidden rounded-[2rem] p-6 sm:p-8">
+            <div className="rounded-[1.6rem] border border-primary/15 bg-gradient-to-br from-primary/18 via-primary/8 to-transparent p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.28em] text-secondary">
+                    Temporada
                   </p>
-                </article>
-              ))}
+                  <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
+                    Prepare sua próxima disputa.
+                  </h2>
+                </div>
+                <Trophy className="size-9 text-primary" />
+              </div>
+
+              <p className="mt-5 max-w-md text-sm leading-7 text-muted">
+                A proposta da home agora é apresentar clima, ambição e direção do
+                produto. O detalhe operacional fica para dentro da plataforma.
+              </p>
             </div>
 
-            <div className="mt-6 rounded-3xl border border-primary/20 bg-primary/8 p-5">
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-primary">
-                Status atual
-              </p>
-              <p className="mt-3 text-sm leading-7 text-muted">
-                {hasDiscordAuth
-                  ? "As credenciais de login via Discord já foram detectadas no ambiente."
-                  : "Faltam apenas as variáveis de ambiente do Discord e do banco para autenticação e persistência ficarem operacionais."}
-              </p>
+            <div className="mt-6 grid gap-4">
+              <article className="rounded-3xl border border-white/10 bg-white/4 p-5">
+                <div className="flex items-center gap-3">
+                  <Shield className="size-5 text-primary" />
+                  <h3 className="text-lg font-medium">Perfil competitivo</h3>
+                </div>
+                <p className="mt-3 text-sm leading-7 text-muted">
+                  Entre, acompanhe sua trajetória e construa presença dentro da
+                  comunidade.
+                </p>
+              </article>
+
+              <article className="rounded-3xl border border-white/10 bg-white/4 p-5">
+                <div className="flex items-center gap-3">
+                  <Swords className="size-5 text-primary" />
+                  <h3 className="text-lg font-medium">Conflito organizado</h3>
+                </div>
+                <p className="mt-3 text-sm leading-7 text-muted">
+                  Cada torneio precisa parecer um evento, não só uma lista de
+                  partidas. A home agora aponta nessa direção.
+                </p>
+              </article>
             </div>
+
+            <Link
+              href={session ? "/dashboard" : "/login"}
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-secondary"
+            >
+              {session ? "Abrir painel do jogador" : "Entrar para competir"}
+              <ChevronRight className="size-4" />
+            </Link>
           </div>
         </section>
       </div>
