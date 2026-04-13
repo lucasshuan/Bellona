@@ -42,7 +42,6 @@ export function ApproveGameModal({
       isOpen={isOpen}
       onClose={onClose}
       title={t("confirmTitle")}
-      description={t("confirmDescription", { gameName })}
     >
       <div className="space-y-6 pt-4">
         <div className="flex items-center gap-4 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 text-orange-200/80">

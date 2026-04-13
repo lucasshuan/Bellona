@@ -1,5 +1,5 @@
-{
-  "Header": {
+﻿{
+  "Navbar": {
     "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Logout",
@@ -39,6 +39,10 @@
     "noGamesFound": "No games found for this search",
     "noGamesFoundDescription": "Try searching for another game title or check for typos.",
     "clearSearch": "Clear search",
+    "rankingsCount": "rankings",
+    "playersCount": "players",
+    "tourneysCount": "tourneys",
+    "postsCount": "posts",
     "addGame": {
       "trigger": "Suggest Game",
       "title": "Suggest Game",

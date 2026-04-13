@@ -1,4 +1,4 @@
-import { Link } from "@/i18n/routing";
+﻿import { Link } from "@/i18n/routing";
 
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { UserMenu } from "@/components/layout/user-menu";
@@ -7,12 +7,12 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { getServerAuthSession } from "@/server/auth";
 import { hasDiscordAuth } from "@/server/auth/config";
 
-export async function SiteHeader() {
+export async function SiteNavbar() {
   const session = await getServerAuthSession();
-  const t = await getTranslations("Header");
+  const t = await getTranslations("Navbar");
 
   return (
-    <header className="bg-background/80 fixed top-0 right-0 left-0 z-50 border-b border-white/6 backdrop-blur-xl">
+    <nav className="bg-background/80 sticky top-0 z-50 border-b border-white/6 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 sm:px-10 lg:px-12">
         <Link href="/" className="flex items-center gap-2">
           <div
@@ -52,6 +52,6 @@ export async function SiteHeader() {
           <LocaleSwitcher />
         </div>
       </div>
-    </header>
+    </nav>
   );
 }

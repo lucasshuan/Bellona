@@ -1,4 +1,4 @@
-import type { Route } from "next";
+﻿import type { Route } from "next";
 import { Link } from "@/i18n/routing";
 import { ChevronRight } from "lucide-react";
 import type { PublicGame } from "@/server/db/queries/types";
@@ -9,13 +9,22 @@ interface GameCardProps {
   game: PublicGame;
   fallbackDescription?: string;
   pendingLabel?: string;
+  statsLabels?: {
+    rankings: string;
+    players: string;
+    tourneys: string;
+    posts: string;
+  };
 }
 
 export function GameCard({
   game,
   fallbackDescription,
   pendingLabel,
+  statsLabels,
 }: GameCardProps) {
+  const shouldShowStats = game.status !== "pending" && !!statsLabels;
+
   return (
     <Link
       href={`/games/${game.slug}` as Route}
@@ -34,17 +43,17 @@ export function GameCard({
         ) : (
           <div className="from-primary/48 h-full w-full bg-linear-to-br to-[#0b080f]/92 transition-transform duration-500 group-hover:scale-105" />
         )}
-        
+
         <div className="absolute inset-0 bg-linear-to-b from-[#0b080f]/0 to-[#0b080f]/80 transition-opacity duration-500 group-hover:opacity-40" />
       </div>
 
       <div className="flex items-center justify-between gap-4 p-5">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h3 className="truncate text-lg font-semibold">{game.name}</h3>
             {game.status === "pending" && pendingLabel && (
               <span className="animate-pending-pulse inline-flex shrink-0 items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-500/12 px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-amber-200 uppercase">
-                <span className="size-2 rounded-full bg-amber-400 animate-pulse" />
+                <span className="size-2 animate-pulse rounded-full bg-amber-400" />
                 {pendingLabel}
               </span>
             )}
@@ -52,6 +61,22 @@ export function GameCard({
           <p className="text-muted mt-1.5 line-clamp-2 text-xs leading-4">
             {game.description ?? fallbackDescription}
           </p>
+          {shouldShowStats && statsLabels && (
+            <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-white/65">
+              <span className="rounded-full border border-white/8 bg-white/4 px-2.5 py-1">
+                {game.rankingCount} {statsLabels.rankings}
+              </span>
+              <span className="rounded-full border border-white/8 bg-white/4 px-2.5 py-1">
+                {game.playerCount} {statsLabels.players}
+              </span>
+              <span className="rounded-full border border-white/8 bg-white/4 px-2.5 py-1">
+                {game.tourneyCount} {statsLabels.tourneys}
+              </span>
+              <span className="rounded-full border border-white/8 bg-white/4 px-2.5 py-1">
+                {game.postCount} {statsLabels.posts}
+              </span>
+            </div>
+          )}
         </div>
 
         <ChevronRight className="text-secondary size-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" />

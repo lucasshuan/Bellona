@@ -17,7 +17,7 @@ type UserProps = {
 };
 
 export function UserMenu({ user }: { user: UserProps }) {
-  const t = useTranslations("Header");
+  const t = useTranslations("Navbar");
 
   return (
     <div className="group relative z-50">

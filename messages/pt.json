@@ -1,5 +1,5 @@
-{
-  "Header": {
+﻿{
+  "Navbar": {
     "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Sair",
@@ -38,6 +38,10 @@
     "noGamesFound": "Nenhum jogo encontrado para esta pesquisa",
     "noGamesFoundDescription": "Tente pesquisar por outro título de jogo ou verifique se há erros ortográficos.",
     "clearSearch": "Limpar pesquisa",
+    "rankingsCount": "rankings",
+    "playersCount": "jogadores",
+    "tourneysCount": "torneios",
+    "postsCount": "posts",
     "addGame": {
       "trigger": "Sugerir Jogo",
       "title": "Sugerir Jogo",

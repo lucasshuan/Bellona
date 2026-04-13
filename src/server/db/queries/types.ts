@@ -1,4 +1,4 @@
-import { games, rankings } from "@/server/db/schema";
+﻿import { games, rankings } from "@/server/db/schema";
 
 export type GroupedRankingEntry = {
   id: string;
@@ -29,7 +29,10 @@ export type PublicGame = Pick<
   | "createdAt"
   | "updatedAt"
 > & {
+  rankingCount: number;
   playerCount: number;
+  tourneyCount: number;
+  postCount: number;
 };
 
 export type GameAuthor = {

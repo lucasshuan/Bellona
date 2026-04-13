@@ -230,7 +230,7 @@ async function RankingPageContent({
                   <tr>
                     <td
                       colSpan={4}
-                      className="text-muted px-6 py-12 text-center"
+                      className="text-muted px-6 py-12 text-center italic opacity-40"
                     >
                       {t("noPlayers")}
                     </td>

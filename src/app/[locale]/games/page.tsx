@@ -1,4 +1,4 @@
-import { Link } from "@/i18n/routing";
+﻿import { Link } from "@/i18n/routing";
 import { Trophy } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getPublicGames } from "@/server/db/queries/games";
@@ -26,7 +26,7 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
   const viewerCanManageGames = canManageGames(session);
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 pt-28 pb-12 sm:px-10 lg:px-12">
+    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 pt-14 pb-12 sm:px-10 lg:px-12">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-6">
           <SectionHeader title={t("title")} description={t("description")} />
@@ -35,7 +35,7 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 lg:items-end w-full lg:max-w-md">
+        <div className="flex w-full flex-col gap-4 lg:max-w-md lg:items-end">
           <SearchInput
             defaultValue={search}
             placeholder={t("searchPlaceholder")}
@@ -91,7 +91,6 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
   );
 }
 
-
 function GamesGridSkeleton() {
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -120,6 +119,12 @@ async function GamesGrid({
     viewerId,
     canManageGames,
   });
+  const statsLabels = {
+    rankings: t("rankingsCount"),
+    players: t("playersCount"),
+    tourneys: t("tourneysCount"),
+    posts: t("postsCount"),
+  };
 
   const showEmptySearch = gameList.length === 0 && !!search;
 
@@ -132,6 +137,7 @@ async function GamesGrid({
             game={game}
             fallbackDescription={t("cardFallbackDescription")}
             pendingLabel={t("pendingBadge")}
+            statsLabels={statsLabels}
           />
         ))}
       </div>

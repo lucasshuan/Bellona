@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
+import { SiteNavbar } from "@/components/layout/site-navbar";
 import { routing } from "@/i18n/routing";
 
 import { Providers } from "@/components/providers";
@@ -43,9 +43,9 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           <Providers>
-            <div className="relative min-h-screen">
+            <div className="app-scroll-shell relative h-screen">
               <div className="grid-surface pointer-events-none fixed inset-0 -z-50" />
-              <SiteHeader />
+              <SiteNavbar />
               <div className="min-h-[calc(100vh-137px)]">{children}</div>
               <SiteFooter />
             </div>

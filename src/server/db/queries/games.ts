@@ -1,11 +1,11 @@
-import "server-only";
+﻿import "server-only";
 
 import { and, asc, desc, eq, or, sql } from "drizzle-orm";
 import { cache } from "react";
 
 import { db } from "@/server/db";
 import { isDatabaseUnavailableError } from "@/server/db/errors";
-import { games, players } from "@/server/db/schema";
+import { games, players, rankings } from "@/server/db/schema";
 import type { PublicGamesOptions, PublicGamesState } from "./types";
 
 export const getPublicGames = cache(
@@ -33,6 +33,15 @@ export const getPublicGames = cache(
         .groupBy(players.gameId)
         .as("player_counts");
 
+      const rankingCounts = db
+        .select({
+          gameId: rankings.gameId,
+          count: sql<number>`count(*)`.as("ranking_count"),
+        })
+        .from(rankings)
+        .groupBy(rankings.gameId)
+        .as("ranking_counts");
+
       const query = db
         .select({
           id: games.id,
@@ -46,10 +55,14 @@ export const getPublicGames = cache(
           authorId: games.authorId,
           createdAt: games.createdAt,
           updatedAt: games.updatedAt,
+          rankingCount: sql<number>`COALESCE(${rankingCounts.count}, 0)`,
           playerCount: sql<number>`COALESCE(${playerCounts.count}, 0)`,
+          tourneyCount: sql<number>`0`,
+          postCount: sql<number>`0`,
         })
         .from(games)
-        .leftJoin(playerCounts, eq(games.id, playerCounts.gameId));
+        .leftJoin(playerCounts, eq(games.id, playerCounts.gameId))
+        .leftJoin(rankingCounts, eq(games.id, rankingCounts.gameId));
 
       if (search && visibilityCondition) {
         query.where(

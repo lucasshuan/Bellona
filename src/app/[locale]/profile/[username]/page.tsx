@@ -111,7 +111,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
   return (
     <main>
-      <div className="mx-auto flex w-full max-w-7xl flex-col-reverse gap-8 px-6 pt-24 pb-12 sm:px-10 lg:flex-row lg:gap-12 lg:px-12">
+      <div className="mx-auto flex w-full max-w-7xl flex-col-reverse gap-8 px-6 pt-10 pb-12 sm:px-10 lg:flex-row lg:gap-12 lg:px-12">
         {/* Sidebar */}
         <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
           <div className="sticky top-28 flex flex-col gap-4">
