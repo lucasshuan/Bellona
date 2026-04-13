@@ -15,7 +15,6 @@ interface GamesPageProps {
 }
 
 export default async function GamesPage({
-  params,
   searchParams,
 }: GamesPageProps) {
   const { search, sort } = await searchParams;
@@ -124,7 +123,6 @@ async function GamesGrid({ search, sort }: { search?: string; sort?: string }) {
   });
 
   const showEmptySearch = gameList.length === 0 && !!search;
-  const showNoGames = gameList.length === 0 && !search;
 
   if (!isDatabaseUnavailable && gameList.length > 0) {
     return (

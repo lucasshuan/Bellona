@@ -3,7 +3,6 @@
 import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 export function SearchInput({
   defaultValue,
@@ -15,7 +14,6 @@ export function SearchInput({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const t = useTranslations("GamesPage");
 
   function handleSearch(term: string) {
     const params = new URLSearchParams(searchParams);

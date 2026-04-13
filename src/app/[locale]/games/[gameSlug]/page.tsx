@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -40,7 +39,6 @@ export async function generateMetadata({
 
 export default async function GamePage({ params }: GamePageProps) {
   const { gameSlug } = await params;
-  const t = await getTranslations("GamePage");
 
   return (
     <main>
@@ -62,7 +60,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
   if (data.isDatabaseUnavailable) {
     return (
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-10 sm:px-10 lg:px-12 lg:py-14">
-        <div className="glass-panel rounded-[1.8rem] p-6">
+        <div className="glass-panel rounded-4xl p-6">
           <p className="text-base font-medium">{t("dbUnavailable")}</p>
           <p className="text-muted mt-2 text-sm leading-7">
             {t("dbUnavailableDescription")}
@@ -111,7 +109,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                 {rankings.map((ranking) => (
                   <section
                     key={ranking.id}
-                    className="glass-panel rounded-[1.8rem] p-6"
+                    className="glass-panel rounded-4xl p-6"
                   >
                     <div className="mb-5 flex items-center justify-between gap-4">
                       <div>
@@ -132,7 +130,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                         {ranking.entries.map((entry) => (
                           <article
                             key={entry.id}
-                            className="rounded-[1.4rem] border border-white/8 bg-white/4 px-4 py-4"
+                            className="rounded-3xl border border-white/8 bg-white/4 px-4 py-4"
                           >
                             <div className="flex items-start justify-between gap-4">
                               <div className="min-w-0">
@@ -176,7 +174,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-muted rounded-[1.4rem] border border-white/8 bg-white/4 px-4 py-5 text-sm leading-7">
+                      <div className="text-muted rounded-3xl border border-white/8 bg-white/4 px-4 py-5 text-sm leading-7">
                         {t("noPlayers")}
                       </div>
                     )}
@@ -184,7 +182,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                 ))}
               </div>
             ) : (
-              <div className="glass-panel rounded-[1.8rem] p-6">
+              <div className="glass-panel rounded-4xl p-6">
                 <p className="text-base font-medium">{t("noRankings")}</p>
                 <p className="text-muted mt-2 text-sm leading-7">
                   {t("noRankingsDescription")}
@@ -196,14 +194,14 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
         {/* Sidebar */}
         <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
-          <div className="glass-panel sticky top-8 overflow-hidden rounded-[2rem]">
+          <div className="glass-panel sticky top-8 overflow-hidden rounded-4xl">
             {game.thumbnailImageUrl ? (
               <div
-                className="aspect-[368/178] w-full bg-cover bg-center"
+                className="aspect-368/178 w-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${game.thumbnailImageUrl})` }}
               />
             ) : (
-              <div className="from-primary/20 to-primary/5 aspect-[368/178] w-full bg-gradient-to-br" />
+              <div className="from-primary/20 to-primary/5 aspect-368/178 w-full bg-linear-to-br" />
             )}
 
             <div className="space-y-8 p-6">
@@ -281,7 +279,7 @@ function GamePageSkeleton() {
 
             <div className="grid gap-5 xl:grid-cols-2">
               {[1, 2].map((i) => (
-                <section key={i} className="glass-panel rounded-[1.8rem] p-6">
+                <section key={i} className="glass-panel rounded-4xl p-6">
                   <div className="mb-5 flex items-center justify-between gap-4">
                     <div className="w-full">
                       <div className="bg-primary/30 h-3 w-16 animate-pulse rounded" />
@@ -293,7 +291,7 @@ function GamePageSkeleton() {
                     {[1, 2, 3].map((j) => (
                       <div
                         key={j}
-                        className="h-[88px] w-full animate-pulse rounded-[1.4rem] bg-white/6"
+                        className="h-[88px] w-full animate-pulse rounded-3xl bg-white/6"
                       />
                     ))}
                   </div>
@@ -304,8 +302,8 @@ function GamePageSkeleton() {
         </div>
 
         <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
-          <div className="glass-panel sticky top-8 overflow-hidden rounded-[2rem]">
-            <div className="aspect-[368/178] w-full animate-pulse bg-white/10" />
+          <div className="glass-panel sticky top-8 overflow-hidden rounded-4xl">
+            <div className="aspect-368/178 w-full animate-pulse bg-white/10" />
             <div className="space-y-8 p-6">
               <div>
                 <div className="h-8 w-48 animate-pulse rounded bg-white/10" />

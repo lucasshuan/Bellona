@@ -13,9 +13,9 @@ export function GameCard({ game, fallbackDescription }: GameCardProps) {
   return (
     <Link
       href={`/games/${game.slug}` as Route}
-      className="glass-panel group flex w-full flex-col overflow-hidden rounded-[2.2rem]"
+      className="glass-panel group flex w-full flex-col overflow-hidden rounded-4xl"
     >
-      <div className="relative aspect-[368/178] w-full overflow-hidden">
+      <div className="relative aspect-368/178 w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{
@@ -25,7 +25,7 @@ export function GameCard({ game, fallbackDescription }: GameCardProps) {
           }}
         />
         {game.thumbnailImageUrl && (
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0b080f]/5 to-[#0b080f]/75 transition-opacity duration-500 group-hover:opacity-0" />
+          <div className="absolute inset-0 bg-linear-to-b from-[#0b080f]/5 to-[#0b080f]/75 transition-opacity duration-500 group-hover:opacity-0" />
         )}
       </div>
 
@@ -56,14 +56,14 @@ export function GameCardSkeleton({
     <div
       aria-disabled="true"
       className={cn(
-        "glass-panel flex w-full flex-col overflow-hidden rounded-[2.2rem]",
+        "glass-panel flex w-full flex-col overflow-hidden rounded-4xl",
         isFallbackState && "opacity-80",
       )}
     >
-      <div className="relative aspect-[368/178] w-full overflow-hidden">
+      <div className="relative aspect-368/178 w-full overflow-hidden">
         {isFallbackState ? (
-          <div className="from-primary/22 via-primary/8 flex h-full w-full items-center justify-center bg-gradient-to-br to-transparent">
-            <div className="h-16 w-16 rounded-[1.4rem] border border-white/8 bg-white/5" />
+          <div className="from-primary/22 via-primary/8 flex h-full w-full items-center justify-center bg-linear-to-br to-transparent">
+            <div className="h-16 w-16 rounded-3xl border border-white/8 bg-white/5" />
           </div>
         ) : (
           <div className="h-full w-full animate-pulse bg-white/5" />

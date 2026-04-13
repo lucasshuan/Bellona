@@ -31,7 +31,7 @@ export default async function ProfileLoading() {
 
         {/* Sidebar Skeleton */}
         <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
-          <div className="glass-panel sticky top-28 overflow-hidden rounded-[2rem]">
+          <div className="glass-panel sticky top-28 overflow-hidden rounded-4xl">
             <div className="relative z-10 flex flex-col items-center p-8 text-center">
               {/* Avatar Skeleton */}
               <div className="size-32 animate-pulse rounded-full border-4 border-white/10 bg-white/5 shadow-xl" />

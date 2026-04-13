@@ -126,7 +126,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
             <section className="flex flex-col gap-6">
               {calculatedPositions.length === 0 ? (
-                <div className="glass-panel mt-6 flex flex-col items-center justify-center gap-4 rounded-[2rem] p-12 text-center">
+                <div className="glass-panel mt-6 flex flex-col items-center justify-center gap-4 rounded-4xl p-12 text-center">
                   <Medal className="size-12 text-white" />
                   <div>
                     <h3 className="text-xl font-medium">
@@ -156,7 +156,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                     <Link
                       key={player.id}
                       href={`/games/${player.game.slug}`}
-                      className="glass-panel group relative flex flex-col overflow-hidden rounded-[2rem] transition-all duration-300 hover:scale-[1.02] hover:border-white/20"
+                      className="glass-panel group relative flex flex-col overflow-hidden rounded-4xl transition-all duration-300 hover:scale-[1.02] hover:border-white/20"
                     >
                       <div className="h-32 w-full overflow-hidden bg-white/5 sm:h-40">
                         {player.game.backgroundImageUrl ? (
@@ -168,7 +168,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                             className="h-full w-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-80"
                           />
                         ) : (
-                          <div className="h-full w-full bg-gradient-to-br from-white/5 to-transparent" />
+                          <div className="h-full w-full bg-linear-to-br from-white/5 to-transparent" />
                         )}
                       </div>
 
@@ -220,7 +220,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
         {/* Sidebar */}
         <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
           <div className="sticky top-28 flex flex-col gap-4">
-            <div className="glass-panel overflow-hidden rounded-[2rem]">
+            <div className="glass-panel overflow-hidden rounded-4xl">
               {/* Subtle gradient background decoration inside sidebar */}
               <div className="bg-primary/20 pointer-events-none absolute -top-10 -right-10 size-40 rounded-full blur-[50px]" />
               <div className="bg-secondary/10 pointer-events-none absolute -bottom-10 -left-10 size-40 rounded-full blur-[50px]" />

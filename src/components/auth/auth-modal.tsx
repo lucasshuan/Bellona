@@ -47,7 +47,7 @@ export function AuthModal({ isOpen, onClose, isPending }: AuthModalProps) {
       onClick={handleBackdropClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
     >
-      <div className="glass-panel animate-in fade-in-0 zoom-in-95 mx-4 w-full max-w-sm rounded-[1.8rem] p-8 duration-200">
+      <div className="glass-panel animate-in fade-in-0 zoom-in-95 mx-4 w-full max-w-sm rounded-4xl p-8 duration-200">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-semibold tracking-[-0.04em]">

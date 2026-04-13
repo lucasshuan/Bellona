@@ -20,14 +20,13 @@ type SignInButtonProps = {
 
 export function SignInButton({
   disabled = false,
-  callbackUrl = "/",
   label = "Login",
   className,
   size = "lg",
   intent = "primary",
 }: SignInButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [isPending] = useTransition();
 
   const handleOpenModal = () => {
     if (!disabled) {
