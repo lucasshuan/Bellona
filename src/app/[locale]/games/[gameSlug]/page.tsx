@@ -195,12 +195,12 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                   href={game.steamUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#66c0f4]/20 bg-[#1b2838] px-4 py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#2a475e] hover:shadow-[0_0_15px_rgba(102,192,244,0.2)]"
+                  className="flex items-center justify-center gap-2 py-2 text-xs font-bold text-white/40 transition-colors hover:text-white"
                 >
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="size-5"
+                    className="size-4"
                   >
                     <path d="M11.979 0C5.353 0 0 5.373 0 12c0 2.221.606 4.3 1.666 6.1L6.155 13.92c-.11-.421-.168-.86-.168-1.314 0-2.868 2.324-5.193 5.19-5.193 2.87 0 5.194 2.325 5.194 5.193 0 2.868-2.324 5.194-5.193 5.194-.852 0-1.656-.205-2.36-.566L4.793 23c2.164 1.344 4.7 2.128 7.397 2.128 6.577 0 11.905-5.328 11.905-11.905S18.556 0 11.979 0Zm-.791 10.158c-1.353 0-2.45 1.097-2.45 2.448s1.097 2.45 2.45 2.45c1.35 0 2.449-1.099 2.449-2.45s-1.099-2.448-2.449-2.448Zm0 1.258c.656 0 1.19.532 1.19 1.19 0 .656-.534 1.191-1.19 1.191-.659 0-1.192-.534-1.192-1.191 0-.66.533-1.19 1.192-1.19Z" />
                   </svg>

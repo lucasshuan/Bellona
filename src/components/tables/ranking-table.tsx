@@ -4,6 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
+import { PlayerHoverCard } from "@/components/players/player-hover-card";
 
 interface RankingEntry {
   id: string;
@@ -41,20 +42,28 @@ export function RankingTable({ entries }: RankingTableProps) {
         header: t("player"),
         cell: (entry: RankingEntry) => (
           <div className="flex items-center">
-            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 pr-4 pl-1.5 py-1 text-xs font-semibold ring-primary/20 transition-all hover:bg-white/10 hover:ring-2">
-              <div className="flex shrink-0 items-center justify-center overflow-hidden rounded-xs bg-white/5">
-                {entry.country ? (
-                  <span
-                    className={`fi fi-${entry.country.toLowerCase()} w-5 h-3.5 shadow-sm`}
-                  />
-                ) : (
-                  <Globe className="size-3.5 text-white/30" />
-                )}
+            <PlayerHoverCard
+              playerId={entry.playerId}
+              displayName={entry.displayName}
+              country={entry.country}
+            >
+              <div className="flex cursor-pointer items-center gap-2.5">
+                <div className="flex shrink-0 items-center justify-center transition-all">
+                  {entry.country ? (
+                    <div className="overflow-hidden rounded-xs bg-white/5">
+                      <span
+                        className={`fi fi-${entry.country.toLowerCase()} h-3 w-4 shadow-sm`}
+                      />
+                    </div>
+                  ) : (
+                    <Globe className="size-3.5 text-white" />
+                  )}
+                </div>
+                <span className="max-w-[120px] truncate text-sm font-bold text-white transition-colors hover:text-primary sm:max-w-[200px]">
+                  {entry.displayName}
+                </span>
               </div>
-              <span className="truncate max-w-[120px] sm:max-w-[200px]">
-                {entry.displayName}
-              </span>
-            </div>
+            </PlayerHoverCard>
           </div>
         ),
       },

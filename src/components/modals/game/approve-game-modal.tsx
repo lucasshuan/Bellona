@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { CheckCheck, AlertTriangle } from "lucide-react";
 
 import { Modal } from "@/components/ui/modal";
-import { ActionButton } from "@/components/ui/action-button";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { approveGame } from "@/server/actions/game";
 
 interface ApproveGameModalProps {
@@ -38,26 +38,25 @@ export function ApproveGameModal({
   };
 
   return (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
+      onConfirm={handleApprove}
       title={t("title")}
       confirmText={isPending ? t("submitting") : t("submit")}
       cancelText={t("cancel")}
-      onConfirm={handleApprove}
       isPending={isPending}
-      confirmIcon={CheckCheck}
+      icon={CheckCheck}
+      variant="info"
     >
-      <div className="space-y-6 pt-4">
-        <div className="flex items-center gap-4 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 text-orange-200/80">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 text-orange-400">
-            <AlertTriangle className="size-5" />
-          </div>
-          <p className="text-sm leading-relaxed">
-            {t("description", { gameName })}
-          </p>
+      <div className="flex items-center gap-4 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 text-left text-orange-200/80">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 text-orange-400">
+          <AlertTriangle className="size-5" />
         </div>
+        <p className="text-sm leading-relaxed">
+          {t("description", { gameName })}
+        </p>
       </div>
-    </Modal>
+    </ConfirmModal>
   );
 }

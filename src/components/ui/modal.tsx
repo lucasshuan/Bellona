@@ -21,6 +21,7 @@ interface ModalProps {
   confirmIntent?: "primary" | "secondary" | "danger" | "ghost" | "outline";
   confirmIcon?: ElementType;
   cancelIcon?: ElementType;
+  showHeader?: boolean;
 }
 
 export function Modal({
@@ -29,7 +30,7 @@ export function Modal({
   title,
   description,
   children,
-  className,
+  className = "sm:max-w-3xl lg:max-w-4xl",
   confirmText,
   cancelText,
   onConfirm,
@@ -39,6 +40,7 @@ export function Modal({
   confirmIntent = "primary",
   confirmIcon: ConfirmIcon = Save,
   cancelIcon: CancelIcon = X,
+  showHeader = true,
 }: ModalProps) {
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
@@ -74,27 +76,36 @@ export function Modal({
     >
       <div
         className={cn(
-          "glass-panel animate-in fade-in-0 zoom-in-95 flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-4xl bg-[#0a080f] duration-200 sm:max-w-3xl lg:max-w-4xl",
+          "glass-panel animate-in fade-in-0 zoom-in-95 flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-4xl bg-[#0a080f] duration-200",
           className,
         )}
       >
         {/* Header - Fixed */}
-        <div className="flex shrink-0 items-center justify-between border-b border-white/5 p-6 lg:px-8">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-white">
-              {title}
-            </h2>
-            {description && (
-              <p className="text-muted mt-1 text-sm">{description}</p>
-            )}
+        {showHeader ? (
+          <div className="flex shrink-0 items-center justify-between border-b border-white/5 p-6 lg:px-8">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-white">
+                {title}
+              </h2>
+              {description && (
+                <p className="text-muted mt-1 text-sm">{description}</p>
+              )}
+            </div>
+            <button
+              onClick={onClose}
+              className="cursor-pointer rounded-full p-2 text-white/70 transition-colors hover:bg-white/10"
+            >
+              <X className="size-5" />
+            </button>
           </div>
+        ) : (
           <button
             onClick={onClose}
-            className="cursor-pointer rounded-full p-2 text-white/70 transition-colors hover:bg-white/10"
+            className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-2 text-white/30 transition-colors hover:bg-white/10 hover:text-white"
           >
             <X className="size-5" />
           </button>
-        </div>
+        )}
 
         {/* Content - Scrollable */}
         <div className="custom-scrollbar flex-1 overflow-y-auto p-6 lg:px-8">

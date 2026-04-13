@@ -2,8 +2,7 @@
 
 import { useTransition } from "react";
 import { Trophy } from "lucide-react";
-import { Modal } from "@/components/ui/modal";
-import { ActionButton } from "@/components/ui/action-button";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { registerSelfToRanking } from "@/server/actions/game";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -39,18 +38,17 @@ export function RegisterConfirmModal({
   };
 
   return (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
+      onConfirm={onConfirm}
       title={t("title")}
       description={t("description", { elo: initialElo })}
       confirmText={isPending ? t("submitting") : t("submit")}
       cancelText={t("cancel")}
-      onConfirm={onConfirm}
       isPending={isPending}
-      confirmIcon={Trophy}
-    >
-      <></>
-    </Modal>
+      icon={Trophy}
+      variant="success"
+    />
   );
 }

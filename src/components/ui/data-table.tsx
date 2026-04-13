@@ -54,7 +54,7 @@ export function DataTable<T>({
     const lowerSearch = search.toLowerCase();
     return data.filter((item) => {
       return Object.values(item as object).some((val) =>
-        String(val).toLowerCase().includes(lowerSearch)
+        String(val).toLowerCase().includes(lowerSearch),
       );
     });
   }, [data, search]);
@@ -105,12 +105,12 @@ export function DataTable<T>({
       className={cn(
         "glass-panel group flex flex-col overflow-hidden transition-all duration-300",
         isFullScreen
-          ? "fixed inset-0 z-[99999] h-screen w-screen rounded-none bg-[#0b080f]!"
-          : "relative rounded-4xl"
+          ? "fixed inset-0 z-99999 h-screen w-screen rounded-none bg-[#0b080f]!"
+          : "relative rounded-4xl",
       )}
     >
       {/* Search & Actions Header */}
-      <div className="bg-white/2 flex items-center justify-end gap-2 px-4 py-3">
+      <div className="flex items-center justify-end gap-2 bg-white/2 px-4 py-3">
         {/* Density Toggle */}
         <button
           onClick={toggleDensity}
@@ -148,13 +148,13 @@ export function DataTable<T>({
       <div className="flex-1 overflow-x-auto">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="bg-white/2 border-b border-white/10">
+            <tr className="border-b border-white/10 bg-white/2">
               {columns.map((col, idx) => (
                 <th
                   key={idx}
                   className={cn(
                     "px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase opacity-40",
-                    col.headerClassName
+                    col.headerClassName,
                   )}
                 >
                   {col.header}
@@ -176,8 +176,8 @@ export function DataTable<T>({
                     {col.cell
                       ? col.cell(item)
                       : col.accessorKey
-                      ? String(item[col.accessorKey] ?? "")
-                      : null}
+                        ? String(item[col.accessorKey] ?? "")
+                        : null}
                   </td>
                 ))}
               </tr>
@@ -197,7 +197,7 @@ export function DataTable<T>({
       </div>
 
       {/* Pagination Footer */}
-      <div className="bg-white/2 flex flex-col items-center justify-between gap-4 border-t border-white/10 px-6 py-3 sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 bg-white/2 px-6 py-3 sm:flex-row">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">
