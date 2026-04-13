@@ -15,8 +15,8 @@ export const users = pgTable(
   "users",
   {
     ...primaryId,
-    name: text("name"),
-    username: text("username"),
+    name: text("name").notNull(),
+    username: text("username").notNull(),
     email: text("email"),
     emailVerified: timestamp("email_verified", {
       mode: "date",
@@ -29,6 +29,7 @@ export const users = pgTable(
   (table) => ({
     usersEmailIdx: uniqueIndex("users_email_idx").on(table.email),
     usersUsernameIdx: uniqueIndex("users_username_idx").on(table.username),
+    usersNameIdx: uniqueIndex("users_name_idx").on(table.name),
   }),
 );
 

@@ -5,7 +5,9 @@ declare module "next-auth" {
   interface Session {
     user: DefaultSession["user"] & {
       id: string;
-      username: string | null;
+      username: string;
+      name: string;
+      bio: string | null;
       permissions: Array<{
         id: string;
         key: PermissionKey;
@@ -15,6 +17,6 @@ declare module "next-auth" {
   }
 
   interface User {
-    username: string | null;
+    username: string;
   }
 }

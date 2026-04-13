@@ -3,6 +3,7 @@
 import { createContext, useContext, ReactNode } from "react";
 import { type Session } from "next-auth";
 import { SessionProvider as NextAuthSessionProvider, useSession } from "next-auth/react";
+import { Toaster } from "sonner";
 
 type UserContextType = {
   user: Session["user"] | null;
@@ -37,7 +38,10 @@ export function useUser() {
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <NextAuthSessionProvider>
-      <UserProvider>{children}</UserProvider>
+      <UserProvider>
+        {children}
+        <Toaster theme="dark" position="top-center" richColors closeButton />
+      </UserProvider>
     </NextAuthSessionProvider>
   );
 }

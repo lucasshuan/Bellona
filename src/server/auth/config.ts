@@ -22,6 +22,8 @@ export const hasDiscordAuth =
 
 const providers: NextAuthOptions["providers"] = [];
 
+import { generateUniqueUsername } from "@/server/user-utils";
+
 if (hasDiscordAuth) {
   const clientId = env.AUTH_DISCORD_ID!;
   const clientSecret = env.AUTH_DISCORD_SECRET!;
@@ -30,6 +32,16 @@ if (hasDiscordAuth) {
     DiscordProvider({
       clientId,
       clientSecret,
+      profile: async (profile) => {
+        const username = await generateUniqueUsername(profile.username);
+        return {
+          id: profile.id,
+          name: profile.global_name ?? profile.username,
+          email: profile.email,
+          image: profile.image_url,
+          username,
+        };
+      },
     }),
   );
 }
@@ -52,7 +64,9 @@ export const authOptions = {
   callbacks: {
     async session({ session, user }) {
       const dbUser = user as typeof user & {
-        username?: string | null;
+        username: string;
+        name: string;
+        bio?: string | null;
       };
 
       if (session.user) {
@@ -70,7 +84,9 @@ export const authOptions = {
           .where(eq(userPermissions.userId, user.id));
 
         session.user.id = user.id;
-        session.user.username = dbUser.username ?? null;
+        session.user.username = dbUser.username;
+        session.user.name = dbUser.name;
+        session.user.bio = dbUser.bio ?? null;
         session.user.permissions = permissionRows;
       }
 

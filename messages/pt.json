@@ -4,7 +4,8 @@
     "login": "Login",
     "logout": "Sair",
     "viewProfile": "Ver perfil",
-    "editAccount": "Gerenciar conta"
+    "editAccount": "Gerenciar conta",
+    "editProfile": "Editar perfil"
   },
   "LocaleSwitcher": {
     "label": "Alterar idioma",
@@ -57,12 +58,18 @@
   "EditProfilePage": {
     "editProfileTitle": "Editar Perfil",
     "editProfileDescription": "Atualize suas informações pessoais e biografia.",
-    "nameLabel": "Nome",
-    "namePlaceholder": "Digite um apelido",
+    "usernameLabel": "Link do Perfil",
+    "usernamePlaceholder": "Identificador único (sem espaços)",
+    "usernameDescription": "Personaliza a URL do seu perfil (ex: /profile/seunome).",
+    "usernameTaken": "Este link de perfil já está em uso.",
+    "nameLabel": "Nome de Exibição",
+    "namePlaceholder": "Digite como você quer ser chamado",
+    "nameTaken": "Este nome de exibição já está em uso.",
     "bioLabel": "Biografia",
     "bioPlaceholder": "Conte-nos um pouco sobre você...",
     "saveChanges": "Salvar Alterações",
-    "backButton": "Voltar"
+    "cancelButton": "Cancelar",
+    "successMessage": "Perfil atualizado com sucesso!"
   },
   "GamePage": {
     "metaTitleNotFound": "Jogo não encontrado",

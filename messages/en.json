@@ -4,7 +4,8 @@
     "login": "Login",
     "logout": "Logout",
     "viewProfile": "View profile",
-    "editAccount": "Manage account"
+    "editAccount": "Manage account",
+    "editProfile": "Edit profile"
   },
   "LocaleSwitcher": {
     "label": "Change language",
@@ -58,12 +59,18 @@
   "EditProfilePage": {
     "editProfileTitle": "Edit Profile",
     "editProfileDescription": "Update your personal information and biography.",
-    "nameLabel": "Name",
-    "namePlaceholder": "Enter a nickname",
+    "usernameLabel": "Profile Link",
+    "usernamePlaceholder": "Unique identifier (no spaces)",
+    "usernameDescription": "Customizes your profile URL (e.g., /profile/yourname).",
+    "usernameTaken": "This profile link is already taken.",
+    "nameLabel": "Display Name",
+    "namePlaceholder": "Enter how you want to be called",
+    "nameTaken": "This display name is already taken.",
     "bioLabel": "Biography",
-    "bioPlaceholder": "Enter your biography",
+    "bioPlaceholder": "Tell us a bit about yourself...",
     "saveChanges": "Save Changes",
-    "backButton": "Back"
+    "cancelButton": "Cancel",
+    "successMessage": "Profile updated successfully!"
   },
   "GamePage": {
     "metaTitleNotFound": "Game not found",

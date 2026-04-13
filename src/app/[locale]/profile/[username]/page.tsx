@@ -15,6 +15,7 @@ import {
 } from "@/server/db/schema";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { EditProfileTrigger } from "@/components/profile/edit-profile-modal";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -256,16 +257,17 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
             </div>
 
             {isOwnProfile && (
-              <Link
-                href="/profile/edit"
-                className={cn(
-                  buttonVariants({ intent: "secondary" }),
-                  "w-full rounded-2xl py-6 font-medium shadow-sm transition-all hover:border-white/20 hover:bg-white/5",
-                )}
-              >
-                <Edit2 className="mr-2 size-4" />
-                {t("editProfileTitle")}
-              </Link>
+              <EditProfileTrigger user={targetUser}>
+                <div
+                  className={cn(
+                    buttonVariants({ intent: "secondary" }),
+                    "w-full rounded-2xl py-6 font-medium shadow-sm transition-all hover:border-white/20 hover:bg-white/5",
+                  )}
+                >
+                  <Edit2 className="mr-2 size-4" />
+                  {t("editProfileTitle")}
+                </div>
+              </EditProfileTrigger>
             )}
           </div>
         </aside>

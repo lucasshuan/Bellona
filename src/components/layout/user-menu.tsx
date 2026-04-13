@@ -1,17 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { LogOut, Settings, User as UserIcon } from "lucide-react";
+import { LogOut, Settings, User as UserIcon, Edit2 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
+import { EditProfileTrigger } from "@/components/profile/edit-profile-modal";
 
 type UserProps = {
   id: string;
   image?: string | null;
-  name?: string | null;
+  name: string;
   email?: string | null;
-  username?: string | null;
+  username: string;
+  bio?: string | null;
 };
 
 export function UserMenu({ user }: { user: UserProps }) {
@@ -19,7 +21,7 @@ export function UserMenu({ user }: { user: UserProps }) {
 
   return (
     <div className="group relative z-50">
-      <button className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full border border-white/10 transition-colors hover:border-white/20">
+      <Link href={`/profile/${user.username ?? user.id}`} className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full border border-white/10 transition-colors hover:border-white/20">
         {user?.image ? (
           <Image
             src={user.image}
@@ -33,7 +35,7 @@ export function UserMenu({ user }: { user: UserProps }) {
             <UserIcon className="size-4 text-white/50" />
           </div>
         )}
-      </button>
+      </Link>
 
       <div className="invisible absolute top-full right-0 w-3xs pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
         <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0a] shadow-xl">
@@ -64,14 +66,20 @@ export function UserMenu({ user }: { user: UserProps }) {
           <div className="flex flex-col gap-0.5 border-b border-white/10 p-1.5">
             <Link
               href={`/profile/${user.username ?? user.id}`}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white group"
             >
               <UserIcon className="size-4 shrink-0 transition-colors group-hover:text-white" />
               <span className="leading-none">{t("viewProfile")}</span>
             </Link>
+            <EditProfileTrigger user={user}>
+              <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white group w-full cursor-pointer">
+                <Edit2 className="size-4 shrink-0 transition-colors group-hover:text-white" />
+                <span className="leading-none">{t("editProfile")}</span>
+              </div>
+            </EditProfileTrigger>
             <Link
-              href="/profile/edit"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+              href="#"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white group"
             >
               <Settings className="size-4 shrink-0 transition-colors group-hover:text-white" />
               <span className="leading-none">{t("editAccount")}</span>
