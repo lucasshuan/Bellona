@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 interface SectionHeaderProps {
   eyebrow?: string;
   title: string;
-  description?: string;
+  description?: ReactNode;
   actions?: ReactNode;
   className?: string;
 }
@@ -34,9 +34,9 @@ export function SectionHeader({
             {title}
           </h2>
           {description && (
-            <p className="text-muted sm:text-md max-w-3xl text-base leading-relaxed">
+            <div className="text-muted sm:text-md max-w-3xl text-base leading-relaxed">
               {description}
-            </p>
+            </div>
           )}
         </div>
       </div>

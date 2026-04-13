@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { ChevronLeft, Globe } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 import { getRankingData } from "@/server/db/queries/rankings";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -12,6 +12,7 @@ import { canManageGames, canManageRankings } from "@/lib/permissions";
 import { RankingRegistrationTrigger } from "@/components/triggers/ranking/ranking-registration-trigger";
 import { getLocale } from "next-intl/server";
 import { formatDate } from "@/lib/date-utils";
+import { RankingTable } from "@/components/tables/ranking-table";
 
 import { RankingAdminPanel } from "./admin-panel";
 import { type Ranking } from "@/server/db/schema";
@@ -64,7 +65,7 @@ async function RankingPageContent({
     : false;
 
   return (
-    <div className="relative z-10 mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
+    <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
       {/* Sidebar (Left) */}
       <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
         <div className="sticky top-28 space-y-4">
@@ -165,83 +166,14 @@ async function RankingPageContent({
       <div className="min-w-0 flex-1 space-y-8">
         <SectionHeader
           title={ranking.name}
-          description={ranking.description || undefined}
+          description={
+            ranking.description || (
+              <span className="italic opacity-50">{t("noDescription")}</span>
+            )
+          }
         />
 
-        <div className="glass-panel overflow-hidden rounded-4xl">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-white/10 bg-white/2">
-                  <th className="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase opacity-40">
-                    #
-                  </th>
-                  <th className="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase opacity-40">
-                    {t("player")}
-                  </th>
-                  <th className="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase opacity-40 text-center">
-                    {t("elo")}
-                  </th>
-                  <th className="px-5 py-3 text-[10px] font-bold tracking-[0.2em] uppercase opacity-40 text-right">
-                    {t("lastResult")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {entries.map((entry) => (
-                  <tr
-                    key={entry.id}
-                    className="group transition-colors hover:bg-white/5"
-                  >
-                    <td className="px-5 py-3 w-16">
-                      <span
-                        className={`font-mono text-sm font-bold ${entry.position <= 3 ? "text-primary" : "opacity-30"}`}
-                      >
-                        {entry.position}º
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center">
-                        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 pr-4 pl-1.5 py-1 text-xs font-semibold ring-primary/20 transition-all hover:bg-white/10 hover:ring-2">
-                            {entry.country ? (
-                              <span
-                                className={`fi fi-${entry.country.toLowerCase()} w-5 h-3.5 shrink-0 rounded-xs bg-white/5 shadow-sm`}
-                              />
-                            ) : (
-                              <Globe className="size-3.5 text-white/30 shrink-0" />
-                            )}
-                          <span className="truncate max-w-[120px] sm:max-w-[200px]">
-                            {entry.displayName}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3 text-center">
-                      <span className="text-secondary font-mono text-base font-bold">
-                        {entry.currentElo}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-right">
-                      <span className="text-[10px] font-bold tracking-widest uppercase opacity-20">
-                        —
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-                {entries.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="text-muted px-6 py-12 text-center italic opacity-40"
-                    >
-                      {t("noPlayers")}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <RankingTable entries={entries} />
       </div>
     </div>
   );

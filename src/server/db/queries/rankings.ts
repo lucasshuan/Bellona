@@ -47,6 +47,24 @@ export const getGamePageData = cache(
         canManageGames,
       );
 
+      const playerCounts = db
+        .select({
+          gameId: players.gameId,
+          count: sql<number>`count(*)`.as("player_count"),
+        })
+        .from(players)
+        .groupBy(players.gameId)
+        .as("player_counts");
+
+      const rankingCounts = db
+        .select({
+          gameId: rankings.gameId,
+          count: sql<number>`count(*)`.as("ranking_count"),
+        })
+        .from(rankings)
+        .groupBy(rankings.gameId)
+        .as("ranking_counts");
+
       const [result] = await db
         .select({
           game: games,
@@ -54,9 +72,15 @@ export const getGamePageData = cache(
           authorName: users.name,
           authorUsername: users.username,
           authorImage: users.image,
+          rankingCount: sql<number>`COALESCE(${rankingCounts.count}, 0)`,
+          playerCount: sql<number>`COALESCE(${playerCounts.count}, 0)`,
+          tourneyCount: sql<number>`0`, // Placeholder for now
+          postCount: sql<number>`0`, // Placeholder for now
         })
         .from(games)
         .leftJoin(users, eq(users.id, games.authorId))
+        .leftJoin(playerCounts, eq(games.id, playerCounts.gameId))
+        .leftJoin(rankingCounts, eq(games.id, rankingCounts.gameId))
         .where(
           and(
             eq(sql`lower(${games.slug})`, gameSlug.toLowerCase().trim()),
@@ -69,7 +93,13 @@ export const getGamePageData = cache(
         return null;
       }
 
-      const game = result.game;
+      const game = {
+        ...result.game,
+        rankingCount: result.rankingCount,
+        playerCount: result.playerCount,
+        tourneyCount: result.tourneyCount,
+        postCount: result.postCount,
+      };
       const author =
         result.authorId && result.authorName
           ? {

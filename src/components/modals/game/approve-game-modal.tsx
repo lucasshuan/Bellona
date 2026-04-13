@@ -46,6 +46,7 @@ export function ApproveGameModal({
       cancelText={t("cancel")}
       onConfirm={handleApprove}
       isPending={isPending}
+      confirmIcon={CheckCheck}
     >
       <div className="space-y-6 pt-4">
         <div className="flex items-center gap-4 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 text-orange-200/80">

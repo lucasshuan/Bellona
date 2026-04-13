@@ -78,6 +78,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
     viewerCanManageGames,
   );
   const t = await getTranslations("GamePage");
+  const tPlural = await getTranslations("GamesPage");
 
   if (!data) {
     notFound();
@@ -102,13 +103,9 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
   const viewerCanManageRankings = canManageRankings(session);
   const canSeeAdminActions =
     canEditCurrentGame || viewerCanManagePlayers || viewerCanManageRankings;
-  const totalPlayersNumber = rankings.reduce(
-    (acc, ranking) => acc + ranking.entries.length,
-    0,
-  );
 
   return (
-    <div className="relative z-10 mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
+    <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
       {/* Sidebar */}
       <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
         <div className="sticky top-28 space-y-6">
@@ -156,24 +153,42 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
               {game.status === "pending" && <></>}
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-white/5 bg-white/5 p-4 transition-colors hover:bg-white/10">
-                  <p className="text-muted font-mono text-xs tracking-wider uppercase">
-                    {t("rankingsTitle")}
-                  </p>
-                  <p className="text-secondary mt-1 text-2xl font-semibold">
-                    {rankings.length}
-                  </p>
+              {game.status !== "pending" && (
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                    <p className="text-muted font-mono text-[9px] tracking-wider uppercase opacity-60">
+                      {tPlural("rankingsCount")}
+                    </p>
+                    <p className="text-secondary mt-0.5 text-lg font-bold">
+                      {game.rankingCount}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                    <p className="text-muted font-mono text-[9px] tracking-wider uppercase opacity-60">
+                      {tPlural("playersCount")}
+                    </p>
+                    <p className="text-secondary mt-0.5 text-lg font-bold">
+                      {game.playerCount}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                    <p className="text-muted font-mono text-[9px] tracking-wider uppercase opacity-60">
+                      {tPlural("tourneysCount")}
+                    </p>
+                    <p className="text-secondary mt-0.5 text-lg font-bold">
+                      {game.tourneyCount}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                    <p className="text-muted font-mono text-[9px] tracking-wider uppercase opacity-60">
+                      {tPlural("postsCount")}
+                    </p>
+                    <p className="text-secondary mt-0.5 text-lg font-bold">
+                      {game.postCount}
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-2xl border border-white/5 bg-white/5 p-4 transition-colors hover:bg-white/10">
-                  <p className="text-muted font-mono text-xs tracking-wider uppercase">
-                    {t("sidebarPlayers")}
-                  </p>
-                  <p className="text-secondary mt-1 text-2xl font-semibold">
-                    {totalPlayersNumber}
-                  </p>
-                </div>
-              </div>
+              )}
 
               {game.steamUrl && (
                 <a
@@ -262,9 +277,13 @@ function GamePageSkeleton() {
                     <div className="h-4 w-5/6 animate-pulse rounded bg-white/6" />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="h-[76px] animate-pulse rounded-2xl bg-white/5" />
-                  <div className="h-[76px] animate-pulse rounded-2xl bg-white/5" />
+                <div className="grid grid-cols-4 gap-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-14 animate-pulse rounded-2xl bg-white/5"
+                    />
+                  ))}
                 </div>
                 <div className="h-[50px] w-full animate-pulse rounded-xl bg-white/10" />
               </div>

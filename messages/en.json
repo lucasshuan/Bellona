@@ -7,6 +7,11 @@
     "editAccount": "Manage account",
     "editProfile": "Edit profile"
   },
+  "Layout": {
+    "searchPlaceholder": "Search...",
+    "rowsPerPage": "Rows:",
+    "pageOf": "{current} of {total} pages"
+  },
   "LocaleSwitcher": {
     "label": "Change language",
     "en": "English",
@@ -70,20 +75,20 @@
     "rankingsDescription": "Ranking tables for {gameName}.",
     "ranking": "Ranking",
     "playersCount": "players",
-    "elo": "Elo",
-    "noPlayers": "This ranking has no players yet.",
+    "elo": "Points",
+    "noPlayers": "This ranking doesn't have players yet.",
     "noRankings": "No rankings created for this game.",
-    "noRankingsDescription": "As soon as rankings are inserted, this page will list players in Elo order.",
-    "sidebarDescription": "Track rankings and player performance for this game.",
+    "noRankingsDescription": "Once rankings are entered, this page will list players in order of points.",
+    "sidebarDescription": "Track player rankings and performance for this game.",
     "sidebarPlayers": "Players",
     "playOnSteam": "Play on Steam",
     "clickToViewFullRanking": "Click to view full ranking",
     "viewGame": "View game",
     "rankingInfo": "Ranking Info",
     "totalPlayers": "Total Players",
-    "ratingSystem": "Ranking System",
-    "created": "Created",
-    "rankingInfoDescription": "This ranking is calculated based on Elo points. Results are updated frequently by game administrators.",
+    "ratingSystem": "Rating System",
+    "created": "Created on",
+    "rankingInfoDescription": "This ranking is calculated based on points. The results are frequently updated by game administrators.",
     "details": "Details",
     "player": "Player",
     "country": "Country",
@@ -92,7 +97,8 @@
     "loginToRegister": "Log in to join",
     "alreadyRegistered": "Already registered",
     "ideaBy": "Idea by",
-    "pendingNotice": "Game is pending and needs approval"
+    "pendingNotice": "Game is pending and needs approval",
+    "noDescription": "No description."
   },
   "SiteFooter": {
     "copyright": "Ares © 2026"

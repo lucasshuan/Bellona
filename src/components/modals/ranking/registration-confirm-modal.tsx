@@ -48,6 +48,7 @@ export function RegisterConfirmModal({
       cancelText={t("cancel")}
       onConfirm={onConfirm}
       isPending={isPending}
+      confirmIcon={Trophy}
     >
       <></>
     </Modal>

@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ElementType } from "react";
 import { createPortal } from "react-dom";
-import { X, LoaderCircle } from "lucide-react";
+import { X, LoaderCircle, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
@@ -18,6 +18,9 @@ interface ModalProps {
   isPending?: boolean;
   disabled?: boolean;
   formId?: string; // To link the submit button to an internal form
+  confirmIntent?: "primary" | "secondary" | "danger" | "ghost" | "outline";
+  confirmIcon?: ElementType;
+  cancelIcon?: ElementType;
 }
 
 export function Modal({
@@ -33,6 +36,9 @@ export function Modal({
   isPending,
   disabled,
   formId,
+  confirmIntent = "primary",
+  confirmIcon: ConfirmIcon = Save,
+  cancelIcon: CancelIcon = X,
 }: ModalProps) {
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
@@ -100,11 +106,12 @@ export function Modal({
           <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/5 bg-white/[0.02] p-6 lg:px-8">
             {cancelText && (
               <Button
-                variant="ghost"
+                intent="ghost"
                 onClick={onClose}
                 disabled={isPending}
                 className="rounded-2xl px-6"
               >
+                {CancelIcon && <CancelIcon className="mr-2 size-4 opacity-70" />}
                 {cancelText}
               </Button>
             )}
@@ -114,10 +121,14 @@ export function Modal({
                 form={formId}
                 onClick={onConfirm}
                 disabled={disabled || isPending}
-                intent="primary"
+                intent={confirmIntent}
                 className="rounded-2xl px-8"
               >
-                {isPending && <LoaderCircle className="mr-2 size-4 animate-spin" />}
+                {isPending ? (
+                  <LoaderCircle className="mr-2 size-4 animate-spin" />
+                ) : (
+                  ConfirmIcon && <ConfirmIcon className="mr-2 size-4" />
+                )}
                 {confirmText}
               </Button>
             )}

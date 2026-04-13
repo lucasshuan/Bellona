@@ -7,6 +7,11 @@
     "editAccount": "Gerenciar conta",
     "editProfile": "Editar perfil"
   },
+  "Layout": {
+    "searchPlaceholder": "Pesquisar...",
+    "rowsPerPage": "Linhas:",
+    "pageOf": "{current} de {total} páginas"
+  },
   "LocaleSwitcher": {
     "label": "Alterar idioma",
     "en": "English",
@@ -69,7 +74,7 @@
     "rankingsDescription": "Tabelas de classificação de {gameName}.",
     "ranking": "Classificação",
     "playersCount": "jogadores",
-    "elo": "Elo",
+    "elo": "Pontos",
     "noPlayers": "Este ranking ainda não tem jogadores.",
     "noRankings": "Nenhuma classificação criada para este jogo.",
     "noRankingsDescription": "Assim que as classificações forem inseridas, esta página listará os jogadores na ordem de Elo.",
@@ -82,7 +87,7 @@
     "totalPlayers": "Total de Jogadores",
     "ratingSystem": "Sistema de Ranking",
     "created": "Criado em",
-    "rankingInfoDescription": "Este ranking é calculado com base nos pontos Elo. Os resultados são atualizados frequentemente pelos administradores do jogo.",
+    "rankingInfoDescription": "Este ranking é calculado com base nos pontos. Os resultados são atualizados frequentemente pelos administradores do jogo.",
     "details": "Detalhes",
     "player": "Jogador",
     "country": "País",
@@ -91,7 +96,8 @@
     "loginToRegister": "Faça login para participar",
     "alreadyRegistered": "Já registrado",
     "ideaBy": "Ideia de",
-    "pendingNotice": "O jogo está pendente e precisa de aprovação"
+    "pendingNotice": "O jogo está pendente e precisa de aprovação",
+    "noDescription": "Sem descrição."
   },
   "SiteFooter": {
     "copyright": "Ares © 2026"

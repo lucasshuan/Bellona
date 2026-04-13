@@ -1,4 +1,4 @@
-﻿import { games, rankings } from "@/server/db/schema";
+import { games, rankings } from "@/server/db/schema";
 
 export type GroupedRankingEntry = {
   id: string;
@@ -67,7 +67,7 @@ export type PublicGamesState = {
 
 export type GamePageData =
   | {
-      game: typeof games.$inferSelect;
+      game: PublicGame;
       author: GameAuthor | null;
       rankings: PublicRanking[];
       isDatabaseUnavailable: false;
