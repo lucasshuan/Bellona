@@ -8,9 +8,21 @@ import {
 } from "next-auth/react";
 import { Toaster } from "sonner";
 
+import {
+  canManageGames,
+  canManagePlayers,
+  canManageRankings,
+  canEditGame as libCanEditGame,
+} from "@/lib/permissions";
+
 type UserContextType = {
   user: Session["user"] | null;
   isLoading: boolean;
+  isAdmin: boolean;
+  canManageGames: boolean;
+  canManagePlayers: boolean;
+  canManageRankings: boolean;
+  canEditGame: (authorId: string | null | undefined) => boolean;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -18,11 +30,19 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
 
+  const user = session?.user ?? null;
+  const isLoading = status === "loading";
+
   return (
     <UserContext.Provider
       value={{
-        user: session?.user ?? null,
-        isLoading: status === "loading",
+        user,
+        isLoading,
+        isAdmin: !!user?.isAdmin,
+        canManageGames: canManageGames(session),
+        canManagePlayers: canManagePlayers(session),
+        canManageRankings: canManageRankings(session),
+        canEditGame: (authorId) => libCanEditGame(session, authorId),
       }}
     >
       {children}

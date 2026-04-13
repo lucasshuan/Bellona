@@ -11,6 +11,8 @@ import { getServerAuthSession } from "@/server/auth";
 import { canManageGames, canManageRankings } from "@/lib/permissions";
 import { RankingAdminActions } from "@/components/game/admin/ranking-admin-actions";
 import { RankingRegistration } from "@/components/game/ranking-registration";
+import { getLocale } from "next-intl/server";
+import { formatDate } from "@/lib/date-utils";
 
 interface RankingPageProps {
   params: Promise<{
@@ -47,6 +49,7 @@ async function RankingPageContent({
   );
   const isEditor = canManageRankings(session);
   const t = await getTranslations("GamePage");
+  const locale = await getLocale();
 
   if (!data) {
     notFound();
@@ -121,7 +124,7 @@ async function RankingPageContent({
                 <span className="text-[11px] opacity-60">{t("created")}</span>
                 <span className="text-xs font-semibold">
                   {ranking.createdAt
-                    ? new Date(ranking.createdAt).toLocaleDateString()
+                    ? formatDate(ranking.createdAt, locale)
                     : "—"}
                 </span>
               </div>

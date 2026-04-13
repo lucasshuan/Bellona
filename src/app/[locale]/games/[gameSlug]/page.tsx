@@ -199,13 +199,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
           )}
 
           {canSeeAdminActions && (
-            <GameAdminActions
-              game={game}
-              canEditGame={canEditCurrentGame}
-              canApproveGame={viewerCanManageGames}
-              canManagePlayers={viewerCanManagePlayers}
-              canManageRankings={viewerCanManageRankings}
-            />
+            <GameAdminActions game={game} />
           )}
         </div>
       </aside>

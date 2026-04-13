@@ -8,11 +8,19 @@ import { AddPlayerToRankingModal } from "./add-player-to-ranking-modal";
 import { type Ranking } from "@/server/db/schema";
 import { useTranslations } from "next-intl";
 
+import { useUser } from "@/components/providers";
+
 interface RankingAdminActionsProps {
   ranking: Ranking;
 }
 
 export function RankingAdminActions({ ranking }: RankingAdminActionsProps) {
+  const { canManageRankings, canManagePlayers } = useUser();
+
+  const hasAnyAction = canManageRankings || canManagePlayers;
+
+  if (!hasAnyAction) return null;
+
   const t = useTranslations("Admin");
   const [isEditRankingOpen, setIsEditRankingOpen] = useState(false);
   const [isAddPlayerOpen, setIsAddPlayerOpen] = useState(false);
@@ -27,17 +35,21 @@ export function RankingAdminActions({ ranking }: RankingAdminActionsProps) {
         <div className="h-px flex-1 bg-white/5" />
       </div>
 
-      <ActionButton
-        icon={Settings2}
-        label={t("editRanking.trigger")}
-        onClick={() => setIsEditRankingOpen(true)}
-      />
+      {canManageRankings && (
+        <ActionButton
+          icon={Settings2}
+          label={t("editRanking.trigger")}
+          onClick={() => setIsEditRankingOpen(true)}
+        />
+      )}
 
-      <ActionButton
-        icon={UserPlus}
-        label={t("addPlayerToRanking.trigger")}
-        onClick={() => setIsAddPlayerOpen(true)}
-      />
+      {canManagePlayers && (
+        <ActionButton
+          icon={UserPlus}
+          label={t("addPlayerToRanking.trigger")}
+          onClick={() => setIsAddPlayerOpen(true)}
+        />
+      )}
 
       <EditRankingModal
         ranking={ranking}

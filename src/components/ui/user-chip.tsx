@@ -20,7 +20,7 @@ export function UserChip({ user, className }: UserChipProps) {
     <Link
       href={profileHref}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border border-white/5 bg-white/5 p-1 pr-3 transition-all hover:bg-white/10 hover:border-white/10 group",
+        "inline-flex items-center gap-2 rounded-full border border-white/5 bg-white/5 p-1 pr-3 transition-all hover:bg-white/10 hover:border-white/10 hover:translate-y-0 group",
         className
       )}
     >

@@ -10,21 +10,30 @@ import { type Game } from "@/server/db/schema";
 import { useTranslations } from "next-intl";
 import { ApproveGameModal } from "./approve-game-modal";
 
+import { useUser } from "@/components/providers";
+
 interface GameAdminActionsProps {
   game: Game;
-  canEditGame: boolean;
-  canApproveGame: boolean;
-  canManagePlayers: boolean;
-  canManageRankings: boolean;
 }
 
-export function GameAdminActions({
-  game,
-  canEditGame,
-  canApproveGame,
-  canManagePlayers,
-  canManageRankings,
-}: GameAdminActionsProps) {
+export function GameAdminActions({ game }: GameAdminActionsProps) {
+  const {
+    canManageGames,
+    canManagePlayers,
+    canManageRankings,
+    canEditGame: checkCanEditGame,
+  } = useUser();
+
+  const canEditGame = checkCanEditGame(game.authorId);
+  const canApproveGame = canManageGames;
+
+  const hasAnyAction =
+    canEditGame ||
+    (game.status === "pending" && canApproveGame) ||
+    (game.status === "approved" && (canManageRankings || canManagePlayers));
+
+  if (!hasAnyAction) return null;
+
   const t = useTranslations("Admin");
   const [isEditGameOpen, setIsEditGameOpen] = useState(false);
   const [isAddRankingOpen, setIsAddRankingOpen] = useState(false);

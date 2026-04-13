@@ -8,15 +8,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AddGameModal } from "./add-game-modal";
 
-interface AddGameTriggerProps {
-  isLoggedIn: boolean;
-  canManageGames: boolean;
-}
+import { useUser } from "@/components/providers";
 
-export function AddGameTrigger({
-  isLoggedIn,
-  canManageGames,
-}: AddGameTriggerProps) {
+export function AddGameTrigger() {
+  const { user, canManageGames } = useUser();
+  const isLoggedIn = !!user;
   const t = useTranslations("GamesPage.addGame");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,8 +33,6 @@ export function AddGameTrigger({
       <AddGameModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        isLoggedIn={isLoggedIn}
-        canManageGames={canManageGames}
       />
     </>
   );

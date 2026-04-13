@@ -31,10 +31,7 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
         <div className="flex flex-col gap-6">
           <SectionHeader title={t("title")} description={t("description")} />
           <div className="w-full max-w-xs">
-            <AddGameTrigger
-              isLoggedIn={!!session?.user}
-              canManageGames={viewerCanManageGames}
-            />
+            <AddGameTrigger />
           </div>
         </div>
 

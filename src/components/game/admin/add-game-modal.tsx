@@ -10,12 +10,7 @@ import { ActionButton } from "@/components/ui/action-button";
 import { Modal } from "@/components/ui/modal";
 import { createGame } from "@/server/actions/game";
 
-interface AddGameModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  isLoggedIn: boolean;
-  canManageGames: boolean;
-}
+import { useUser } from "@/components/providers";
 
 function slugify(value: string) {
   return value
@@ -28,12 +23,9 @@ function slugify(value: string) {
     .replace(/-{2,}/g, "-");
 }
 
-export function AddGameModal({
-  isOpen,
-  onClose,
-  isLoggedIn,
-  canManageGames,
-}: AddGameModalProps) {
+export function AddGameModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { user, canManageGames } = useUser();
+  const isLoggedIn = !!user;
   const t = useTranslations("GamesPage.addGame");
   const [isPending, startTransition] = useTransition();
   const [name, setName] = useState("");
