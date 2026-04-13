@@ -7,7 +7,7 @@
     "editAccount": "Gerenciar conta"
   },
   "LocaleSwitcher": {
-    "label": "Idiomas",
+    "label": "Alterar idioma",
     "en": "English",
     "pt": "Português"
   },
@@ -20,14 +20,29 @@
       "description": "Escolha um jogo para visualizar seus rankings, histórico de desempenho e tabelas.",
       "cardFallbackDescription": "Abra a página do jogo para inspecionar os rankings atuais.",
       "noGamesTitle": "Nenhum jogo disponível",
-      "noGamesDescription": "Adicione jogos ao banco de dados ou reconecte o banco atual para carregar a lista aqui."
+      "noGamesDescription": "Adicione jogos ao banco de dados ou reconecte o banco atual para carregar a lista aqui.",
+      "viewAll": "Ver todos os jogos"
     }
+  },
+  "GamesPage": {
+      "title": "Jogos",
+      "description": "Escolha um jogo para visualizar seus rankings, histórico de desempenho e tabelas.",
+      "cardFallbackDescription": "Abra a página do jogo para inspecionar os rankings atuais.",
+      "noGamesTitle": "Nenhum jogo disponível",
+      "noGamesDescription": "Adicione jogos ao banco de dados ou reconecte o banco atual para carregar a lista aqui.",
+      "searchPlaceholder": "Pesquisar por um jogo...",
+      "backToHome": "Voltar para o Início",
+      "sortPopular": "Mais Populares",
+      "sortAlphabetical": "Alfabética (A-Z)",
+      "noGamesFound": "Nenhum jogo encontrado para esta pesquisa",
+      "noGamesFoundDescription": "Tente pesquisar por outro título de jogo ou verifique se há erros ortográficos."
+    
   },
   "ProfilePage": {
     "headerTitle": "Perfil do Usuário",
     "welcomeMessage": "Bem-vindo, ",
     "fallbackUser": "jogador",
-    "homeButton": "Início",
+    "viewGames": "Ver jogos",
     "manageAccount": "Gerenciar conta",
     "myGames": "Jogos Jogados",
     "ranking": "Ranking",
@@ -40,19 +55,19 @@
   "GamePage": {
     "metaTitleNotFound": "Jogo não encontrado",
     "metaTitleDbUnavailable": "Banco de dados indisponível",
-    "metaDescriptionFallback": "Rankings para {gameName} no Enyo.",
+    "metaDescriptionFallback": "Classificações para {gameName} no Enyo.",
     "backToGames": "Voltar aos jogos",
     "dbUnavailable": "Banco de dados indisponível no desenvolvimento local.",
     "dbUnavailableDescription": "Inicie sua instância do Postgres ou atualize `.env` com uma string de conexão alcançável para ver a página deste jogo.",
-    "rankingsTitle": "Rankings",
-    "rankingsDescription": "Tabelas atuais ordenadas por Elo.",
-    "ranking": "Ranking",
+    "rankingsTitle": "Classificações",
+    "rankingsDescription": "Tabelas de classificação de {gameName}.",
+    "ranking": "Classificação",
     "playersCount": "jogadores",
     "elo": "Elo",
     "noPlayers": "Este ranking ainda não tem jogadores.",
-    "noRankings": "Nenhum ranking criado para este jogo.",
-    "noRankingsDescription": "Assim que os rankings forem inseridos, esta página listará os jogadores na ordem de Elo.",
-    "sidebarDescription": "Acompanhe rankings e desempenho de jogadores para este jogo.",
+    "noRankings": "Nenhuma classificação criada para este jogo.",
+    "noRankingsDescription": "Assim que as classificações forem inseridas, esta página listará os jogadores na ordem de Elo.",
+    "sidebarDescription": "Acompanhe classificações e desempenho de jogadores para este jogo.",
     "sidebarPlayers": "Jogadores",
     "playOnSteam": "Jogar na Steam"
   },

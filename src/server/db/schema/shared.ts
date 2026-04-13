@@ -1,9 +1,10 @@
+import { Snowflake } from "@theinternetfolks/snowflake";
 import { text, timestamp } from "drizzle-orm/pg-core";
 
 export const primaryId = {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .$defaultFn(() => Snowflake.generate()),
 };
 
 export const timestamps = {

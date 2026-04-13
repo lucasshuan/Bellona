@@ -7,7 +7,7 @@
     "editAccount": "Manage account"
   },
   "LocaleSwitcher": {
-    "label": "Languages",
+    "label": "Change language",
     "en": "English",
     "pt": "Português"
   },
@@ -20,14 +20,30 @@
       "description": "Choose a game to view its rankings, performance history and ladders.",
       "cardFallbackDescription": "Open the game page to inspect current rankings.",
       "noGamesTitle": "No games available",
-      "noGamesDescription": "Add games to the database or reconnect the current database to load the list here."
+      "noGamesDescription": "Add games to the database or reconnect the current database to load the list here.",
+      "viewAll": "View all games"
     }
+  },
+  "GamesPage": {
+    "title": "Games",
+    "description": "Choose a game to view its rankings, performance history and ladders.",
+    "cardFallbackDescription": "Open the game page to inspect current rankings.",
+    "noGamesTitle": "No games available",
+    "noGamesDescription": "Add games to the database or reconnect the current database to load the list here.",
+    "viewAll": "View all games",
+    "searchPlaceholder": "Search for a game...",
+    "backToHome": "Back to Home",
+    "sortPopular": "Most Popular",
+    "sortAlphabetical": "Alphabetical (A-Z)",
+    "noGamesFound": "No games found for this search",
+    "noGamesFoundDescription": "Try searching for another game title or check for typos.",
+    "clearSearch": "Clear search"
   },
   "ProfilePage": {
     "headerTitle": "User Profile",
     "welcomeMessage": "Welcome, ",
     "fallbackUser": "player",
-    "homeButton": "Home",
+    "viewGames": "View games",
     "manageAccount": "Manage Account",
     "myGames": "Played Games",
     "ranking": "Ranking",
@@ -45,7 +61,7 @@
     "dbUnavailable": "Database unavailable in local development.",
     "dbUnavailableDescription": "Start your Postgres instance or update `.env` with a reachable connection string to view this game page.",
     "rankingsTitle": "Rankings",
-    "rankingsDescription": "Current ladders ordered by Elo.",
+    "rankingsDescription": "Ranking tables for {gameName}.",
     "ranking": "Ranking",
     "playersCount": "players",
     "elo": "Elo",

@@ -64,38 +64,73 @@ export type GamePageData =
     }
   | null;
 
-export const getPublicGames = cache(async () => {
-  try {
-    const gameList = await db
-      .select({
-        id: games.id,
-        name: games.name,
-        slug: games.slug,
-        description: games.description,
-        thumbnailImageUrl: games.thumbnailImageUrl,
-        backgroundImageUrl: games.backgroundImageUrl,
-        steamUrl: games.steamUrl,
-        createdAt: games.createdAt,
-        updatedAt: games.updatedAt,
-      })
-      .from(games)
-      .orderBy(asc(games.name));
+export type PublicGamesOptions = {
+  limit?: number;
+  search?: string;
+  orderBy?: "name" | "popular";
+};
 
-    return {
-      games: gameList,
-      isDatabaseUnavailable: false,
-    } satisfies PublicGamesState;
-  } catch (error) {
-    if (isDatabaseUnavailableError(error)) {
+export const getPublicGames = cache(
+  async (options: PublicGamesOptions = {}) => {
+    const { limit, search, orderBy = "name" } = options;
+    try {
+      const playerCounts = db
+        .select({
+          gameId: players.gameId,
+          count: sql<number>`count(*)`.as("player_count"),
+        })
+        .from(players)
+        .groupBy(players.gameId)
+        .as("player_counts");
+
+      const query = db
+        .select({
+          id: games.id,
+          name: games.name,
+          slug: games.slug,
+          description: games.description,
+          thumbnailImageUrl: games.thumbnailImageUrl,
+          backgroundImageUrl: games.backgroundImageUrl,
+          steamUrl: games.steamUrl,
+          createdAt: games.createdAt,
+          updatedAt: games.updatedAt,
+          playerCount: sql<number>`COALESCE(${playerCounts.count}, 0)`,
+        })
+        .from(games)
+        .leftJoin(playerCounts, eq(games.id, playerCounts.gameId));
+
+      if (search) {
+        query.where(sql`lower(${games.name}) LIKE ${`%${search.toLowerCase()}%`}`);
+      }
+
+      if (orderBy === "popular") {
+        query.orderBy(desc(sql`COALESCE(${playerCounts.count}, 0)`), asc(games.name));
+      } else {
+        query.orderBy(asc(games.name));
+      }
+
+      if (limit) {
+        query.limit(limit);
+      }
+
+      const gameList = await query;
+
       return {
-        games: [],
-        isDatabaseUnavailable: true,
+        games: gameList,
+        isDatabaseUnavailable: false,
       } satisfies PublicGamesState;
-    }
+    } catch (error) {
+      if (isDatabaseUnavailableError(error)) {
+        return {
+          games: [],
+          isDatabaseUnavailable: true,
+        } satisfies PublicGamesState;
+      }
 
-    throw error;
-  }
-});
+      throw error;
+    }
+  },
+);
 
 export const getGamePageData = cache(
   async (gameSlug: string): Promise<GamePageData> => {

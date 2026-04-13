@@ -8,7 +8,10 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { routing } from "@/i18n/routing";
 
+import { Providers } from "@/components/providers";
+
 import "./globals.css";
+import "flag-icons/css/flag-icons.min.css";
 
 export const metadata: Metadata = {
   title: {
@@ -28,7 +31,7 @@ export default async function RootLayout({
 }>) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
 
@@ -39,11 +42,13 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider messages={messages}>
-        <div className="min-h-screen">
-          <SiteHeader />
-          <div className="min-h-[calc(100vh-137px)]">{children}</div>
-          <SiteFooter />
-        </div>
+          <Providers>
+            <div className="min-h-screen">
+              <SiteHeader />
+              <div className="min-h-[calc(100vh-137px)]">{children}</div>
+              <SiteFooter />
+            </div>
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

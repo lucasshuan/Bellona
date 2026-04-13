@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 
 type UserProps = {
+  id: string;
   image?: string | null;
   name?: string | null;
   email?: string | null;
@@ -35,8 +36,8 @@ export function UserMenu({ user }: { user: UserProps }) {
       </button>
 
       <div className="invisible absolute top-full right-0 w-3xs pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-        <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0a] py-1.5 shadow-xl">
-          <div className="flex items-center gap-3 px-3 py-3">
+        <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0a] shadow-xl">
+          <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
             {user?.image ? (
               <Image
                 src={user.image}
@@ -51,7 +52,7 @@ export function UserMenu({ user }: { user: UserProps }) {
               </div>
             )}
             <div className="flex min-w-0 flex-col">
-              <span className="truncate text-sm font-medium text-white">
+              <span className="truncate text-sm font-medium text-white leading-tight">
                 {user.username ?? user.name ?? "User"}
               </span>
               <span className="truncate text-xs text-white/50">
@@ -59,29 +60,33 @@ export function UserMenu({ user }: { user: UserProps }) {
               </span>
             </div>
           </div>
-          <div className="mb-1 h-[1px] w-full bg-white/10" />
-          <Link
-            href="/profile"
-            className="flex items-center gap-2 px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-          >
-            <UserIcon className="size-4" />
-            {t("viewProfile")}
-          </Link>
-          <Link
-            href="/profile/edit"
-            className="flex items-center gap-2 px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-          >
-            <Settings className="size-4" />
-            {t("editAccount")}
-          </Link>
-          <div className="my-1 h-[1px] w-full bg-white/10" />
-          <button
-            onClick={() => signOut()}
-            className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-red-500/80 transition-colors hover:bg-red-500/10 hover:text-red-500"
-          >
-            <LogOut className="size-4" />
-            {t("logout")}
-          </button>
+
+          <div className="flex flex-col gap-0.5 border-b border-white/10 p-1.5">
+            <Link
+              href={`/profile/${user.username ?? user.id}`}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <UserIcon className="size-4 shrink-0 transition-colors group-hover:text-white" />
+              <span className="leading-none">{t("viewProfile")}</span>
+            </Link>
+            <Link
+              href="/profile/edit"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <Settings className="size-4 shrink-0 transition-colors group-hover:text-white" />
+              <span className="leading-none">{t("editAccount")}</span>
+            </Link>
+          </div>
+
+          <div className="p-1.5">
+            <button
+              onClick={() => signOut()}
+              className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-500/80 transition-colors hover:bg-red-500/10 hover:text-red-500"
+            >
+              <LogOut className="size-4 shrink-0" />
+              <span className="leading-none">{t("logout")}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

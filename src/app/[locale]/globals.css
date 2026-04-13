@@ -9,12 +9,12 @@
   --background-soft: #15101a;
   --foreground: #f7f0f3;
   --muted: #b9a8b0;
-  --border: rgb(186 17 47 / 0.18);
+  --border: color-mix(in srgb, var(--primary) 18%, transparent);
   --card: rgb(19 13 21 / 0.84);
   --card-strong: rgb(27 16 23 / 0.94);
-  --primary: #ba112f;
-  --primary-strong: #8f0c24;
-  --secondary: #f3d7de;
+  --primary: #c00b3b;
+  --primary-strong: #8f0c1b;
+  --secondary: #e7d7f3;
   --success: #88d9b8;
   --danger: #ff7b7b;
 }
@@ -47,8 +47,8 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgb(186 17 47 / 0.22), transparent 24%),
-    radial-gradient(circle at top right, rgb(186 17 47 / 0.1), transparent 20%),
+    radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 22%, transparent), transparent 24%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 10%, transparent), transparent 20%),
     radial-gradient(
       circle at bottom center,
       rgb(255 255 255 / 0.04),
@@ -74,7 +74,7 @@ button:hover {
 }
 
 ::selection {
-  background: rgb(186 17 47 / 0.35);
+  background: color-mix(in srgb, var(--primary) 35%, transparent);
   color: var(--foreground);
 }
 
@@ -135,8 +135,8 @@ button:hover {
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgb(186 17 47 / 0.55),
-    rgb(186 17 47 / 0.18),
+    color-mix(in srgb, var(--primary) 55%, transparent),
+    color-mix(in srgb, var(--primary) 18%, transparent),
     transparent 60%
   );
   opacity: 0.65;

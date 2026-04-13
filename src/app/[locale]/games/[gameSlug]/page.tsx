@@ -77,7 +77,7 @@ export default async function GamePage({ params }: GamePageProps) {
           style={{
             backgroundImage: game.backgroundImageUrl
               ? `linear-gradient(180deg, rgba(11,8,15,0.4) 0%, rgba(11,8,15,0) 100%), url(${game.backgroundImageUrl})`
-              : "linear-gradient(135deg, rgba(186,17,47,0.32), rgba(11,8,15,0.94))",
+              : "linear-gradient(135deg, color-mix(in srgb, var(--primary) 32%, transparent), rgba(11,8,15,0.94))",
             backgroundPosition: "center",
             backgroundSize: "cover",
             maskImage:
@@ -94,7 +94,7 @@ export default async function GamePage({ params }: GamePageProps) {
           <section className="space-y-6">
             <SectionHeader
               title={t("rankingsTitle")}
-              description={t("rankingsDescription")}
+              description={t("rankingsDescription", { gameName: game.name })}
             />
 
             {rankings.length > 0 ? (

@@ -1,9 +1,7 @@
-import Image from "next/image";
 import { Link } from "@/i18n/routing";
 
 import { SignInButton } from "@/components/auth/sign-in-button";
 import { UserMenu } from "@/components/layout/user-menu";
-import { buttonVariants } from "@/components/ui/button";
 import { getTranslations } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { getServerAuthSession } from "@/server/auth";
@@ -17,16 +15,22 @@ export async function SiteHeader() {
     <header className="bg-background/88 sticky top-0 z-30 border-b border-white/6 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 sm:px-10 lg:px-12">
         <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/icon.svg"
-            alt="Enyo"
-            width={28}
-            height={28}
+          <div
+            className="bg-primary shrink-0"
             style={{
-              filter:
-                "brightness(0) saturate(100%) invert(16%) sepia(92%) saturate(4203%) hue-rotate(340deg) brightness(87%) contrast(97%)",
+              width: 28,
+              height: 28,
+              maskImage: `url(/icon.svg)`,
+              WebkitMaskImage: `url(/icon.svg)`,
+              maskSize: "contain",
+              WebkitMaskSize: "contain",
+              maskRepeat: "no-repeat",
+              WebkitMaskRepeat: "no-repeat",
+              maskPosition: "center",
+              WebkitMaskPosition: "center",
             }}
-            priority
+            aria-label="Enyo icon"
+            role="img"
           />
           <p className="text-primary text-lg font-semibold tracking-[-0.04em]">
             Enyo

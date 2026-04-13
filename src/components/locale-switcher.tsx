@@ -1,72 +1,56 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import { Languages } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 
 export function LocaleSwitcher() {
-  const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("LocaleSwitcher");
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const switchLocale = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale });
-    setIsOpen(false);
+  };
+
+  const flags: Record<string, string> = {
+    en: "fi-us",
+    pt: "fi-br",
   };
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="group relative z-50" ref={menuRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+        className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-white/10"
         aria-label={t("label")}
       >
-        <Languages className="h-5 w-5 text-white/80" />
+        <span className={`fi ${flags[locale]} w-5 h-3.5 rounded-sm transition-opacity opacity-80 group-hover:opacity-100`} />
       </button>
 
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#1e1e1e] p-2 shadow-xl z-50">
-          <div className="px-2 py-1.5 text-sm font-semibold text-white/70">
+      <div className="invisible absolute right-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+        <div className="flex flex-col overflow-hidden w-48 rounded-xl border border-white/10 bg-[#0a0a0a] shadow-xl">
+          <div className="px-4 py-3 text-sm font-semibold text-white/70 border-b border-white/10">
             {t("label")}
           </div>
-          <div className="h-px w-full bg-white/10 my-1"></div>
-          <div className="flex flex-col gap-1">
-            <button
-              onClick={() => switchLocale("en")}
-              className={`flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm transition-colors hover:bg-white/5 ${
-                locale === "en" ? "bg-white/10 text-white" : "text-white/80"
-              }`}
-            >
-              <span className="text-base leading-none block">🇺🇸</span>
-              <span>{t("en")}</span>
-            </button>
-            <button
-              onClick={() => switchLocale("pt")}
-              className={`flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm transition-colors hover:bg-white/5 ${
-                locale === "pt" ? "bg-white/10 text-white" : "text-white/80"
-              }`}
-            >
-              <span className="text-base leading-none block">🇧🇷</span>
-              <span>{t("pt")}</span>
-            </button>
+          <div className="flex flex-col gap-0.5 p-1.5">
+            {Object.entries(flags).map(([key, flagClass]) => (
+              <button
+                key={key}
+                onClick={() => switchLocale(key)}
+                className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/10 ${
+                  locale === key ? "bg-white/10 text-white" : "text-white/80"
+                }`}
+              >
+                <span className={`fi ${flagClass} w-5 h-3.5 rounded-sm flex-shrink-0`} />
+                <span>{t(key)}</span>
+              </button>
+            ))}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
