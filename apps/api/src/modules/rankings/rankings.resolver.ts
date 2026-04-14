@@ -8,6 +8,12 @@ import {
   ID,
   Int,
 } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequiredPermissions } from '../auth/decorators/required-permissions.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User as UserModel } from '../auth/user.model';
 import { Ranking } from './ranking.model';
 import { RankingsService } from './rankings.service';
 import { Game } from '../games/game.model';
@@ -50,19 +56,32 @@ export class RankingsResolver {
   }
 
   @Mutation(() => Ranking)
+  @UseGuards(GqlAuthGuard)
   async updateRanking(
     @Args('id', { type: () => ID }) id: string,
     @Args('input') input: UpdateRankingInput,
+    @CurrentUser() user: UserModel,
   ) {
-    return this.rankingsService.update(id, input);
+    return this.rankingsService.update(
+      id,
+      input,
+      user.isAdmin ? undefined : user.id,
+    );
   }
 
   @Mutation(() => Ranking)
-  async createRanking(@Args('input') input: CreateRankingInput) {
-    return this.rankingsService.create(input);
+  @UseGuards(GqlAuthGuard)
+  async createRanking(
+    @Args('input') input: CreateRankingInput,
+    @CurrentUser() user: UserModel,
+  ) {
+    // Sobrescreve o authorId do input com o ID do usuário autenticado
+    return this.rankingsService.create({ ...input, authorId: user.id });
   }
 
   @Mutation(() => RankingEntry)
+  @UseGuards(GqlAuthGuard, PermissionsGuard)
+  @RequiredPermissions('manage_rankings')
   async addPlayerToRanking(
     @Args('rankingId', { type: () => ID }) rankingId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
@@ -73,10 +92,11 @@ export class RankingsResolver {
   }
 
   @Mutation(() => RankingEntry)
+  @UseGuards(GqlAuthGuard)
   async registerSelfToRanking(
     @Args('rankingId', { type: () => ID }) rankingId: string,
-    @Args('userId', { type: () => ID }) userId: string,
+    @CurrentUser() user: UserModel,
   ) {
-    return this.rankingsService.registerSelf(rankingId, userId);
+    return this.rankingsService.registerSelf(rankingId, user.id);
   }
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { LoaderCircle } from "lucide-react";
 import { SiDiscord } from "react-icons/si";
 import { useTranslations } from "next-intl";
+
+import { env } from "@/env";
 import { Modal } from "@/components/ui/modal";
 
 type AuthModalProps = {
@@ -25,7 +26,12 @@ export function AuthModal({ isOpen, onClose, isPending }: AuthModalProps) {
     >
       <div className="space-y-3">
         <button
-          onClick={() => signIn("discord", { callbackUrl: "/profile" })}
+          onClick={() => {
+            window.location.href = env.NEXT_PUBLIC_API_URL.replace(
+              "/graphql",
+              "/auth/discord",
+            );
+          }}
           disabled={isPending}
           className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-[#5865F2] bg-[#5865F2] px-6 py-3 font-medium text-white transition-all hover:bg-[#4752C4] disabled:cursor-not-allowed disabled:opacity-50"
         >

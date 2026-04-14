@@ -1,10 +1,15 @@
 import { type Session } from "next-auth";
+
 type PermissionKey = string; // Migrating away from @ares/db types
 
-export function hasPermission(session: Session | null, key: PermissionKey) {
+export function hasPermission(
+  session: Session | null,
+  key: PermissionKey | PermissionKey[],
+) {
   if (!session?.user) return false;
   if (session.user.isAdmin) return true;
-  return session.user.permissions.some((p) => p.key === key);
+  const keys = Array.isArray(key) ? key : [key];
+  return keys.some((k) => session.user.permissions.includes(k));
 }
 
 export function canManageGames(session: Session | null) {

@@ -5,7 +5,7 @@ export * from "@prisma/client";
 
 function createPrismaClient() {
   const adapter = new PrismaPg({
-    connectionString: process.env.POSTGRES_URL!,
+    connectionString: process.env.DATABASE_URL!,
   });
 
   return new PrismaClient({

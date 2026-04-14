@@ -1,9 +1,10 @@
-import { Controller, Get, Req, UseGuards, Res } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import type { Response } from 'express';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 import type { User } from '@ares/db';
+import type { Response } from 'express';
+
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -18,12 +19,18 @@ export class AuthController {
 
   @Get('discord/callback')
   @UseGuards(AuthGuard('discord'))
-  discordAuthCallback(@Req() req: { user: User }, @Res() res: Response) {
-    const { accessToken } = this.authService.login(req.user);
+  async discordAuthCallback(@Req() req: { user: User }, @Res() res: Response) {
     const frontendUrl = this.configService.getOrThrow<string>('CORS_ORIGIN');
+    const { accessToken } = await this.authService.login(req.user);
 
-    // Redireciona de volta para o frontend com o token
-    // Em um cenário real, você usaria cookies ou um caminho mais seguro
-    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}`);
+    res.redirect(
+      `${frontendUrl}/auth/callback?token=${encodeURIComponent(accessToken)}`,
+    );
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard('jwt'))
+  getMe(@Req() req: { user: User }) {
+    return req.user;
   }
 }

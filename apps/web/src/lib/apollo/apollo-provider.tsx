@@ -1,11 +1,13 @@
 "use client";
 
-import { HttpLink } from "@apollo/client";
+import { HttpLink, from } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import {
   ApolloNextAppProvider,
   ApolloClient,
   InMemoryCache,
-} from "@apollo/experimental-nextjs-app-support";
+} from "@apollo/client-integration-nextjs";
+import { getSession } from "next-auth/react";
 import { env } from "@/env";
 
 function makeClient() {
@@ -14,9 +16,21 @@ function makeClient() {
     fetchOptions: { cache: "no-store" },
   });
 
+  const authLink = setContext(async (_, { headers }) => {
+    const session = await getSession();
+    const token = session?.user?.accessToken;
+
+    return {
+      headers: {
+        ...headers,
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    };
+  });
+
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: httpLink,
+    link: from([authLink, httpLink]),
   });
 }
 

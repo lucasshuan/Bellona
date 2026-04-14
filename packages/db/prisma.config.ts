@@ -1,5 +1,8 @@
 import path from "node:path";
+import { loadEnvFile } from "node:process";
 import { defineConfig } from "prisma/config";
+
+loadEnvFile(path.resolve(__dirname, "../../.env"));
 
 export default defineConfig({
   schema: path.join(__dirname, "prisma/schema.prisma"),
@@ -8,6 +11,6 @@ export default defineConfig({
     seed: path.join(__dirname, "prisma/seed.ts"),
   },
   datasource: {
-    url: process.env.POSTGRES_URL!,
+    url: process.env.DATABASE_URL!,
   },
 });

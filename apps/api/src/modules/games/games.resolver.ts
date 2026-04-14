@@ -7,6 +7,11 @@ import {
   Mutation,
   ID,
 } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequiredPermissions } from '../auth/decorators/required-permissions.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Game } from './game.model';
 import { GamesService } from './games.service';
 import { User } from '../auth/user.model';
@@ -50,19 +55,32 @@ export class GamesResolver {
   }
 
   @Mutation(() => Game)
-  async createGame(@Args('input') input: CreateGameInput) {
-    return this.gamesService.create(input);
+  @UseGuards(GqlAuthGuard)
+  async createGame(
+    @Args('input') input: CreateGameInput,
+    @CurrentUser() user: User,
+  ) {
+    return this.gamesService.create(input, user.id);
   }
 
   @Mutation(() => Game)
+  @UseGuards(GqlAuthGuard)
   async updateGame(
     @Args('id', { type: () => ID }) id: string,
     @Args('input') input: UpdateGameInput,
+    @CurrentUser() user: User,
   ) {
-    return this.gamesService.update(id, input);
+    // Se o usuário não for admin, o service verificará ownership
+    return this.gamesService.update(
+      id,
+      input,
+      user.isAdmin ? undefined : user.id,
+    );
   }
 
   @Mutation(() => Game)
+  @UseGuards(GqlAuthGuard, PermissionsGuard)
+  @RequiredPermissions('manage_games')
   async approveGame(@Args('id', { type: () => ID }) id: string) {
     return this.gamesService.approve(id);
   }

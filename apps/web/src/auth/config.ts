@@ -5,11 +5,15 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "@/env";
 
-export const hasDiscordAuth =
-  !!env.AUTH_DISCORD_ID && !!env.AUTH_DISCORD_SECRET;
+type BackendJwtPayload = {
+  sub: string;
+  username: string;
+  isAdmin: boolean;
+  permissions?: string[];
+};
 
 export const authOptions = {
-  secret: env.AUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
@@ -25,8 +29,8 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.token) return null;
+
         try {
-          // Parse JWT payload from backend
           const base64Url = credentials.token.split(".")[1];
           const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
           const jsonPayload = decodeURIComponent(
@@ -38,14 +42,15 @@ export const authOptions = {
               .join(""),
           );
 
-          const payload = JSON.parse(jsonPayload);
+          const payload = JSON.parse(jsonPayload) as BackendJwtPayload;
 
           return {
-            id: payload.sub as string,
-            username: payload.username as string,
-            name: payload.name || payload.username,
+            id: payload.sub,
+            username: payload.username,
+            name: payload.username,
             isAdmin: payload.isAdmin || false,
-            // the rest can be fetched via graphql if necessary
+            permissions: payload.permissions || [],
+            accessToken: credentials.token,
           } as NextAuthUser;
         } catch {
           return null;
@@ -59,17 +64,23 @@ export const authOptions = {
         token.id = user.id;
         token.username = user.username;
         token.isAdmin = user.isAdmin;
+        token.permissions = user.permissions ?? [];
+        if (user.accessToken) {
+          token.accessToken = user.accessToken;
+        }
       }
+
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.username = token.username as string;
-        session.user.isAdmin = token.isAdmin as boolean;
-        // initialize empty/default so it compiles
-        session.user.permissions = [];
+        session.user.id = token.id;
+        session.user.username = token.username;
+        session.user.isAdmin = token.isAdmin;
+        session.user.accessToken = token.accessToken;
+        session.user.permissions = token.permissions ?? [];
       }
+
       return session;
     },
   },

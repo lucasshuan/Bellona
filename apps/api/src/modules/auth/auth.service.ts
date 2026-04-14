@@ -69,15 +69,27 @@ export class AuthService {
     return user;
   }
 
-  login(user: User) {
+  async login(user: User) {
+    // Buscar permissões reais do banco
+    const permissions = await this.databaseProvider.db.userPermission.findMany({
+      where: { userId: user.id },
+      include: { permission: true },
+    });
+
+    const permissionKeys = permissions.map((p) => p.permission.key);
+
     const payload = {
       sub: user.id,
       username: user.username,
       isAdmin: user.isAdmin,
+      permissions: permissionKeys,
     };
     return {
       accessToken: this.jwtService.sign(payload),
-      user,
+      user: {
+        ...user,
+        permissions: permissionKeys,
+      },
     };
   }
 }

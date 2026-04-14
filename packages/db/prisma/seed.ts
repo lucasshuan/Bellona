@@ -1,4 +1,8 @@
+import path from "node:path";
+import { loadEnvFile } from "node:process";
 import { PrismaClient } from "@prisma/client";
+
+loadEnvFile(path.resolve(__dirname, "../../../.env"));
 
 const prisma = new PrismaClient();
 

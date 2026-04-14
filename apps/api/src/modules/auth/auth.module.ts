@@ -8,6 +8,8 @@ import { AuthResolver } from './auth.resolver';
 import { DiscordStrategy } from './discord.strategy';
 import { JwtStrategy } from './jwt.strategy';
 
+import { PermissionsGuard } from './guards/permissions.guard';
+
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -19,8 +21,14 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ],
-  providers: [AuthService, AuthResolver, DiscordStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    AuthResolver,
+    DiscordStrategy,
+    JwtStrategy,
+    PermissionsGuard,
+  ],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, PermissionsGuard],
 })
 export class AuthModule {}

@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 export type UserData = {
   id: string;
-  name: string | null;
+  name?: string | null;
   username: string;
   bio?: string | null;
   profileColor?: string | null;
@@ -280,7 +280,7 @@ export function EditProfileModal({
               typeof document !== "undefined" &&
               createPortal(
                 <div
-                  className="glass-panel country-portal-content custom-scrollbar fixed z-[9999] mt-2 flex max-h-[250px] flex-col overflow-hidden rounded-2xl shadow-2xl"
+                  className="glass-panel country-portal-content custom-scrollbar fixed z-9999 mt-2 flex max-h-[250px] flex-col overflow-hidden rounded-2xl shadow-2xl"
                   style={{
                     top: countryCoords.top,
                     left: countryCoords.left,

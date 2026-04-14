@@ -85,15 +85,28 @@ export class GamesService {
     });
   }
 
-  async create(data: CreateGameInput) {
+  async create(data: CreateGameInput, authorId?: string) {
     return this.databaseProvider.db.game.create({
       data: {
         ...data,
+        authorId,
       },
     });
   }
 
-  async update(id: string, data: UpdateGameInput) {
+  async update(id: string, data: UpdateGameInput, userId?: string) {
+    if (userId) {
+      const game = await this.databaseProvider.db.game.findUnique({
+        where: { id },
+        select: { authorId: true },
+      });
+      // Apenas o autor ou admin pode editar.
+      // Nota: o check de admin será feito pelo guard ou aqui.
+      // Se tivermos o userId aqui, assumimos que é uma tentativa de edição "normal".
+      if (game && game.authorId && game.authorId !== userId) {
+        throw new Error('You do not have permission to edit this game');
+      }
+    }
     return this.databaseProvider.db.game.update({
       where: { id },
       data,

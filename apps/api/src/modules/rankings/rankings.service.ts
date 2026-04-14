@@ -82,7 +82,17 @@ export class RankingsService {
     });
   }
 
-  async update(id: string, data: UpdateRankingInput) {
+  async update(id: string, data: UpdateRankingInput, userId?: string) {
+    if (userId) {
+      const ranking = await this.databaseProvider.db.ranking.findUnique({
+        where: { eventId: id },
+        include: { event: { select: { authorId: true } } },
+      });
+      if (ranking?.event?.authorId && ranking.event.authorId !== userId) {
+        throw new Error('You do not have permission to edit this ranking');
+      }
+    }
+
     const { name, slug, description, ...rankingData } = data;
     return this.databaseProvider.db.ranking.update({
       where: { eventId: id },

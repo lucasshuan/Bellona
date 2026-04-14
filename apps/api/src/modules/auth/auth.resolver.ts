@@ -1,10 +1,11 @@
-import { Query, Resolver, Context, Mutation, Args } from '@nestjs/graphql';
+import { Query, Resolver, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { User } from './user.model';
 import { GqlAuthGuard } from './gql-auth.guard';
 import { DatabaseProvider } from '../../database/database.provider';
 import { UpdateProfileInput } from './dto/auth.input';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Resolver(() => User)
 export class AuthResolver {
@@ -12,11 +13,10 @@ export class AuthResolver {
 
   @Query(() => User, { name: 'me', nullable: true })
   @UseGuards(GqlAuthGuard)
-  async getMe(@Context() context: { req: { user: { id: string } } }) {
-    const userId = context.req.user.id;
+  async getMe(@CurrentUser() user: { id: string }) {
     return this.databaseProvider.db.user.findFirst({
       where: {
-        id: userId,
+        id: user.id,
       },
     });
   }
@@ -24,10 +24,10 @@ export class AuthResolver {
   @Mutation(() => User)
   @UseGuards(GqlAuthGuard)
   async updateProfile(
-    @Context() context: { req: { user: { id: string } } },
+    @CurrentUser() user: { id: string },
     @Args('input') input: UpdateProfileInput,
   ) {
-    const userId = context.req.user.id;
+    const userId = user.id;
 
     // Simple availability check
     if (input.username) {

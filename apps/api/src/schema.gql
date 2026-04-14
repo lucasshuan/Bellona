@@ -136,7 +136,7 @@ type Mutation {
   updateRanking(id: ID!, input: UpdateRankingInput!): Ranking!
   createRanking(input: CreateRankingInput!): Ranking!
   addPlayerToRanking(rankingId: ID!, playerId: ID!, initialElo: Int): RankingEntry!
-  registerSelfToRanking(rankingId: ID!, userId: ID!): RankingEntry!
+  registerSelfToRanking(rankingId: ID!): RankingEntry!
 }
 
 input CreateGameInput {

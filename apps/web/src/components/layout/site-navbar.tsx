@@ -5,7 +5,6 @@ import { UserMenu } from "@/components/layout/user-menu";
 import { getTranslations } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { getServerAuthSession } from "@/auth";
-import { hasDiscordAuth } from "@/auth/config";
 
 export async function SiteNavbar() {
   const session = await getServerAuthSession();
@@ -46,7 +45,6 @@ export async function SiteNavbar() {
               size="sm"
               label={t("login")}
               callbackUrl="/"
-              disabled={!hasDiscordAuth}
               className="w-auto min-w-24"
             />
           )}

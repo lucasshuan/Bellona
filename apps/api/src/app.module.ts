@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { DatabaseModule } from './database/database.module';
 import { GamesModule } from './modules/games/games.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -16,6 +16,10 @@ import { CommonModule } from './common/common.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [
+        resolve(process.cwd(), '.env'),
+        resolve(process.cwd(), '../../.env'),
+      ],
       validate: (config) => parseEnv(config),
     }),
     CommonModule,

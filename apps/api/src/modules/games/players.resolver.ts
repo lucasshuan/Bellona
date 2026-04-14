@@ -7,6 +7,10 @@ import {
   ID,
   Mutation,
 } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequiredPermissions } from '../auth/decorators/required-permissions.decorator';
 import { Player, PlayerUsername } from './player.model';
 import { User } from '../auth/user.model';
 import { GamesService } from './games.service';
@@ -39,6 +43,8 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Player)
+  @UseGuards(GqlAuthGuard, PermissionsGuard)
+  @RequiredPermissions('manage_players')
   async addPlayerToGame(@Args('input') input: AddPlayerToGameInput) {
     return this.gamesService.addPlayerToGame(input);
   }

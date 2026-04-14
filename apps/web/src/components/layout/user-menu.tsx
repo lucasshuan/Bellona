@@ -10,7 +10,7 @@ import { EditProfileTrigger } from "@/components/triggers/profile/edit-profile-t
 type UserProps = {
   id: string;
   image?: string | null;
-  name: string;
+  name?: string | null;
   email?: string | null;
   username: string;
   bio?: string | null;
