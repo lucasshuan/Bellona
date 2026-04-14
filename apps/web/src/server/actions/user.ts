@@ -2,8 +2,6 @@
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { users } from "@ares/db";
-import { eq, and, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function updateProfile(formData: FormData) {
@@ -20,8 +18,11 @@ export async function updateProfile(formData: FormData) {
   const errors: { username?: string; name?: string } = {};
 
   if (username) {
-    const existingUsername = await db.query.users.findFirst({
-      where: and(eq(users.username, username), ne(users.id, session.user.id)),
+    const existingUsername = await db.user.findFirst({
+      where: {
+        username: username,
+        id: { not: session.user.id },
+      },
     });
     if (existingUsername) {
       errors.username = "username.taken";
@@ -29,8 +30,11 @@ export async function updateProfile(formData: FormData) {
   }
 
   if (name) {
-    const existingName = await db.query.users.findFirst({
-      where: and(eq(users.name, name), ne(users.id, session.user.id)),
+    const existingName = await db.user.findFirst({
+      where: {
+        name: name,
+        id: { not: session.user.id },
+      },
     });
     if (existingName) {
       errors.name = "name.taken";
@@ -41,16 +45,18 @@ export async function updateProfile(formData: FormData) {
     return { success: false, errors };
   }
 
-  await db
-    .update(users)
-    .set({
+  await db.user.update({
+    where: {
+      id: session.user.id,
+    },
+    data: {
       bio,
       name,
       username,
       profileColor,
       country,
-    })
-    .where(eq(users.id, session.user.id));
+    },
+  });
 
   revalidatePath("/");
   revalidatePath(`/profile/${session.user.id}`);

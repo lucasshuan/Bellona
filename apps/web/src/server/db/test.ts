@@ -1,10 +1,9 @@
 import { db } from "./index";
-import { users } from "@ares/db";
 
 async function test() {
   try {
     console.log("Starting test...");
-    const allUsers = await db.select().from(users);
+    const allUsers = await db.user.findMany();
     console.log("Success! Users found:", allUsers.length);
   } catch (error) {
     console.error("Test failed!");

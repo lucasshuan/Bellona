@@ -4,8 +4,6 @@ import { UseGuards } from '@nestjs/common';
 import { User } from './user.model';
 import { GqlAuthGuard } from './gql-auth.guard';
 import { DatabaseProvider } from '../../database/database.provider';
-import { users } from '@ares/db';
-import { eq } from 'drizzle-orm';
 
 @Resolver(() => User)
 export class AuthResolver {
@@ -15,8 +13,10 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   async getMe(@Context() context: { req: { user: { id: string } } }) {
     const userId = context.req.user.id;
-    return this.databaseProvider.db.query.users.findFirst({
-      where: eq(users.id, userId),
+    return this.databaseProvider.user.findFirst({
+      where: {
+        id: userId,
+      },
     });
   }
 }

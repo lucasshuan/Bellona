@@ -1,10 +1,9 @@
 import "dotenv/config";
 import { db } from "@/server/db/client";
-import { permissions, userPermissions } from "@ares/db";
 
 async function main() {
-  await db.delete(userPermissions);
-  await db.delete(permissions);
+  await db.userPermission.deleteMany();
+  await db.permission.deleteMany();
   console.log("Truncated");
 }
 main()

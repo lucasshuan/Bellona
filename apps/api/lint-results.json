@@ -1,0 +1,352 @@
+[
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\app.controller.spec.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\app.controller.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\app.module.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\app.service.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\database\\database.module.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\database\\database.provider.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\env.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\main.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\audit\\audit.module.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\audit\\audit.service.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\auth.controller.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\auth.module.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\auth.resolver.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/require-await",
+        "severity": 2,
+        "message": "Async method 'getMe' has no 'await' expression.",
+        "line": 16,
+        "column": 3,
+        "nodeType": "FunctionExpression",
+        "messageId": "missingAwait",
+        "endLine": 16,
+        "endColumn": 14,
+        "suggestions": [
+          {
+            "messageId": "removeAsync",
+            "fix": { "range": [523, 529], "text": "" },
+            "desc": "Remove 'async'."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unsafe-return",
+        "severity": 2,
+        "message": "Unsafe return of a value of type error.",
+        "line": 18,
+        "column": 5,
+        "nodeType": "ReturnStatement",
+        "messageId": "unsafeReturn",
+        "endLine": 20,
+        "endColumn": 8
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unsafe-call",
+        "severity": 2,
+        "message": "Unsafe call of a type that could not be resolved.",
+        "line": 18,
+        "column": 12,
+        "nodeType": "MemberExpression",
+        "messageId": "errorCall",
+        "endLine": 18,
+        "endColumn": 58
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unsafe-member-access",
+        "severity": 2,
+        "message": "Unsafe member access .users on a type that cannot be resolved.",
+        "line": 18,
+        "column": 43,
+        "nodeType": "Identifier",
+        "messageId": "errorMemberExpression",
+        "endLine": 18,
+        "endColumn": 48
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unsafe-member-access",
+        "severity": 2,
+        "message": "Unsafe member access .id on a type that cannot be resolved.",
+        "line": 19,
+        "column": 23,
+        "nodeType": "Identifier",
+        "messageId": "errorMemberExpression",
+        "endLine": 19,
+        "endColumn": 25
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 5,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { Query, Resolver, Context } from '@nestjs/graphql';\nimport { UseGuards } from '@nestjs/common';\n\nimport { User } from './user.model';\nimport { GqlAuthGuard } from './gql-auth.guard';\nimport { DatabaseProvider } from '../../database/database.provider';\nimport { users } from '@ares/db';\nimport { eq } from 'drizzle-orm';\n\n@Resolver(() => User)\nexport class AuthResolver {\n  constructor(private databaseProvider: DatabaseProvider) {}\n\n  @Query(() => User, { name: 'me', nullable: true })\n  @UseGuards(GqlAuthGuard)\n  async getMe(@Context() context: { req: { user: { id: string } } }) {\n    const userId = context.req.user.id;\n    return this.databaseProvider.db.query.users.findFirst({\n      where: eq(users.id, userId),\n    });\n  }\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\auth.service.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\discord.strategy.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\gql-auth.guard.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\jwt.strategy.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\auth\\user.model.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\games\\game.model.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\games\\games.module.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\games\\games.resolver.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\games\\games.service.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\rankings\\ranking.model.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\rankings\\rankings.module.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\rankings\\rankings.resolver.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "C:\\Desenvolvimento\\Ares\\apps\\api\\src\\modules\\rankings\\rankings.service.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]

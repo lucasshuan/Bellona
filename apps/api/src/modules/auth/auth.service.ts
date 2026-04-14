@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseProvider } from '../../database/database.provider';
-import { users, accounts, type User } from '@ares/db';
-import { eq, and } from 'drizzle-orm';
+import type { User } from '@ares/db';
 
 export interface DiscordProfile {
   id: string;
@@ -30,16 +29,17 @@ export class AuthService {
     const provider = 'discord';
 
     // 1. Check if account already exists
-    const existingAccount =
-      await this.databaseProvider.db.query.accounts.findFirst({
-        where: and(
-          eq(accounts.provider, provider),
-          eq(accounts.providerAccountId, providerAccountId),
-        ),
-        with: {
-          user: true,
+    const existingAccount = await this.databaseProvider.db.account.findUnique({
+      where: {
+        provider_providerAccountId: {
+          provider,
+          providerAccountId,
         },
-      });
+      },
+      include: {
+        user: true,
+      },
+    });
 
     if (existingAccount) {
       return existingAccount.user;
@@ -50,26 +50,23 @@ export class AuthService {
       ? `https://cdn.discordapp.com/avatars/${providerAccountId}/${avatar}.png`
       : null;
 
-    const [newUser] = await this.databaseProvider.db
-      .insert(users)
-      .values({
+    const user = await this.databaseProvider.db.user.create({
+      data: {
         name: global_name || username,
         username: username,
         email: email,
         image: image,
-      })
-      .returning();
-
-    if (!newUser) throw new Error('Failed to create user');
-
-    await this.databaseProvider.db.insert(accounts).values({
-      userId: newUser.id,
-      type: 'oauth',
-      provider: provider,
-      providerAccountId: providerAccountId,
+        accounts: {
+          create: {
+            type: 'oauth',
+            provider: provider,
+            providerAccountId: providerAccountId,
+          },
+        },
+      },
     });
 
-    return newUser;
+    return user;
   }
 
   login(user: User) {

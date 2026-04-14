@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { db } from "@/server/db/client";
-import { games, INITIAL_PERMISSION_DEFINITIONS, permissions } from "@ares/db";
+import { INITIAL_PERMISSION_DEFINITIONS } from "@ares/core";
 
 const GAMES_TO_SEED = [
   {
@@ -19,31 +19,27 @@ const GAMES_TO_SEED = [
 
 async function seedGames() {
   for (const game of GAMES_TO_SEED) {
-    await db
-      .insert(games)
-      .values(game)
-      .onConflictDoNothing({
-        target: [games.name],
-      });
+    await db.game.upsert({
+      where: { name: game.name },
+      update: {},
+      create: game,
+    });
 
     console.log(`Game seeded: ${game.name}`);
   }
 }
 
 async function seedPermissions() {
-  await db
-    .insert(permissions)
-    .values(
-      INITIAL_PERMISSION_DEFINITIONS.map(
-        (definition: { key: string; name: string }) => ({
-          key: definition.key,
-          name: definition.name,
-        }),
-      ),
-    )
-    .onConflictDoNothing({
-      target: [permissions.key],
+  for (const definition of INITIAL_PERMISSION_DEFINITIONS) {
+    await db.permission.upsert({
+      where: { key: definition.key },
+      update: {},
+      create: {
+        key: definition.key,
+        name: definition.name,
+      },
     });
+  }
 
   console.log("Global permissions seeded.");
 }

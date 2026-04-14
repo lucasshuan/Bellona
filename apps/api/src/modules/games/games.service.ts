@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from '../../database/database.provider';
-import { games } from '@ares/db';
-import { desc, eq } from 'drizzle-orm';
 
 @Injectable()
 export class GamesService {
   constructor(private databaseProvider: DatabaseProvider) {}
 
   async findAll() {
-    return this.databaseProvider.db.query.games.findMany({
-      orderBy: [desc(games.createdAt)],
+    return this.databaseProvider.db.game.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
   async findBySlug(slug: string) {
-    return this.databaseProvider.db.query.games.findFirst({
-      where: eq(games.slug, slug),
+    return this.databaseProvider.db.game.findFirst({
+      where: {
+        slug: slug,
+      },
     });
   }
 }

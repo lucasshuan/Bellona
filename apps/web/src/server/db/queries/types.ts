@@ -1,4 +1,4 @@
-import { games, rankings } from "@ares/db";
+import { type Game, type Ranking as RankingModel } from "@ares/db";
 
 export type GroupedRankingEntry = {
   id: string;
@@ -16,7 +16,7 @@ export type GroupedRankingEntry = {
 };
 
 export type PublicGame = Pick<
-  typeof games.$inferSelect,
+  Game,
   | "id"
   | "name"
   | "slug"
@@ -81,8 +81,8 @@ export type GamePageData =
   | null;
 
 export type FullRankingData = {
-  ranking: typeof rankings.$inferSelect;
-  game: typeof games.$inferSelect;
+  ranking: RankingModel;
+  game: Game;
   entries: PublicRankingEntry[];
 };
 

@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { GamesModule } from './modules/games/games.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RankingsModule } from './modules/rankings/rankings.module';
+import { AuditModule } from './modules/audit/audit.module';
 import { envSchema } from './env';
 
 @Module({
@@ -22,6 +23,7 @@ import { envSchema } from './env';
       introspection: true, // Habilitado para o Apollo Sandbox funcionar bem
     }),
     DatabaseModule,
+    AuditModule,
     GamesModule,
     AuthModule,
     RankingsModule,

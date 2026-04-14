@@ -1,7 +1,6 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import DiscordProvider, {
@@ -9,24 +8,13 @@ import DiscordProvider, {
 } from "next-auth/providers/discord";
 
 import { env } from "@/env";
-import { db } from "@/server/db";
-import {
-  accounts,
-  permissions,
-  sessions,
-  userPermissions,
-  users,
-  verificationTokens,
-  type User,
-  type PermissionKey,
-} from "@ares/db";
+import { prisma as db, type PermissionKey } from "@ares/db";
+import { generateUniqueUsername } from "@/server/utils/user";
 
 export const hasDiscordAuth =
   !!env.AUTH_DISCORD_ID && !!env.AUTH_DISCORD_SECRET;
 
 const providers: NextAuthOptions["providers"] = [];
-
-import { generateUniqueUsername } from "@/server/utils/user";
 
 if (hasDiscordAuth) {
   const clientId = env.AUTH_DISCORD_ID!;
@@ -60,45 +48,38 @@ export const authOptions = {
   session: {
     strategy: "database",
   },
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  } as never) as Adapter,
+  adapter: PrismaAdapter(db) as Adapter,
   pages: {
     error: "/?error=Callback",
   },
   providers,
   callbacks: {
     async session({ session, user }) {
-      const dbUser = user as User;
-
       if (session.user) {
-        const permissionRows = await db
-          .select({
-            id: permissions.id,
-            key: permissions.key,
-            name: permissions.name,
-          })
-          .from(userPermissions)
-          .innerJoin(
-            permissions,
-            eq(permissions.id, userPermissions.permissionId),
-          )
-          .where(eq(userPermissions.userId, user.id));
+        const dbUser = await db.user.findUnique({
+          where: { id: user.id },
+          include: {
+            userPermissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        });
 
-        session.user.id = user.id;
-        session.user.username = dbUser.username;
-        session.user.name = dbUser.name;
-        session.user.bio = dbUser.bio ?? null;
-        session.user.profileColor = dbUser.profileColor ?? null;
-        session.user.isAdmin = dbUser.isAdmin;
-        session.user.permissions = permissionRows as Array<{
-          id: string;
-          key: PermissionKey;
-          name: string;
-        }>;
+        if (dbUser) {
+          session.user.id = dbUser.id;
+          session.user.username = dbUser.username;
+          session.user.name = dbUser.name;
+          session.user.bio = dbUser.bio ?? null;
+          session.user.profileColor = dbUser.profileColor ?? null;
+          session.user.isAdmin = dbUser.isAdmin;
+          session.user.permissions = dbUser.userPermissions.map((up) => ({
+            id: up.permission.id,
+            key: up.permission.key as PermissionKey,
+            name: up.permission.name,
+          }));
+        }
       }
 
       return session;

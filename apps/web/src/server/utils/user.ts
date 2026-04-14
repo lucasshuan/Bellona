@@ -1,6 +1,4 @@
 import { db } from "@/server/db";
-import { users } from "@ares/db";
-import { eq } from "drizzle-orm";
 
 /**
  * Generates a unique username based on a base string.
@@ -22,8 +20,10 @@ export async function generateUniqueUsername(base: string): Promise<string> {
   let attempts = 0;
 
   while (!isUnique && attempts < 10) {
-    const existing = await db.query.users.findFirst({
-      where: eq(users.username, finalUsername),
+    const existing = await db.user.findFirst({
+      where: {
+        username: finalUsername,
+      },
     });
 
     if (!existing) {

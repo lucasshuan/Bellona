@@ -1,15 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import {
-  games,
-  players,
-  playerUsernames,
-  rankings,
-  rankingEntries,
-  type Game,
-} from "@ares/db";
-import { eq, and, sql } from "drizzle-orm";
+import { type Game } from "@ares/db";
 import { getServerAuthSession } from "@/server/auth";
 import {
   canEditGame,
@@ -36,8 +28,8 @@ function slugify(value: string) {
 }
 
 async function getGameRecord(gameId: string) {
-  return await db.query.games.findFirst({
-    where: eq(games.id, gameId),
+  return await db.game.findFirst({
+    where: { id: gameId },
   });
 }
 
@@ -48,7 +40,7 @@ async function assertGameApproved(gameId: string) {
     throw new Error("Game not found");
   }
 
-  if (game.status !== "approved") {
+  if (game.status !== "APPROVED") {
     throw new Error("Pending games cannot receive rankings or players");
   }
 
@@ -82,18 +74,18 @@ export async function updateGame(
     throw new Error("Unauthorized");
   }
 
-  await db
-    .update(games)
-    .set({
+  const updatedGame = await db.game.update({
+    where: { id: gameId },
+    data: {
       name: data.name.trim(),
       description: normalizeOptionalText(data.description),
       backgroundImageUrl: normalizeOptionalText(data.backgroundImageUrl),
       thumbnailImageUrl: normalizeOptionalText(data.thumbnailImageUrl),
       steamUrl: normalizeOptionalText(data.steamUrl),
-    })
-    .where(eq(games.id, gameId));
+    },
+  });
 
-  revalidateGamePaths(game);
+  revalidateGamePaths(updatedGame);
   return { success: true };
 }
 
@@ -118,11 +110,10 @@ export async function createGame(data: {
     throw new Error("Invalid game data");
   }
 
-  const status = canManageGames(session) ? "approved" : "pending";
+  const status = canManageGames(session) ? "APPROVED" : "PENDING";
 
-  const [game] = await db
-    .insert(games)
-    .values({
+  const game = await db.game.create({
+    data: {
       name,
       slug,
       description: normalizeOptionalText(data.description),
@@ -131,8 +122,8 @@ export async function createGame(data: {
       steamUrl: normalizeOptionalText(data.steamUrl),
       status,
       authorId: session.user.id,
-    })
-    .returning();
+    },
+  });
 
   revalidateGamePaths(game);
 
@@ -156,14 +147,14 @@ export async function approveGame(gameId: string) {
     throw new Error("Game not found");
   }
 
-  await db
-    .update(games)
-    .set({
-      status: "approved",
-    })
-    .where(eq(games.id, gameId));
+  const updatedGame = await db.game.update({
+    where: { id: gameId },
+    data: {
+      status: "APPROVED",
+    },
+  });
 
-  revalidateGamePaths(game);
+  revalidateGamePaths(updatedGame);
 
   return { success: true };
 }
@@ -192,13 +183,36 @@ export async function addRanking(data: {
 
   const game = await assertGameApproved(data.gameId);
 
-  // If user can manage rankings, it's auto-approved. Otherwise it's pending.
+  // In the new schema, a Ranking is an extension of an Event
   const isApproved = canManageRankings(session);
 
-  await db.insert(rankings).values({
-    ...data,
-    authorId: session.user.id,
-    isApproved,
+  await db.event.create({
+    data: {
+      gameId: data.gameId,
+      type: "RANKING",
+      status: isApproved ? "ACTIVE" : "PENDING",
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      authorId: session.user.id,
+      ranking: {
+        create: {
+          initialElo: data.initialElo,
+          ratingSystem: data.ratingSystem,
+          allowDraw: data.allowDraw,
+          kFactor: data.kFactor,
+          scoreRelevance: data.scoreRelevance,
+          inactivityDecay: data.inactivityDecay,
+          inactivityThresholdHours: data.inactivityThresholdHours,
+          inactivityDecayFloor: data.inactivityDecayFloor,
+          pointsPerWin: data.pointsPerWin,
+          pointsPerDraw: data.pointsPerDraw,
+          pointsPerLoss: data.pointsPerLoss,
+        },
+      },
+    },
   });
 
   revalidateGamePaths(game);
@@ -217,13 +231,13 @@ export async function addPlayerToGame(
 
   const game = await assertGameApproved(gameId);
 
-  const result = await db.transaction(async (tx) => {
+  const result = await db.$transaction(async (tx) => {
     let playerId: string | null = null;
     let wasAddedToExisting = false;
 
     if (data.userId) {
-      const existingPlayer = await tx.query.players.findFirst({
-        where: and(eq(players.gameId, gameId), eq(players.userId, data.userId)),
+      const existingPlayer = await tx.player.findFirst({
+        where: { gameId: gameId, userId: data.userId },
       });
 
       if (existingPlayer) {
@@ -233,30 +247,28 @@ export async function addPlayerToGame(
     }
 
     if (!playerId) {
-      const [newPlayer] = await tx
-        .insert(players)
-        .values({
+      const newPlayer = await tx.player.create({
+        data: {
           gameId,
           userId: data.userId,
-        })
-        .returning({ id: players.id });
+        },
+      });
       playerId = newPlayer.id;
     }
 
-    const [newUsername] = await tx
-      .insert(playerUsernames)
-      .values({
+    const newUsername = await tx.playerUsername.create({
+      data: {
         playerId,
         username: data.username,
-      })
-      .returning({ id: playerUsernames.id });
+      },
+    });
 
     // If we just created a new player, set the first username as primary
     if (!wasAddedToExisting) {
-      await tx
-        .update(players)
-        .set({ primaryUsernameId: newUsername.id })
-        .where(eq(players.id, playerId));
+      await tx.player.update({
+        where: { id: playerId },
+        data: { primaryUsernameId: newUsername.id },
+      });
     }
 
     return { wasAddedToExisting, playerId };
@@ -284,7 +296,7 @@ export async function createAndAddPlayerToRanking(
 }
 
 export async function updateRanking(
-  rankingId: string,
+  rankingId: string, // This is eventId in the new schema
   data: {
     name: string;
     slug: string;
@@ -305,16 +317,38 @@ export async function updateRanking(
   const session = await getServerAuthSession();
   if (!canManageRankings(session)) throw new Error("Unauthorized");
 
-  await db.update(rankings).set(data).where(eq(rankings.id, rankingId));
-
-  const ranking = await db.query.rankings.findFirst({
-    where: eq(rankings.id, rankingId),
-    with: { game: true },
+  await db.event.update({
+    where: { id: rankingId },
+    data: {
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      ranking: {
+        update: {
+          initialElo: data.initialElo,
+          ratingSystem: data.ratingSystem,
+          allowDraw: data.allowDraw,
+          kFactor: data.kFactor,
+          scoreRelevance: data.scoreRelevance,
+          inactivityDecay: data.inactivityDecay,
+          inactivityThresholdHours: data.inactivityThresholdHours,
+          inactivityDecayFloor: data.inactivityDecayFloor,
+          pointsPerWin: data.pointsPerWin,
+          pointsPerDraw: data.pointsPerDraw,
+          pointsPerLoss: data.pointsPerLoss,
+        },
+      },
+    },
   });
 
-  if (ranking?.game) {
-    revalidateGamePaths(ranking.game);
-    revalidatePath(`/games/${ranking.game.slug}/rankings/${ranking.slug}`);
+  const event = await db.event.findFirst({
+    where: { id: rankingId },
+    include: { game: true },
+  });
+
+  if (event?.game) {
+    revalidateGamePaths(event.game);
+    revalidatePath(`/games/${event.game.slug}/rankings/${event.slug}`);
   }
 
   return { success: true };
@@ -326,20 +360,24 @@ export async function searchPlayersByGame(gameId: string, query: string) {
 
   await assertGameApproved(gameId);
 
-  const results = await db.query.playerUsernames.findMany({
-    where: and(
-      sql`lower(${playerUsernames.username}) like ${`%${query.toLowerCase()}%`}`,
-      // Link to players of this game
-      sql`${playerUsernames.playerId} IN (SELECT id FROM players WHERE game_id = ${gameId})`,
-    ),
-    with: {
+  const results = await db.playerUsername.findMany({
+    where: {
+      username: {
+        contains: query,
+        mode: "insensitive",
+      },
       player: {
-        with: {
+        gameId: gameId,
+      },
+    },
+    include: {
+      player: {
+        include: {
           user: true,
         },
       },
     },
-    limit: 10,
+    take: 10,
   });
 
   return results.map((r) => ({
@@ -350,42 +388,36 @@ export async function searchPlayersByGame(gameId: string, query: string) {
 }
 
 export async function addPlayerToRanking(
-  rankingId: string,
+  rankingId: string, // eventId
   playerId: string,
   initialElo?: number,
 ) {
   const session = await getServerAuthSession();
   if (!canManagePlayers(session)) throw new Error("Unauthorized");
 
-  const ranking = await db.query.rankings.findFirst({
-    where: eq(rankings.id, rankingId),
-    with: {
+  const event = await db.event.findFirst({
+    where: { id: rankingId },
+    include: {
       game: true,
+      ranking: true,
     },
   });
 
-  if (!ranking) throw new Error("Ranking not found");
-  if (!ranking.game || ranking.game.status !== "approved") {
+  if (!event || !event.ranking) throw new Error("Ranking not found");
+  if (!event.game || event.game.status !== "APPROVED") {
     throw new Error("Pending games cannot receive rankings or players");
   }
 
-  await db.insert(rankingEntries).values({
-    rankingId,
-    playerId,
-    currentElo: initialElo ?? ranking.initialElo,
+  await db.rankingEntry.create({
+    data: {
+      rankingId,
+      playerId,
+      currentElo: initialElo ?? event.ranking.initialElo,
+    },
   });
 
-  const fullRanking = await db.query.rankings.findFirst({
-    where: eq(rankings.id, rankingId),
-    with: { game: true },
-  });
-
-  if (fullRanking?.game) {
-    revalidateGamePaths(fullRanking.game);
-    revalidatePath(
-      `/games/${fullRanking.game.slug}/rankings/${fullRanking.slug}`,
-    );
-  }
+  revalidateGamePaths(event.game);
+  revalidatePath(`/games/${event.game.slug}/rankings/${event.slug}`);
 
   return { success: true };
 }
@@ -394,71 +426,71 @@ export async function registerSelfToRanking(rankingId: string) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
-  const ranking = await db.query.rankings.findFirst({
-    where: eq(rankings.id, rankingId),
-    with: { game: true },
+  const event = await db.event.findFirst({
+    where: { id: rankingId },
+    include: {
+      game: true,
+      ranking: true,
+    },
   });
 
-  if (!ranking) throw new Error("Ranking not found");
-  if (!ranking.game || ranking.game.status !== "approved") {
+  if (!event || !event.ranking) throw new Error("Ranking not found");
+  if (!event.game || event.game.status !== "APPROVED") {
     throw new Error("Pending games cannot receive rankings or players");
   }
 
   // Check if player already exists for this game and user
-  let player = await db.query.players.findFirst({
-    where: and(
-      eq(players.gameId, ranking.gameId),
-      eq(players.userId, session.user.id),
-    ),
+  let player = await db.player.findFirst({
+    where: {
+      gameId: event.gameId,
+      userId: session.user.id,
+    },
   });
 
   if (!player) {
     // Create player record
-    const [newPlayer] = await db
-      .insert(players)
-      .values({
-        gameId: ranking.gameId,
+    player = await db.player.create({
+      data: {
+        gameId: event.gameId,
         userId: session.user.id,
-      })
-      .returning();
-    player = newPlayer;
+      },
+    });
 
     // Add initial username from profile
-    const [newUsername] = await db
-      .insert(playerUsernames)
-      .values({
+    const newUsername = await db.playerUsername.create({
+      data: {
         playerId: player.id,
         username: session.user.name || "Player",
-      })
-      .returning({ id: playerUsernames.id });
+      },
+    });
 
     // Set as primary username
-    await db
-      .update(players)
-      .set({ primaryUsernameId: newUsername.id })
-      .where(eq(players.id, player.id));
+    await db.player.update({
+      where: { id: player.id },
+      data: { primaryUsernameId: newUsername.id },
+    });
   }
 
   // Check if already in ranking
-  const existingEntry = await db.query.rankingEntries.findFirst({
-    where: and(
-      eq(rankingEntries.rankingId, rankingId),
-      eq(rankingEntries.playerId, player.id),
-    ),
+  const existingEntry = await db.rankingEntry.findFirst({
+    where: {
+      rankingId: rankingId,
+      playerId: player.id,
+    },
   });
 
   if (existingEntry) return { success: true, alreadyRegistered: true };
 
-  await db.insert(rankingEntries).values({
-    rankingId,
-    playerId: player.id,
-    currentElo: ranking.initialElo,
+  await db.rankingEntry.create({
+    data: {
+      rankingId,
+      playerId: player.id,
+      currentElo: event.ranking.initialElo,
+    },
   });
 
-  if (ranking.game) {
-    revalidateGamePaths(ranking.game);
-    revalidatePath(`/games/${ranking.game.slug}/rankings/${ranking.slug}`);
-  }
+  revalidateGamePaths(event.game);
+  revalidatePath(`/games/${event.game.slug}/rankings/${event.slug}`);
 
   return { success: true };
 }

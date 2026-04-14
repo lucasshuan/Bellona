@@ -1,15 +1,25 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createDatabaseClient, DatabaseClient } from '@ares/db';
+import { PrismaClient } from '@ares/db';
 
 @Injectable()
-export class DatabaseProvider implements OnModuleInit {
-  public db: DatabaseClient;
+export class DatabaseProvider extends PrismaClient implements OnModuleInit {
+  constructor(private configService: ConfigService) {
+    const databaseUrl = configService.getOrThrow<string>('POSTGRES_URL');
+    super({
+      datasources: {
+        db: {
+          url: databaseUrl,
+        },
+      },
+    });
+  }
 
-  constructor(private configService: ConfigService) {}
+  async onModuleInit() {
+    await this.$connect();
+  }
 
-  onModuleInit() {
-    const databaseUrl = this.configService.getOrThrow<string>('DATABASE_URL');
-    this.db = createDatabaseClient(databaseUrl);
+  get db() {
+    return this;
   }
 }

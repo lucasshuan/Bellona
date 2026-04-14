@@ -1,0 +1,328 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+// --- ENUMS ---
+
+enum GameStatus {
+  APPROVED
+  PENDING
+}
+
+enum EventType {
+  RANKING
+  TOURNAMENT
+  MATCHMAKING
+}
+
+enum EventStatus {
+  PENDING
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+
+enum ResultAttachmentType {
+  IMAGE
+  VIDEO
+}
+
+enum VideoPlatform {
+  TWITCH
+  YOUTUBE
+  OTHER
+}
+
+// --- AUTH MODELS ---
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  username      String    @unique
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  bio           String?
+  profileColor  String?   @map("profile_color")
+  country       String?
+  isAdmin       Boolean   @default(false) @map("is_admin")
+  
+  accounts      Account[]
+  sessions      Session[]
+  authoredGames Game[]
+  players       Player[]
+  userPermissions UserPermission[]
+  auditLogs     AuditLog[]
+  authoredEvents Event[]
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Account {
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String   @map("provider_account_id")
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// --- DOMAIN MODELS ---
+
+model Game {
+  id                 String     @id @default(cuid())
+  name               String     @unique
+  slug               String     @unique
+  description        String?
+  backgroundImageUrl String?    @map("background_image_url")
+  thumbnailImageUrl  String?    @map("thumbnail_image_url")
+  steamUrl           String?    @map("steam_url")
+  status             GameStatus @default(APPROVED)
+  authorId           String?    @map("author_id")
+  
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  events Event[]
+  players Player[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("games")
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  gameId      String      @map("game_id")
+  game        Game        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  type        EventType
+  status      EventStatus @default(PENDING)
+  
+  name        String
+  slug        String
+  description String?
+  
+  startDate   DateTime?   @map("start_date")
+  endDate     DateTime?   @map("end_date")
+  approvedAt  DateTime?   @map("approved_at")
+  
+  authorId    String?     @map("author_id")
+  author      User?       @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  
+  // Specific extensions
+  ranking     Ranking?
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([gameId, slug])
+  @@map("events")
+}
+
+model Ranking {
+  eventId     String   @id @map("event_id")
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  initialElo   Int     @default(1000) @map("initial_elo")
+  ratingSystem String  @default("elo") @map("rating_system")
+  allowDraw    Boolean @default(false) @map("allow_draw")
+  kFactor      Int     @default(20) @map("k_factor")
+  scoreRelevance Float @default(0.4) @map("score_relevance")
+  
+  inactivityDecay        Int @default(5) @map("inactivity_decay")
+  inactivityThresholdHours Int @default(120) @map("inactivity_threshold_hours")
+  inactivityDecayFloor   Int @default(1000) @map("inactivity_decay_floor")
+  
+  pointsPerWin  Int @default(3) @map("points_per_win")
+  pointsPerDraw Int @default(1) @map("points_per_draw")
+  pointsPerLoss Int @default(0) @map("points_per_loss")
+
+  entries RankingEntry[]
+  results Result[]
+
+  @@map("rankings")
+}
+
+model Player {
+  id                String  @id @default(cuid())
+  gameId            String  @map("game_id")
+  game              Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  userId            String? @map("user_id")
+  user              User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  primaryUsernameId String? @map("primary_username_id")
+  
+  usernames      PlayerUsername[]
+  rankingEntries RankingEntry[]
+  resultEntries  ResultEntry[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([gameId, userId])
+  @@map("players")
+}
+
+model PlayerUsername {
+  id        String @id @default(cuid())
+  playerId  String @map("player_id")
+  player    Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  username  String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([playerId, username])
+  @@map("player_usernames")
+}
+
+model RankingEntry {
+  id        String  @id @default(cuid())
+  rankingId String  @map("event_id") // References Ranking.eventId
+  ranking   Ranking @relation(fields: [rankingId], references: [eventId], onDelete: Cascade)
+  playerId  String  @map("player_id")
+  player    Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  currentElo Int @default(1000) @map("current_elo")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([rankingId, playerId])
+  @@map("ranking_entries")
+}
+
+model Result {
+  id        String  @id @default(cuid())
+  rankingId String  @map("event_id")
+  ranking   Ranking @relation(fields: [rankingId], references: [eventId], onDelete: Cascade)
+  
+  description String?
+  
+  entries     ResultEntry[]
+  attachments ResultAttachment[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("results")
+}
+
+model ResultEntry {
+  id             String @id @default(cuid())
+  resultId       String @map("result_id")
+  result         Result @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  playerId       String @map("player_id")
+  player         Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  eloDifference  Int @map("elo_difference")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([resultId, playerId])
+  @@map("result_entries")
+}
+
+model ResultAttachment {
+  id            String               @id @default(cuid())
+  resultId      String               @map("result_id")
+  result        Result               @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  type          ResultAttachmentType
+  videoPlatform VideoPlatform?       @map("video_platform")
+  url           String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("result_attachments")
+}
+
+model Permission {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  
+  userPermissions UserPermission[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("permissions")
+}
+
+model UserPermission {
+  id           String     @id @default(cuid())
+  userId       String     @map("user_id")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissionId String     @map("permission_id")
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
+}
+
+// --- LOGGING ---
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?  @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  action      String   // E.g. "GAME_APPROVED"
+  description String   // E.g. "Approved game Superfighters Deluxe"
+  
+  entityType  String   @map("entity_type") // GAME, EVENT, etc.
+  entityId    String   @map("entity_id")
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}

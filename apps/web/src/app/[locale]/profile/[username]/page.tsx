@@ -8,17 +8,11 @@ import {
   Edit2,
   Calendar,
 } from "lucide-react";
-import { eq, or, sql, inArray } from "drizzle-orm";
 import { cache } from "react";
 
 import { getServerAuthSession } from "@/server/auth";
 import { getTranslations } from "next-intl/server";
 import { db } from "@/server/db";
-import {
-  players,
-  rankingEntries as rankingEntriesSchema,
-  users,
-} from "@ares/db";
 import { buttonVariants } from "@/components/ui/button";
 import { EditProfileTrigger } from "@/components/triggers/profile/edit-profile-trigger";
 import { ActionButton } from "@/components/ui/action-button";
@@ -32,13 +26,11 @@ type ProfilePageProps = {
 };
 
 const getUser = cache(async (username: string) => {
-  const targetUsers = await db
-    .select()
-    .from(users)
-    .where(or(eq(users.username, username), eq(users.id, username)))
-    .limit(1);
-
-  return targetUsers[0] ?? null;
+  return await db.user.findFirst({
+    where: {
+      OR: [{ username: username }, { id: username }],
+    },
+  });
 });
 
 export async function generateMetadata({ params }: ProfilePageProps) {
@@ -68,12 +60,12 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
   const isOwnProfile = session?.user?.id === targetUser.id;
 
-  const userPlayersData = await db.query.players.findMany({
-    where: eq(players.userId, targetUser.id),
-    with: {
+  const userPlayersData = await db.player.findMany({
+    where: { userId: targetUser.id },
+    include: {
       game: true,
       rankingEntries: {
-        with: {
+        include: {
           ranking: true,
         },
       },
@@ -82,30 +74,31 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
   const playerIds = userPlayersData.map((p) => p.id);
 
-  const rankedSubquery = db
-    .select({
-      playerId: rankingEntriesSchema.playerId,
-      rankingId: rankingEntriesSchema.rankingId,
-      position:
-        sql<number>`rank() over (partition by ${rankingEntriesSchema.rankingId} order by ${rankingEntriesSchema.currentElo} desc)`.as(
-          "position",
-        ),
-    })
-    .from(rankingEntriesSchema)
-    .as("ranked_entries");
+  // Use raw query for rank() window function as Prisma doesn't support it natively yet
+  interface UserRankRecord {
+    player_id: string;
+    event_id: string;
+    position: bigint;
+  }
 
   const userRanks =
     playerIds.length > 0
-      ? await db
-          .select()
-          .from(rankedSubquery)
-          .where(inArray(rankedSubquery.playerId, playerIds))
+      ? await db.$queryRaw<UserRankRecord[]>`
+          SELECT player_id, event_id, position FROM (
+            SELECT 
+              player_id, 
+              event_id, 
+              RANK() OVER (PARTITION BY event_id ORDER BY current_elo DESC) as position
+            FROM ranking_entries
+          ) ranked_entries
+          WHERE player_id IN (${playerIds.join(",")})
+        `
       : [];
 
   const calculatedPositions = userPlayersData.map((player) => {
     const rankingsWithPos = player.rankingEntries.map((entry) => {
       const rankInfo = userRanks.find(
-        (r) => r.playerId === player.id && r.rankingId === entry.rankingId,
+        (r) => r.player_id === player.id && r.event_id === entry.rankingId,
       );
       return {
         ...entry,
