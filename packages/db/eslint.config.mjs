@@ -9,16 +9,17 @@ export default [
   ...tseslint.configs.recommended.map((config) => ({
     ...config,
     files: ["**/*.ts"],
-  })),
-  {
-    files: ["**/*.ts"],
-    ignores: ["prisma.config.ts"],
     languageOptions: {
+      ...config.languageOptions,
       parserOptions: {
+        ...config.languageOptions?.parserOptions,
         project: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
+  })),
+  {
+    files: ["**/*.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "warn",

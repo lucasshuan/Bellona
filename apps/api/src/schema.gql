@@ -86,16 +86,45 @@ type Game {
   _count: GameCounts
 }
 
+type PaginatedGames {
+  nodes: [Game!]!
+  totalCount: Int!
+  hasNextPage: Boolean!
+}
+
+type PaginatedPlayers {
+  nodes: [PlayerUsername!]!
+  totalCount: Int!
+  hasNextPage: Boolean!
+}
+
+type PaginatedRankings {
+  nodes: [Ranking!]!
+  totalCount: Int!
+  hasNextPage: Boolean!
+}
+
+type PaginatedUsers {
+  nodes: [User!]!
+  totalCount: Int!
+  hasNextPage: Boolean!
+}
+
 type Query {
-  games(search: String): [Game!]!
+  games(pagination: PaginationInput, search: String): PaginatedGames!
   game(slug: String!): Game
   player(id: ID!): Player
-  searchPlayers(gameId: ID!, query: String!): [PlayerUsername!]!
+  searchPlayers(gameId: ID!, query: String!, pagination: PaginationInput): PaginatedPlayers!
   me: User
-  rankings: [Ranking!]!
+  rankings(pagination: PaginationInput): PaginatedRankings!
   ranking(gameSlug: String!, slug: String!): Ranking
   user(username: String!): User
-  searchUsers(query: String!): [User!]!
+  searchUsers(pagination: PaginationInput, query: String): PaginatedUsers!
+}
+
+input PaginationInput {
+  skip: Int! = 0
+  take: Int! = 10
 }
 
 type Mutation {
