@@ -5,7 +5,7 @@ import { Globe, ChevronDown, Search, X, Check } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
-import { updateProfile } from "@/server/actions/user";
+import { updateProfile } from "@/actions/user";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { Modal } from "@/components/ui/modal";
 import { COUNTRIES } from "@/lib/countries";
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 export type UserData = {
   id: string;
-  name: string;
+  name: string | null;
   username: string;
   bio?: string | null;
   profileColor?: string | null;

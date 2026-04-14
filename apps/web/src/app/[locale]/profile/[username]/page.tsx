@@ -8,15 +8,16 @@ import {
   Edit2,
   Calendar,
 } from "lucide-react";
-import { cache } from "react";
-
-import { getServerAuthSession } from "@/server/auth";
+import { getClient } from "@/lib/apollo/apollo-client";
+import { GET_USER } from "@/lib/apollo/queries/user";
+import { User } from "@/lib/apollo/types";
+import { getServerAuthSession } from "@/auth";
 import { getTranslations } from "next-intl/server";
-import { db } from "@/server/db";
 import { buttonVariants } from "@/components/ui/button";
 import { EditProfileTrigger } from "@/components/triggers/profile/edit-profile-trigger";
 import { ActionButton } from "@/components/ui/action-button";
 import { ProfileTabs } from "@/components/ui/tabs";
+import { Metadata } from "next";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -25,19 +26,18 @@ type ProfilePageProps = {
   }>;
 };
 
-const getUser = cache(async (username: string) => {
-  return await db.user.findFirst({
-    where: {
-      OR: [{ username: username }, { id: username }],
-    },
-  });
-});
-
-export async function generateMetadata({ params }: ProfilePageProps) {
+export async function generateMetadata({
+  params,
+}: ProfilePageProps): Promise<Metadata> {
   const t = await getTranslations("ProfilePage");
   const { username } = await params;
 
-  const targetUser = await getUser(username);
+  const { data } = await getClient().query<{ user: User }>({
+    query: GET_USER,
+    variables: { username },
+  });
+
+  const targetUser = data?.user;
 
   if (!targetUser) return { title: "User not found" };
 
@@ -52,65 +52,19 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const tModals = await getTranslations("Modals");
   const { username, locale } = await params;
 
-  const targetUser = await getUser(username);
+  const { data } = await getClient().query<{ user: User }>({
+    query: GET_USER,
+    variables: { username },
+  });
+
+  const targetUser = data?.user;
 
   if (!targetUser) {
     notFound();
   }
 
   const isOwnProfile = session?.user?.id === targetUser.id;
-
-  const userPlayersData = await db.player.findMany({
-    where: { userId: targetUser.id },
-    include: {
-      game: true,
-      rankingEntries: {
-        include: {
-          ranking: true,
-        },
-      },
-    },
-  });
-
-  const playerIds = userPlayersData.map((p) => p.id);
-
-  // Use raw query for rank() window function as Prisma doesn't support it natively yet
-  interface UserRankRecord {
-    player_id: string;
-    event_id: string;
-    position: bigint;
-  }
-
-  const userRanks =
-    playerIds.length > 0
-      ? await db.$queryRaw<UserRankRecord[]>`
-          SELECT player_id, event_id, position FROM (
-            SELECT 
-              player_id, 
-              event_id, 
-              RANK() OVER (PARTITION BY event_id ORDER BY current_elo DESC) as position
-            FROM ranking_entries
-          ) ranked_entries
-          WHERE player_id IN (${playerIds.join(",")})
-        `
-      : [];
-
-  const calculatedPositions = userPlayersData.map((player) => {
-    const rankingsWithPos = player.rankingEntries.map((entry) => {
-      const rankInfo = userRanks.find(
-        (r) => r.player_id === player.id && r.event_id === entry.rankingId,
-      );
-      return {
-        ...entry,
-        position: rankInfo ? Number(rankInfo.position) : 0,
-      };
-    });
-    return {
-      ...player,
-      rankingEntries: rankingsWithPos,
-    };
-  });
-
+  const calculatedPositions = targetUser.players || [];
   const finalProfileColor = targetUser.profileColor || "#c00b3b";
 
   return (
@@ -282,11 +236,11 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                   {calculatedPositions.map((player) => (
                     <Link
                       key={player.id}
-                      href={`/games/${player.game.slug}`}
+                      href={player.game ? `/games/${player.game.slug}` : "#"}
                       className="glass-panel group relative flex flex-col overflow-hidden rounded-4xl transition-all duration-300 hover:scale-[1.02] hover:border-white/20"
                     >
                       <div className="h-32 w-full overflow-hidden bg-white/5 sm:h-40">
-                        {player.game.backgroundImageUrl ? (
+                        {player.game?.backgroundImageUrl ? (
                           <Image
                             src={player.game.backgroundImageUrl}
                             alt={player.game.name}
@@ -301,11 +255,12 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
                       <div className="flex flex-1 flex-col p-6">
                         <h3 className="text-xl font-bold tracking-tight">
-                          {player.game.name}
+                          {player.game?.name}
                         </h3>
 
                         <div className="mt-4 flex flex-col gap-3">
-                          {player.rankingEntries.length > 0 ? (
+                          {player.rankingEntries?.length &&
+                          player.rankingEntries.length > 0 ? (
                             player.rankingEntries.map((entry) => (
                               <div
                                 key={entry.id}
@@ -316,7 +271,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                                     {t("ranking")}
                                   </p>
                                   <p className="font-medium">
-                                    {entry.ranking.name}
+                                    {entry.ranking?.name}
                                   </p>
                                 </div>
                                 <div className="text-right">

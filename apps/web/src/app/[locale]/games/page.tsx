@@ -1,14 +1,16 @@
 import { Link } from "@/i18n/routing";
 import { Trophy } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { getPublicGames } from "@/server/db/queries/games";
+import { getClient } from "@/lib/apollo/apollo-client";
+import { GET_GAMES } from "@/lib/apollo/queries/games";
+import { Game } from "@/lib/apollo/types";
 import { GameCard, GameCardSkeleton } from "@/components/cards/game-card";
 import { SearchInput } from "@/components/ui/search-input";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerAuthSession } from "@/auth";
 import { canManageGames } from "@/lib/permissions";
 import { AddGameTrigger } from "@/components/triggers/game/add-game-trigger";
 
@@ -80,12 +82,7 @@ export default async function GamesPage({ searchParams }: GamesPageProps) {
       <div className="border-b border-white/5" />
 
       <Suspense key={`${search}-${sort}`} fallback={<GamesGridSkeleton />}>
-        <GamesGrid
-          search={search}
-          sort={sort}
-          viewerId={session?.user?.id}
-          canManageGames={viewerCanManageGames}
-        />
+        <GamesGrid search={search} />
       </Suspense>
     </main>
   );
@@ -101,28 +98,26 @@ function GamesGridSkeleton() {
   );
 }
 
-async function GamesGrid({
-  search,
-  sort,
-  viewerId,
-  canManageGames,
-}: {
-  search?: string;
-  sort?: string;
-  viewerId?: string;
-  canManageGames: boolean;
-}) {
+async function GamesGrid({ search }: { search?: string }) {
   const t = await getTranslations("GamesPage");
-  const { games: gameList, isDatabaseUnavailable } = await getPublicGames({
-    search,
-    orderBy: sort === "name" ? "name" : "popular",
-    viewerId,
-    canManageGames,
+
+  const { data } = await getClient().query<{ games: Game[] }>({
+    query: GET_GAMES,
+    variables: { search },
   });
+
+  const games = data?.games || [];
+  const gameList = games.map((game) => ({
+    ...game,
+    rankingCount: game._count?.events || 0,
+    playerCount: game._count?.players || 0,
+    tourneyCount: 0,
+    postCount: 0,
+  }));
 
   const showEmptySearch = gameList.length === 0 && !!search;
 
-  if (!isDatabaseUnavailable && gameList.length > 0) {
+  if (gameList.length > 0) {
     return (
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {gameList.map((game) => (

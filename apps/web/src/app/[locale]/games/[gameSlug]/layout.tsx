@@ -1,7 +1,7 @@
-import { getGamePageData } from "@/server/db/queries/rankings";
 import { notFound } from "next/navigation";
-import { getServerAuthSession } from "@/server/auth";
-import { canManageGames } from "@/lib/permissions";
+import { getClient } from "@/lib/apollo/apollo-client";
+import { GET_GAME } from "@/lib/apollo/queries/games";
+import { Game } from "@/lib/apollo/types";
 
 interface GameLayoutProps {
   children: React.ReactNode;
@@ -16,14 +16,12 @@ export default async function GameLayout({
   params,
 }: GameLayoutProps) {
   const { gameSlug } = await params;
-  const session = await getServerAuthSession();
-  const data = await getGamePageData(
-    gameSlug,
-    session?.user?.id,
-    canManageGames(session),
-  );
+  const { data } = await getClient().query<{ game: Game }>({
+    query: GET_GAME,
+    variables: { slug: gameSlug },
+  });
 
-  if (!data || !data.game) {
+  if (!data?.game) {
     notFound();
   }
 

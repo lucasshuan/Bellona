@@ -2,9 +2,9 @@
 
 import { useTransition } from "react";
 import { Modal } from "@/components/ui/modal";
-import { updateGame } from "@/server/actions/game";
+import { updateGame } from "@/actions/game";
 import { toast } from "sonner";
-import { type Game } from "@ares/db";
+import { type Game } from "@/lib/apollo/types";
 import { useTranslations } from "next-intl";
 
 interface EditGameModalProps {

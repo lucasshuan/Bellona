@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerAuthSession } from "@/auth";
 
 export default async function ProfileRedirectPage() {
   const session = await getServerAuthSession();

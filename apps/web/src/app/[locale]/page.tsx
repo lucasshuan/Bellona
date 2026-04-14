@@ -5,11 +5,13 @@ import { buttonVariants } from "@/components/ui/button";
 
 import { SignInButton } from "@/components/triggers/auth/sign-in-button";
 import { LoginErrorHandler } from "@/components/auth/login-error-handler";
-import { getPublicGames } from "@/server/db/queries/games";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import { GameCard, GameCardSkeleton } from "@/components/cards/game-card";
 import { getTranslations } from "next-intl/server";
+import { getClient } from "@/lib/apollo/apollo-client";
+import { GET_GAMES } from "@/lib/apollo/queries/games";
+import { Game } from "@/lib/apollo/types";
 
 export const dynamic = "force-dynamic";
 
@@ -118,14 +120,20 @@ async function PublicGamesList({
   noGamesTitle,
   noGamesDescription,
 }: PublicGamesListProps) {
-  const { games: gameList, isDatabaseUnavailable } = await getPublicGames({
-    limit: 4,
-    orderBy: "popular",
+  const { data } = await getClient().query<{ games: Game[] }>({
+    query: GET_GAMES,
   });
 
-  const showFallbackCard = isDatabaseUnavailable || gameList.length === 0;
+  const games = data?.games || [];
+  const gameList = games.slice(0, 4).map((game) => ({
+    ...game,
+    rankingCount: game._count?.events || 0,
+    playerCount: game._count?.players || 0,
+    tourneyCount: 0,
+    postCount: 0,
+  }));
 
-  if (showFallbackCard) {
+  if (gameList.length === 0) {
     return (
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <GameCardSkeleton

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { CheckCheck, AlertTriangle } from "lucide-react";
 
 import { ConfirmModal } from "@/components/ui/confirm-modal";
-import { approveGame } from "@/server/actions/game";
+import { approveGame } from "@/actions/game";
 
 interface ApproveGameModalProps {
   gameId: string;

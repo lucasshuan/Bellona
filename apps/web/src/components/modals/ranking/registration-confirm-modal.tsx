@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { Trophy } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
-import { registerSelfToRanking } from "@/server/actions/game";
+import { registerSelfToRanking } from "@/actions/game";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 

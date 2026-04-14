@@ -5,7 +5,7 @@ import { Settings2, UserPlus } from "lucide-react";
 import { ActionButton } from "@/components/ui/action-button";
 import { EditRankingModal } from "@/components/modals/ranking/edit-ranking-modal";
 import { AddPlayerToRankingModal } from "@/components/modals/ranking/add-player-to-ranking-modal";
-import { type Ranking } from "@ares/db";
+import { type Ranking } from "@/lib/apollo/types";
 import { useTranslations } from "next-intl";
 import { useUser } from "@/components/providers";
 

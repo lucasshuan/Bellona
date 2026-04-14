@@ -1,5 +1,5 @@
 import { type Session } from "next-auth";
-import { type PermissionKey } from "@ares/db";
+type PermissionKey = string; // Migrating away from @ares/db types
 
 export function hasPermission(session: Session | null, key: PermissionKey) {
   if (!session?.user) return false;

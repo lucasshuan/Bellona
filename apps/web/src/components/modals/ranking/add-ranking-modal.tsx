@@ -16,7 +16,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
-import { addRanking } from "@/server/actions/game";
+import { addRanking } from "@/actions/game";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Slider } from "@/components/ui/slider";

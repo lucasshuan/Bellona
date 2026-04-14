@@ -1,12 +1,12 @@
 import type { Route } from "next";
 import { Link } from "@/i18n/routing";
 import { ChevronRight } from "lucide-react";
-import type { PublicGame } from "@/server/db/queries/types";
+import { type Game } from "@/lib/apollo/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 interface GameCardProps {
-  game: PublicGame;
+  game: Game;
   fallbackDescription?: string;
   pendingLabel?: string;
 }

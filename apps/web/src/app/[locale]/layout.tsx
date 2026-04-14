@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
@@ -9,6 +9,7 @@ import { SiteNavbar } from "@/components/layout/site-navbar";
 import { routing } from "@/i18n/routing";
 
 import { Providers } from "@/components/providers";
+import { ApolloWrapper } from "@/lib/apollo/apollo-provider";
 
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
@@ -42,14 +43,16 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Providers>
-            <div className="app-scroll-shell relative h-screen">
-              <div className="grid-surface pointer-events-none fixed inset-0 -z-50" />
-              <SiteNavbar />
-              <div className="min-h-[calc(100vh-137px)]">{children}</div>
-              <SiteFooter />
-            </div>
-          </Providers>
+          <ApolloWrapper>
+            <Providers>
+              <div className="app-scroll-shell relative h-screen">
+                <div className="grid-surface pointer-events-none fixed inset-0 -z-50" />
+                <SiteNavbar />
+                <div className="min-h-[calc(100vh-137px)]">{children}</div>
+                <SiteFooter />
+              </div>
+            </Providers>
+          </ApolloWrapper>
         </NextIntlClientProvider>
       </body>
     </html>

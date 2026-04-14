@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { SignInButton } from "@/components/triggers/auth/sign-in-button";
 
 import { Modal } from "@/components/ui/modal";
-import { createGame } from "@/server/actions/game";
+import { createGame } from "@/actions/game";
 
 import { useUser } from "@/components/providers";
 

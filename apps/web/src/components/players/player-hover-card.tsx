@@ -5,16 +5,10 @@ import { Portal } from "@/components/ui/portal";
 import { cn } from "@/lib/utils";
 import { LoaderCircle, Calendar, Hash } from "lucide-react";
 import Image from "next/image";
-
-interface PlayerHoverData {
-  displayName: string;
-  country: string | null;
-  usernames: string[];
-  joinedAt: string;
-  avatarUrl: string | null;
-  accountName: string | null;
-  accountUsername: string | null;
-}
+import { useQuery } from "@apollo/client/react";
+import { GET_PLAYER } from "@/lib/apollo/queries/players";
+import { type Player, type PlayerUsername } from "@/lib/apollo/types";
+import { formatDate } from "@/lib/date-utils";
 
 interface PlayerHoverCardProps {
   playerId: string;
@@ -30,8 +24,6 @@ export function PlayerHoverCard({
   children,
 }: PlayerHoverCardProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [data, setData] = React.useState<PlayerHoverData | null>(null);
-  const [loading, setLoading] = React.useState(false);
   const [coords, setCoords] = React.useState<{ top: number; left: number }>({
     top: 0,
     left: 0,
@@ -40,21 +32,14 @@ export function PlayerHoverCard({
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const triggerRef = React.useRef<HTMLDivElement>(null);
 
-  const fetchData = async () => {
-    if (data || loading) return;
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/players/${playerId}`);
-      if (response.ok) {
-        const result = await response.json();
-        setData(result);
-      }
-    } catch (error) {
-      console.error("Failed to fetch player data", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: apolloData, loading } = useQuery<{ player: Player }>(
+    GET_PLAYER,
+    {
+      variables: { id: playerId },
+      skip: !isOpen,
+    },
+  );
+  const data = apolloData?.player;
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -78,7 +63,6 @@ export function PlayerHoverCard({
     }
 
     setIsOpen(true);
-    fetchData();
   };
 
   const handleMouseLeave = () => {
@@ -120,27 +104,27 @@ export function PlayerHoverCard({
                 <div className="relative px-5 pb-5">
                   <div className="-mt-8 mb-4 flex items-end justify-between">
                     <div className="relative size-16 overflow-hidden rounded-2xl bg-[#0a080f] ring-4 ring-[#0a080f]">
-                      {data?.avatarUrl ? (
+                      {data?.user?.image ? (
                         <Image
-                          src={data.avatarUrl}
-                          alt={data.displayName}
+                          src={data.user.image}
+                          alt={data.user.name || data.user.username}
                           fill
                           className="object-cover"
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center bg-white/5 text-xl font-bold text-white/20">
-                          {(data?.displayName ?? displayName)
+                          {(data?.user?.name ?? displayName)
                             .slice(0, 1)
                             .toUpperCase()}
                         </div>
                       )}
                     </div>
-                    {(data?.country ?? country) && (
+                    {(data?.user?.country ?? country) && (
                       <div className="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1 text-[10px] font-bold tracking-tight text-white/60">
                         <span
-                          className={`fi fi-${(data?.country ?? country)?.toLowerCase()} size-3 rounded-xs`}
+                          className={`fi fi-${(data?.user?.country ?? country)?.toLowerCase()} size-3 rounded-xs`}
                         />
-                        {data?.country ?? country}
+                        {data?.user?.country ?? country}
                       </div>
                     )}
                   </div>
@@ -148,13 +132,12 @@ export function PlayerHoverCard({
                   <div className="space-y-4">
                     <div>
                       <h4 className="text-lg font-bold text-white">
-                        {data?.displayName ?? displayName}
+                        {data?.user?.name ?? displayName}
                       </h4>
                       {data ? (
-                        (data.accountName || data.accountUsername) && (
+                        data.user?.username && (
                           <p className="text-muted text-xs">
-                            Account:{" "}
-                            {data.accountName || `@${data.accountUsername}`}
+                            Account: @{data.user.username}
                           </p>
                         )
                       ) : (
@@ -174,12 +157,12 @@ export function PlayerHoverCard({
                             Nicknames
                           </div>
                           <div className="flex flex-wrap gap-1.5">
-                            {data.usernames.map((u, i) => (
+                            {data.usernames?.map((u: PlayerUsername) => (
                               <span
-                                key={i}
+                                key={u.id}
                                 className="rounded-lg bg-white/5 px-2 py-0.5 text-xs text-white/50"
                               >
-                                {u}
+                                {u.username}
                               </span>
                             ))}
                           </div>
@@ -189,7 +172,8 @@ export function PlayerHoverCard({
                           <div className="flex items-center gap-2 text-white/40">
                             <Calendar className="size-3.5" />
                             <span className="text-[11px] font-medium">
-                              Joined {data.joinedAt}
+                              Joined{" "}
+                              {formatDate(data.user?.createdAt || "", "en")}
                             </span>
                           </div>
                         </div>

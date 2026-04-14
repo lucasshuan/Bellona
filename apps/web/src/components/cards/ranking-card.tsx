@@ -1,10 +1,10 @@
 import { Link } from "@/i18n/routing";
-import type { PublicRanking } from "@/server/db/queries/types";
+import { type Ranking } from "@/lib/apollo/types";
 import { useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 
 interface RankingCardProps {
-  ranking: PublicRanking;
+  ranking: Ranking;
   game: string;
 }
 
@@ -33,36 +33,42 @@ export function RankingCard({ ranking, game }: RankingCardProps) {
       <div className="relative flex flex-1 flex-col">
         {ranking.entries.length > 0 ? (
           <div className="space-y-0.5">
-            {ranking.entries.slice(0, 7).map((entry, i) => (
-              <div
-                key={entry.id}
-                style={{
-                  opacity: i >= 3 ? Math.max(0, 1 - (i - 2) * 0.3) : 1,
-                  filter: i >= 3 ? `blur(${(i - 2) * 0.5}px)` : "none",
-                }}
-                className="flex items-center gap-3 border-b border-white/5 py-2 last:border-0"
-              >
-                <span className="text-primary w-6 shrink-0 font-mono text-[10px] font-bold">
-                  {entry.position}º
-                </span>
+            {ranking.entries.slice(0, 7).map((entry, i: number) => {
+              const user = entry.player?.user;
+              const displayName = user?.name || user?.username || "";
+              const country = user?.country;
 
-                {entry.country ? (
-                  <span
-                    className={`fi fi-${entry.country.toLowerCase()} h-3 w-4 shrink-0 rounded-xs bg-white/5 shadow-sm`}
-                  />
-                ) : (
-                  <Globe className="size-3 shrink-0 text-white/30" />
-                )}
+              return (
+                <div
+                  key={entry.id}
+                  style={{
+                    opacity: i >= 3 ? Math.max(0, 1 - (i - 2) * 0.3) : 1,
+                    filter: i >= 3 ? `blur(${(i - 2) * 0.5}px)` : "none",
+                  }}
+                  className="flex items-center gap-3 border-b border-white/5 py-2 last:border-0"
+                >
+                  <span className="text-primary w-6 shrink-0 font-mono text-[10px] font-bold">
+                    {entry.position}º
+                  </span>
 
-                <span className="text-foreground/80 flex-1 truncate text-xs font-semibold transition-colors group-hover:text-white">
-                  {entry.displayName}
-                </span>
+                  {country ? (
+                    <span
+                      className={`fi fi-${country.toLowerCase()} h-3 w-4 shrink-0 rounded-xs bg-white/5 shadow-sm`}
+                    />
+                  ) : (
+                    <Globe className="size-3 shrink-0 text-white/30" />
+                  )}
 
-                <span className="text-secondary shrink-0 font-mono text-[11px] font-bold opacity-60">
-                  {entry.currentElo}
-                </span>
-              </div>
-            ))}
+                  <span className="text-foreground/80 flex-1 truncate text-xs font-semibold transition-colors group-hover:text-white">
+                    {displayName}
+                  </span>
+
+                  <span className="text-secondary shrink-0 font-mono text-[11px] font-bold opacity-60">
+                    {entry.currentElo}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="text-muted flex flex-1 items-center justify-center text-xs italic opacity-40">

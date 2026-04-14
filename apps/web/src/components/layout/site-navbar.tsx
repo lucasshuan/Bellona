@@ -4,8 +4,8 @@ import { SignInButton } from "@/components/triggers/auth/sign-in-button";
 import { UserMenu } from "@/components/layout/user-menu";
 import { getTranslations } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
-import { getServerAuthSession } from "@/server/auth";
-import { hasDiscordAuth } from "@/server/auth/config";
+import { getServerAuthSession } from "@/auth";
+import { hasDiscordAuth } from "@/auth/config";
 
 export async function SiteNavbar() {
   const session = await getServerAuthSession();

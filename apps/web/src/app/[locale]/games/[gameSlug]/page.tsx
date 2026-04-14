@@ -1,15 +1,13 @@
+import { SectionHeader } from "@/components/ui/section-header";
+import { getTranslations } from "next-intl/server";
+import { getServerAuthSession } from "@/auth";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { getGamePageData } from "@/server/db/queries/rankings";
-import { SectionHeader } from "@/components/ui/section-header";
-import { getTranslations } from "next-intl/server";
-import { getServerAuthSession } from "@/server/auth";
-import Image from "next/image";
 import {
   canEditGame,
-  canManageGames,
   canManagePlayers,
   canManageRankings,
 } from "@/lib/permissions";
@@ -22,7 +20,7 @@ import { formatCompactNumber } from "@/lib/utils";
 // Client-side Admin Panel (migrated from GameAdminActions)
 import { GameAdminPanel } from "./admin-panel";
 import { AddEventButton } from "./add-event-button";
-import { type Game } from "@ares/db";
+
 type GamePageProps = {
   params: Promise<{
     gameSlug: string;
@@ -31,31 +29,33 @@ type GamePageProps = {
 
 export const dynamic = "force-dynamic";
 
+import { getClient } from "@/lib/apollo/apollo-client";
+import { GET_GAME } from "@/lib/apollo/queries/games";
+import { Game, Ranking } from "@/lib/apollo/types";
+
 export async function generateMetadata({
   params,
 }: GamePageProps): Promise<Metadata> {
   const { gameSlug } = await params;
-  const session = await getServerAuthSession();
-  const data = await getGamePageData(
-    gameSlug,
-    session?.user?.id,
-    canManageGames(session),
-  );
+
+  const { data } = await getClient().query<{ game: Game }>({
+    query: GET_GAME,
+    variables: { slug: gameSlug },
+  });
 
   const t = await getTranslations("GamePage");
-  if (!data || data.isDatabaseUnavailable) {
+  if (!data?.game) {
     return {
-      title: data?.isDatabaseUnavailable
-        ? t("metaTitleDbUnavailable")
-        : t("metaTitleNotFound"),
+      title: t("metaTitleNotFound"),
     };
   }
 
+  const { game } = data;
+
   return {
-    title: data.game.name,
+    title: game.name,
     description:
-      data.game.description ??
-      t("metaDescriptionFallback", { gameName: data.game.name }),
+      game.description ?? t("metaDescriptionFallback", { gameName: game.name }),
   };
 }
 
@@ -73,37 +73,34 @@ export default async function GamePage({ params }: GamePageProps) {
 
 async function GamePageContent({ gameSlug }: { gameSlug: string }) {
   const session = await getServerAuthSession();
-  const viewerCanManageGames = canManageGames(session);
-  const data = await getGamePageData(
-    gameSlug,
-    session?.user?.id,
-    viewerCanManageGames,
-  );
+  const { data } = await getClient().query<{ game: Game }>({
+    query: GET_GAME,
+    variables: { slug: gameSlug },
+  });
+
   const t = await getTranslations("GamePage");
 
-  if (!data) {
+  if (!data?.game) {
     notFound();
   }
 
-  if (data.isDatabaseUnavailable) {
-    return (
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-10 sm:px-10 lg:px-12 lg:py-14">
-        <div className="glass-panel rounded-4xl p-6">
-          <p className="text-base font-medium">{t("dbUnavailable")}</p>
-          <p className="text-muted mt-2 text-sm leading-7">
-            {t("dbUnavailableDescription")}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const { game } = data;
+  const author = game.author;
+  const rankings = game.rankings || [];
 
-  const { game, author, rankings } = data;
   const canEditCurrentGame = canEditGame(session, game.authorId);
   const viewerCanManagePlayers = canManagePlayers(session);
   const viewerCanManageRankings = canManageRankings(session);
   const canSeeAdminActions =
     canEditCurrentGame || viewerCanManagePlayers || viewerCanManageRankings;
+
+  const gameWithCounts = {
+    ...game,
+    rankingCount: game._count?.events || 0,
+    playerCount: game._count?.players || 0,
+    tourneyCount: 0,
+    postCount: 0,
+  };
 
   return (
     <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
@@ -162,7 +159,8 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                     </p>
                     <p className="text-secondary mt-0.5 text-lg font-bold">
                       {formatCompactNumber(
-                        (game.rankingCount || 0) + (game.tourneyCount || 0),
+                        (gameWithCounts.rankingCount || 0) +
+                          (gameWithCounts.tourneyCount || 0),
                       )}
                     </p>
                   </div>
@@ -171,7 +169,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                       {t("sidebarPlayers")}
                     </p>
                     <p className="text-secondary mt-0.5 text-lg font-bold">
-                      {formatCompactNumber(game.playerCount || 0)}
+                      {formatCompactNumber(gameWithCounts.playerCount || 0)}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
@@ -179,7 +177,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                       {t("posts")}
                     </p>
                     <p className="text-secondary mt-0.5 text-lg font-bold">
-                      {formatCompactNumber(game.postCount || 0)}
+                      {formatCompactNumber(gameWithCounts.postCount || 0)}
                     </p>
                   </div>
                 </div>
@@ -231,7 +229,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
           {rankings.length > 0 ? (
             <div className="grid gap-5 xl:grid-cols-2">
-              {rankings.map((ranking) => (
+              {rankings.map((ranking: Ranking) => (
                 <RankingCard
                   key={ranking.id}
                   ranking={ranking}

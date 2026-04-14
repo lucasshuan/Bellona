@@ -6,7 +6,7 @@ import { ActionButton } from "@/components/ui/action-button";
 import { EditGameModal } from "@/components/modals/game/edit-game-modal";
 import { AddPlayerModal } from "@/components/modals/game/add-player-modal";
 import { ApproveGameModal } from "@/components/modals/game/approve-game-modal";
-import { type Game } from "@ares/db";
+import { type Game } from "@/lib/apollo/types";
 import { useTranslations } from "next-intl";
 import { useUser } from "@/components/providers";
 

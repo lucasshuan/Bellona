@@ -18,6 +18,12 @@ const inferredAppUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
   (process.env.NODE_ENV !== "production" ? "http://localhost:3000" : undefined);
 
+const inferredApiUrl =
+  process.env.NEXT_PUBLIC_API_URL ??
+  (process.env.NODE_ENV !== "production"
+    ? "http://localhost:4000/graphql"
+    : undefined);
+
 if (authSecret) {
   process.env.AUTH_SECRET ??= authSecret;
   process.env.NEXTAUTH_SECRET ??= authSecret;
@@ -27,6 +33,10 @@ if (inferredAppUrl) {
   process.env.NEXT_PUBLIC_APP_URL ??= inferredAppUrl;
   process.env.NEXTAUTH_URL ??= inferredAppUrl;
   process.env.AUTH_URL ??= inferredAppUrl;
+}
+
+if (inferredApiUrl) {
+  process.env.NEXT_PUBLIC_API_URL ??= inferredApiUrl;
 }
 
 export const env = createEnv({
@@ -41,6 +51,7 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
+    NEXT_PUBLIC_API_URL: z.string().url(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -49,6 +60,7 @@ export const env = createEnv({
     AUTH_DISCORD_ID: process.env.AUTH_DISCORD_ID,
     AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
     NEXT_PUBLIC_APP_URL: inferredAppUrl,
+    NEXT_PUBLIC_API_URL: inferredApiUrl,
   },
   emptyStringAsUndefined: true,
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

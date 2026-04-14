@@ -16,12 +16,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
-import { updateRanking } from "@/server/actions/game";
+import { updateRanking } from "@/actions/game";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Slider } from "@/components/ui/slider";
 import { LabelTooltip } from "@/components/ui/label-tooltip";
-import { type Ranking } from "@ares/db";
+import { type Ranking } from "@/lib/apollo/types";
 import { cn } from "@/lib/utils";
 
 interface EditRankingModalProps {

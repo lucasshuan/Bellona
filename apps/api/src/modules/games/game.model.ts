@@ -1,4 +1,15 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { User } from '../auth/user.model';
+import { Ranking } from '../rankings/ranking.model';
+
+@ObjectType()
+export class GameCounts {
+  @Field(() => Int)
+  rankings: number;
+
+  @Field(() => Int)
+  players: number;
+}
 
 @ObjectType()
 export class Game {
@@ -27,8 +38,20 @@ export class Game {
   status: string;
 
   @Field()
+  authorId: string;
+
+  @Field()
   createdAt: Date;
 
   @Field()
   updatedAt: Date;
+
+  @Field(() => User, { nullable: true })
+  author?: User;
+
+  @Field(() => [Ranking], { nullable: true })
+  rankings?: Ranking[];
+
+  @Field(() => GameCounts, { name: '_count', nullable: true })
+  count?: GameCounts;
 }

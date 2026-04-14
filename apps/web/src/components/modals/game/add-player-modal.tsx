@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import { Search, Check, ChevronRight, User, LoaderCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { addPlayerToGame, searchPlayersByGame } from "@/server/actions/game";
+import { addPlayerToGame, searchPlayersByGame } from "@/actions/game";
 import { Modal } from "@/components/ui/modal";
 
 type SearchUser = {
@@ -66,7 +66,7 @@ export function AddPlayerModal({
 
         if (result.success) {
           toast.success(
-            result.wasAddedToExisting
+            selectedUser
               ? t("successExisting", { username })
               : t("successNew", { username }),
           );

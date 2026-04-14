@@ -1,5 +1,5 @@
 import type { DefaultSession } from "next-auth";
-import type { PermissionKey } from "@ares/db";
+type PermissionKey = string;
 
 declare module "next-auth" {
   interface Session {

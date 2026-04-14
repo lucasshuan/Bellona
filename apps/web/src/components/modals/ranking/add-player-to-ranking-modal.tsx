@@ -7,7 +7,7 @@ import {
   searchPlayersByGame,
   addPlayerToRanking,
   createAndAddPlayerToRanking,
-} from "@/server/actions/game";
+} from "@/actions/game";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 

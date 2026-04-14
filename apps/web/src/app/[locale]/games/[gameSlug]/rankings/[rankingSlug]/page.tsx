@@ -5,17 +5,18 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 
-import { getRankingData } from "@/server/db/queries/rankings";
 import { SectionHeader } from "@/components/ui/section-header";
-import { getServerAuthSession } from "@/server/auth";
-import { canManageGames, canManageRankings } from "@/lib/permissions";
+import { getServerAuthSession } from "@/auth";
+import { canManageRankings } from "@/lib/permissions";
 import { RankingRegistrationTrigger } from "@/components/triggers/ranking/ranking-registration-trigger";
 import { getLocale } from "next-intl/server";
 import { formatDate } from "@/lib/date-utils";
 import { RankingTable } from "@/components/tables/ranking-table";
-
 import { RankingAdminPanel } from "./admin-panel";
-import { type Ranking } from "@ares/db";
+
+import { getClient } from "@/lib/apollo/apollo-client";
+import { GET_RANKING } from "@/lib/apollo/queries/rankings";
+import { Ranking } from "@/lib/apollo/types";
 
 interface RankingPageProps {
   params: Promise<{
@@ -44,25 +45,35 @@ async function RankingPageContent({
   rankingSlug: string;
 }) {
   const session = await getServerAuthSession();
-  const data = await getRankingData(
-    gameSlug,
-    rankingSlug,
-    session?.user?.id,
-    canManageGames(session),
-  );
+  const { data } = await getClient().query<{ ranking: Ranking }>({
+    query: GET_RANKING,
+    variables: { gameSlug, rankingSlug },
+  });
+
   const isEditor = canManageRankings(session);
   const t = await getTranslations("GamePage");
   const locale = await getLocale();
 
-  if (!data) {
+  if (!data?.ranking) {
     notFound();
   }
 
-  const { ranking, game, entries } = data;
+  const { ranking } = data;
+  const { game, entries } = ranking;
 
   const isUserRegistered = session?.user?.id
-    ? entries.some((e) => e.userId === session.user.id)
+    ? entries.some((e) => e.player?.userId === session.user.id)
     : false;
+
+  const mappedEntries = entries.map((entry) => ({
+    id: entry.id,
+    playerId: entry.player?.id || "",
+    userId: entry.player?.userId || null,
+    country: entry.player?.user?.country || null,
+    currentElo: entry.currentElo,
+    position: entry.position,
+    displayName: entry.player?.user?.name || entry.player?.user?.username || "",
+  }));
 
   return (
     <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
@@ -173,7 +184,7 @@ async function RankingPageContent({
           }
         />
 
-        <RankingTable entries={entries} />
+        <RankingTable entries={mappedEntries} />
       </div>
     </div>
   );

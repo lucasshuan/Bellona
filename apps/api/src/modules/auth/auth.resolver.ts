@@ -1,4 +1,12 @@
-import { Query, Resolver, Context } from '@nestjs/graphql';
+import {
+  Query,
+  Resolver,
+  Context,
+  Mutation,
+  Args,
+  InputType,
+  Field,
+} from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { User } from './user.model';
@@ -13,10 +21,52 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   async getMe(@Context() context: { req: { user: { id: string } } }) {
     const userId = context.req.user.id;
-    return this.databaseProvider.user.findFirst({
+    return this.databaseProvider.db.user.findFirst({
       where: {
         id: userId,
       },
     });
   }
+
+  @Mutation(() => User)
+  @UseGuards(GqlAuthGuard)
+  async updateProfile(
+    @Context() context: { req: { user: { id: string } } },
+    @Args('input') input: UpdateProfileInput,
+  ) {
+    const userId = context.req.user.id;
+
+    // Simple availability check
+    if (input.username) {
+      const existing = await this.databaseProvider.db.user.findFirst({
+        where: { username: input.username, id: { not: userId } },
+      });
+      if (existing) throw new Error('Username taken');
+    }
+
+    return this.databaseProvider.db.user.update({
+      where: { id: userId },
+      data: {
+        ...input,
+      },
+    });
+  }
+}
+
+@InputType()
+export class UpdateProfileInput {
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field({ nullable: true })
+  username?: string;
+
+  @Field({ nullable: true })
+  bio?: string;
+
+  @Field({ nullable: true })
+  profileColor?: string;
+
+  @Field({ nullable: true })
+  country?: string;
 }
