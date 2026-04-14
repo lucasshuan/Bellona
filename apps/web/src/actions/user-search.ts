@@ -9,10 +9,10 @@ export async function searchUsers(query: string) {
   const session = await getServerAuthSession();
   if (!session?.user) return [];
 
-  const { data } = await getClient().query<{ searchUsers: User[] }>({
+  const { data } = await getClient().query<{ searchUsers: { nodes: User[] } }>({
     query: SEARCH_USERS,
-    variables: { query },
+    variables: { query, pagination: { skip: 0, take: 10 } },
   });
 
-  return data?.searchUsers || [];
+  return data?.searchUsers?.nodes || [];
 }

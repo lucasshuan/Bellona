@@ -1,0 +1,27 @@
+# Handle line endings automatically for files detected as text 
+# and perform LF normalization (normalize to LF in the repo).
+* text=auto
+
+# Standardize line endings to LF for specific text-based files
+# to prevent CRLF warnings and ensure consistency across platforms.
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.gql text eol=lf
+*.graphql text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Explicitly treat binary files as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

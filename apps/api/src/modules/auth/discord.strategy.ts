@@ -13,7 +13,9 @@ export class DiscordStrategy extends PassportStrategy(Strategy, 'discord') {
     super({
       clientID: configService.getOrThrow<string>('DISCORD_CLIENT_ID'),
       clientSecret: configService.getOrThrow<string>('DISCORD_CLIENT_SECRET'),
-      callbackURL: configService.getOrThrow<string>('DISCORD_CALLBACK_URL'),
+      callbackURL:
+        configService.get<string>('DISCORD_CALLBACK_URL') ||
+        'http://localhost:4000/auth/discord/callback',
       scope: ['identify', 'email'],
     });
   }

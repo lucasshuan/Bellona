@@ -1,0 +1,181 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Ranking {
+  id: ID!
+  gameId: String!
+  name: String!
+  slug: String!
+  description: String
+  initialElo: Int!
+  ratingSystem: String!
+  isApproved: Boolean!
+  startDate: DateTime
+  endDate: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  game: Game!
+  entries: [RankingEntry!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type RankingEntry {
+  id: ID!
+  rankingId: String!
+  playerId: String!
+  currentElo: Int!
+  position: Int
+  player: Player
+  ranking: Ranking
+}
+
+type Player {
+  id: ID!
+  gameId: String!
+  userId: String!
+  currentElo: Int!
+  user: User
+  game: Game
+  rankingEntries: [RankingEntry!]
+  usernames: [PlayerUsername!]!
+}
+
+type PlayerUsername {
+  id: ID!
+  username: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String!
+  email: String
+  image: String
+  bio: String
+  profileColor: String
+  country: String
+  isAdmin: Boolean!
+  createdAt: DateTime!
+  players: [Player!]!
+}
+
+type GameCounts {
+  rankings: Int!
+  players: Int!
+}
+
+type Game {
+  id: ID!
+  name: String!
+  slug: String!
+  description: String
+  thumbnailImageUrl: String
+  backgroundImageUrl: String
+  steamUrl: String
+  status: String!
+  authorId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  author: User
+  rankings: [Ranking!]!
+  _count: GameCounts
+}
+
+type Query {
+  games(search: String): [Game!]!
+  game(slug: String!): Game
+  player(id: ID!): Player
+  searchPlayers(gameId: ID!, query: String!): [PlayerUsername!]!
+  me: User
+  rankings: [Ranking!]!
+  ranking(gameSlug: String!, slug: String!): Ranking
+  user(username: String!): User
+  searchUsers(query: String!): [User!]!
+}
+
+type Mutation {
+  createGame(input: CreateGameInput!): Game!
+  updateGame(id: ID!, input: UpdateGameInput!): Game!
+  approveGame(id: ID!): Game!
+  addPlayerToGame(input: AddPlayerToGameInput!): Player!
+  updateProfile(input: UpdateProfileInput!): User!
+  updateRanking(id: ID!, input: UpdateRankingInput!): Ranking!
+  createRanking(input: CreateRankingInput!): Ranking!
+  addPlayerToRanking(rankingId: ID!, playerId: ID!, initialElo: Int): RankingEntry!
+  registerSelfToRanking(rankingId: ID!, userId: ID!): RankingEntry!
+}
+
+input CreateGameInput {
+  name: String!
+  slug: String!
+  description: String
+  backgroundImageUrl: String
+  thumbnailImageUrl: String
+  steamUrl: String
+  authorId: String!
+}
+
+input UpdateGameInput {
+  name: String
+  description: String
+  backgroundImageUrl: String
+  thumbnailImageUrl: String
+  steamUrl: String
+}
+
+input AddPlayerToGameInput {
+  gameId: String!
+  username: String!
+  userId: String
+}
+
+input UpdateProfileInput {
+  name: String
+  username: String
+  bio: String
+  profileColor: String
+  country: String
+}
+
+input UpdateRankingInput {
+  name: String
+  slug: String
+  description: String
+  initialElo: Int
+  ratingSystem: String
+  allowDraw: Boolean
+  kFactor: Int
+  scoreRelevance: Float
+  inactivityDecay: Int
+  inactivityThresholdHours: Int
+  inactivityDecayFloor: Int
+  pointsPerWin: Int
+  pointsPerDraw: Int
+  pointsPerLoss: Int
+}
+
+input CreateRankingInput {
+  gameId: String!
+  name: String!
+  slug: String!
+  description: String
+  initialElo: Int!
+  ratingSystem: String!
+  allowDraw: Boolean!
+  kFactor: Int!
+  scoreRelevance: Float!
+  inactivityDecay: Int!
+  inactivityThresholdHours: Int!
+  inactivityDecayFloor: Int!
+  pointsPerWin: Int!
+  pointsPerDraw: Int!
+  pointsPerLoss: Int!
+  startDate: DateTime
+  endDate: DateTime
+  authorId: String!
+}

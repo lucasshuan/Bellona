@@ -9,14 +9,17 @@ import { AuthModule } from './modules/auth/auth.module';
 import { RankingsModule } from './modules/rankings/rankings.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuditModule } from './modules/audit/audit.module';
-import { envSchema } from './env';
+import { parseEnv } from './env';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      validate: (config) => envSchema.parse(config),
+      envFilePath: '../../.env',
+      validate: (config) => parseEnv(config),
     }),
+    CommonModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

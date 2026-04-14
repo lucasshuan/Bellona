@@ -1,22 +1,26 @@
 import { gql } from "@apollo/client";
 
 export const GET_GAMES = gql`
-  query GetGames($search: String) {
-    games(search: $search) {
-      id
-      name
-      slug
-      description
-      thumbnailImageUrl
-      backgroundImageUrl
-      steamUrl
-      status
-      createdAt
-      updatedAt
-      _count {
-        rankings
-        players
+  query GetGames($pagination: PaginationInput, $search: String) {
+    games(pagination: $pagination, search: $search) {
+      nodes {
+        id
+        name
+        slug
+        description
+        thumbnailImageUrl
+        backgroundImageUrl
+        steamUrl
+        status
+        createdAt
+        updatedAt
+        _count {
+          rankings
+          players
+        }
       }
+      totalCount
+      hasNextPage
     }
   }
 `;

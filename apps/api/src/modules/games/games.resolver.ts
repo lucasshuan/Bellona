@@ -5,26 +5,33 @@ import {
   ResolveField,
   Resolver,
   Mutation,
-  InputType,
-  Field,
   ID,
 } from '@nestjs/graphql';
 import { Game } from './game.model';
 import { GamesService } from './games.service';
-import { DatabaseProvider } from '../../database/database.provider';
 import { User } from '../auth/user.model';
 import { Ranking } from '../rankings/ranking.model';
+import { CreateGameInput, UpdateGameInput } from './dto/games.input';
+import { PaginationInput } from '../../common/pagination/pagination.input';
+import { PaginatedGames } from './dto/games.output';
+import { DataLoaderService } from '../../common/dataloaders/dataloader.service';
 
 @Resolver(() => Game)
 export class GamesResolver {
   constructor(
     private gamesService: GamesService,
-    private databaseProvider: DatabaseProvider,
+    private dataLoaderService: DataLoaderService,
   ) {}
 
-  @Query(() => [Game], { name: 'games' })
-  async getGames(@Args('search', { nullable: true }) search?: string) {
-    return this.gamesService.findAll(search);
+  @Query(() => PaginatedGames, { name: 'games' })
+  async getGames(
+    @Args('pagination', { nullable: true }) pagination?: PaginationInput,
+    @Args('search', { nullable: true }) search?: string,
+  ) {
+    return this.gamesService.findAll(
+      pagination || new PaginationInput(),
+      search,
+    );
   }
 
   @Query(() => Game, { name: 'game', nullable: true })
@@ -34,25 +41,12 @@ export class GamesResolver {
 
   @ResolveField(() => User, { name: 'author', nullable: true })
   async getAuthor(@Parent() game: Game) {
-    return this.databaseProvider.db.user.findUnique({
-      where: { id: game.authorId },
-    });
+    return this.dataLoaderService.userLoader.load(game.authorId);
   }
 
   @ResolveField(() => [Ranking], { name: 'rankings' })
   async getRankings(@Parent() game: Game) {
-    return this.databaseProvider.db.ranking.findMany({
-      where: {
-        event: {
-          gameId: game.id,
-        },
-      },
-      orderBy: {
-        event: {
-          createdAt: 'desc',
-        },
-      },
-    });
+    return this.gamesService.getRankings(game.id);
   }
 
   @Mutation(() => Game)
@@ -72,46 +66,4 @@ export class GamesResolver {
   async approveGame(@Args('id', { type: () => ID }) id: string) {
     return this.gamesService.approve(id);
   }
-}
-
-@InputType()
-export class CreateGameInput {
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field({ nullable: true })
-  backgroundImageUrl?: string;
-
-  @Field({ nullable: true })
-  thumbnailImageUrl?: string;
-
-  @Field({ nullable: true })
-  steamUrl?: string;
-
-  @Field()
-  authorId: string;
-}
-
-@InputType()
-export class UpdateGameInput {
-  @Field({ nullable: true })
-  name?: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field({ nullable: true })
-  backgroundImageUrl?: string;
-
-  @Field({ nullable: true })
-  thumbnailImageUrl?: string;
-
-  @Field({ nullable: true })
-  steamUrl?: string;
 }

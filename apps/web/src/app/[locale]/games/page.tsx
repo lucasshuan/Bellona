@@ -101,12 +101,12 @@ function GamesGridSkeleton() {
 async function GamesGrid({ search }: { search?: string }) {
   const t = await getTranslations("GamesPage");
 
-  const { data } = await getClient().query<{ games: Game[] }>({
+  const { data } = await getClient().query<{ games: { nodes: Game[] } }>({
     query: GET_GAMES,
-    variables: { search },
+    variables: { search, pagination: { skip: 0, take: 50 } },
   });
 
-  const games = data?.games || [];
+  const games = data?.games?.nodes || [];
   const gameList = games.map((game) => ({
     ...game,
     rankingCount: game._count?.events || 0,

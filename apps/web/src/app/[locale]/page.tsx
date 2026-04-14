@@ -120,12 +120,13 @@ async function PublicGamesList({
   noGamesTitle,
   noGamesDescription,
 }: PublicGamesListProps) {
-  const { data } = await getClient().query<{ games: Game[] }>({
+  const { data } = await getClient().query<{ games: { nodes: Game[] } }>({
     query: GET_GAMES,
+    variables: { pagination: { skip: 0, take: 4 } },
   });
 
-  const games = data?.games || [];
-  const gameList = games.slice(0, 4).map((game) => ({
+  const games = data?.games?.nodes || [];
+  const gameList = games.map((game) => ({
     ...game,
     rankingCount: game._count?.events || 0,
     playerCount: game._count?.players || 0,

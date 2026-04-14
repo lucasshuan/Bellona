@@ -37,12 +37,16 @@ export const GET_USER = gql`
 `;
 
 export const SEARCH_USERS = gql`
-  query SearchUsers($query: String!) {
-    searchUsers(query: $query) {
-      id
-      name
-      username
-      image
+  query SearchUsers($pagination: PaginationInput, $query: String) {
+    searchUsers(pagination: $pagination, query: $query) {
+      nodes {
+        id
+        name
+        username
+        image
+      }
+      totalCount
+      hasNextPage
     }
   }
 `;

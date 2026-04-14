@@ -1,34 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from '../../database/database.provider';
-import { CreateRankingInput, UpdateRankingInput } from './rankings.resolver';
+import { CreateRankingInput, UpdateRankingInput } from './dto/rankings.input';
+import { PaginationInput } from '../../common/pagination/pagination.input';
 
 @Injectable()
 export class RankingsService {
   constructor(private databaseProvider: DatabaseProvider) {}
 
-  async findAll() {
-    return this.databaseProvider.db.ranking.findMany({
+  async findAll(pagination: PaginationInput) {
+    const { skip, take } = pagination;
+
+    const [nodes, totalCount] = await Promise.all([
+      this.databaseProvider.db.ranking.findMany({
+        skip,
+        take,
+        include: {
+          event: {
+            include: {
+              game: true,
+            },
+          },
+        },
+        orderBy: {
+          event: {
+            createdAt: 'desc',
+          },
+        },
+      }),
+      this.databaseProvider.db.ranking.count(),
+    ]);
+
+    return {
+      nodes,
+      totalCount,
+      hasNextPage: skip + take < totalCount,
+    };
+  }
+
+  async getGame(gameId: string) {
+    return this.databaseProvider.db.game.findUnique({
+      where: { id: gameId },
+    });
+  }
+
+  async getEntries(rankingId: string) {
+    return this.databaseProvider.db.rankingEntry.findMany({
+      where: { rankingId },
       include: {
-        event: {
+        player: {
           include: {
-            game: true,
+            user: true,
           },
         },
       },
       orderBy: {
-        event: {
-          createdAt: 'desc',
-        },
+        currentElo: 'desc',
       },
     });
   }
 
-  async findByGameAndSlug(gameId: string, slug: string) {
+  async findByGameAndSlug(gameSlug: string, eventSlug: string) {
+    const game = await this.databaseProvider.db.game.findFirst({
+      where: { slug: gameSlug },
+    });
+    if (!game) return null;
+
     return this.databaseProvider.db.ranking.findFirst({
       where: {
         event: {
-          gameId: gameId,
-          slug: slug,
+          gameId: game.id,
+          slug: eventSlug,
         },
       },
       include: {

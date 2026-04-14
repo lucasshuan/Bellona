@@ -6,108 +6,53 @@ import {
   Args,
   ID,
   Mutation,
-  InputType,
-  Field,
 } from '@nestjs/graphql';
 import { Player, PlayerUsername } from './player.model';
 import { User } from '../auth/user.model';
-import { DatabaseProvider } from '../../database/database.provider';
+import { GamesService } from './games.service';
+import { AddPlayerToGameInput } from './dto/players.input';
+import { DataLoaderService } from '../../common/dataloaders/dataloader.service';
+import { PaginationInput } from '../../common/pagination/pagination.input';
+import { PaginatedPlayers } from './dto/players.output';
 
 @Resolver(() => Player)
 export class PlayersResolver {
-  constructor(private databaseProvider: DatabaseProvider) {}
+  constructor(
+    private gamesService: GamesService,
+    private dataLoaderService: DataLoaderService,
+  ) {}
 
   @Query(() => Player, { name: 'player', nullable: true })
   async getPlayer(@Args('id', { type: () => ID }) id: string) {
-    return this.databaseProvider.db.player.findUnique({
-      where: { id },
-    });
+    return this.gamesService.getPlayer(id);
   }
 
   @ResolveField(() => User, { name: 'user', nullable: true })
   async getUser(@Parent() player: Player) {
     if (!player.userId) return null;
-    return this.databaseProvider.db.user.findUnique({
-      where: { id: player.userId },
-    });
+    return this.dataLoaderService.userLoader.load(player.userId);
   }
 
   @ResolveField(() => [PlayerUsername], { name: 'usernames' })
   async getUsernames(@Parent() player: Player) {
-    return this.databaseProvider.db.playerUsername.findMany({
-      where: { playerId: player.id },
-    });
+    return this.gamesService.getPlayerUsernames(player.id);
   }
 
   @Mutation(() => Player)
   async addPlayerToGame(@Args('input') input: AddPlayerToGameInput) {
-    const { gameId, username, userId } = input;
-    return this.databaseProvider.db.$transaction(async (tx) => {
-      let playerId: string | null = null;
-      let wasAddedToExisting = false;
-
-      if (userId) {
-        const existingPlayer = await tx.player.findFirst({
-          where: { gameId, userId },
-        });
-        if (existingPlayer) {
-          playerId = existingPlayer.id;
-          wasAddedToExisting = true;
-        }
-      }
-
-      if (!playerId) {
-        const newPlayer = await tx.player.create({
-          data: { gameId, userId },
-        });
-        playerId = newPlayer.id;
-      }
-
-      const newUsername = await tx.playerUsername.create({
-        data: { playerId, username },
-      });
-
-      if (!wasAddedToExisting) {
-        return tx.player.update({
-          where: { id: playerId },
-          data: { primaryUsernameId: newUsername.id },
-        });
-      }
-
-      return tx.player.findUnique({ where: { id: playerId } });
-    });
+    return this.gamesService.addPlayerToGame(input);
   }
 
-  @Query(() => [PlayerUsername], { name: 'searchPlayers' })
+  @Query(() => PaginatedPlayers, { name: 'searchPlayers' })
   async searchPlayers(
     @Args('gameId', { type: () => ID }) gameId: string,
     @Args('query') query: string,
+    @Args('pagination', { nullable: true }) pagination?: PaginationInput,
   ) {
-    return this.databaseProvider.db.playerUsername.findMany({
-      where: {
-        username: { contains: query, mode: 'insensitive' },
-        player: { gameId },
-      },
-      include: {
-        player: {
-          include: {
-            user: true,
-          },
-        },
-      },
-      take: 10,
-    });
+    return this.gamesService.searchPlayers(
+      gameId,
+      query,
+      pagination || new PaginationInput(),
+    );
   }
-}
-
-@InputType()
-export class AddPlayerToGameInput {
-  @Field()
-  gameId: string;
-
-  @Field()
-  username: string;
-
-  @Field({ nullable: true })
-  userId?: string;
 }

@@ -85,3 +85,17 @@ export interface RankingEntry {
   player?: Player;
   ranking?: Ranking;
 }
+export interface Paginated<T> {
+  nodes: T[];
+  totalCount: number;
+  hasNextPage: boolean;
+}
+
+export interface PaginationInput {
+  skip?: number;
+  take?: number;
+}
+
+export type PaginatedGames = Paginated<Game>;
+export type PaginatedUsers = Paginated<User>;
+export type PaginatedRankings = Paginated<Ranking>;

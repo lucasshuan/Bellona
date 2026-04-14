@@ -1,17 +1,10 @@
-import {
-  Query,
-  Resolver,
-  Context,
-  Mutation,
-  Args,
-  InputType,
-  Field,
-} from '@nestjs/graphql';
+import { Query, Resolver, Context, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { User } from './user.model';
 import { GqlAuthGuard } from './gql-auth.guard';
 import { DatabaseProvider } from '../../database/database.provider';
+import { UpdateProfileInput } from './dto/auth.input';
 
 @Resolver(() => User)
 export class AuthResolver {
@@ -51,22 +44,4 @@ export class AuthResolver {
       },
     });
   }
-}
-
-@InputType()
-export class UpdateProfileInput {
-  @Field({ nullable: true })
-  name?: string;
-
-  @Field({ nullable: true })
-  username?: string;
-
-  @Field({ nullable: true })
-  bio?: string;
-
-  @Field({ nullable: true })
-  profileColor?: string;
-
-  @Field({ nullable: true })
-  country?: string;
 }
