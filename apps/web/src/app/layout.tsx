@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { getLocale } from "next-intl/server";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { routing } from "@/i18n/routing";
 
@@ -25,7 +27,11 @@ export default async function AppLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

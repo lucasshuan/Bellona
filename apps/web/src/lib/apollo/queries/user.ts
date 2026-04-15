@@ -25,10 +25,7 @@ export const GET_USER = gql`
           position
           ranking {
             id
-            event {
-              id
-              name
-            }
+            name
           }
         }
       }
