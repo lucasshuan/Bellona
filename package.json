@@ -10,7 +10,7 @@
     "lint": "turbo run lint",
     "format": "turbo run format || true",
     "typecheck": "turbo run typecheck",
-    "prepare": "husky"
+    "prepare": "node -e \"if (process.env.CI || process.env.VERCEL) process.exit(0); const { spawnSync } = require('node:child_process'); const result = spawnSync('husky', { stdio: 'inherit', shell: true }); if (result.error) throw result.error; process.exit(result.status ?? 0);\""
   },
   "devDependencies": {
     "husky": "^9.1.7",
