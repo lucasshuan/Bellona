@@ -3,7 +3,10 @@
 import { useTransition, useState, useEffect } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editRankingSchema, type EditRankingValues } from "@/schemas/ranking";
+import {
+  useEditRankingSchema,
+  type EditRankingValues,
+} from "@/schemas/ranking";
 import {
   Trophy,
   FileText,
@@ -43,6 +46,7 @@ export function EditRankingForm({
   formId,
 }: EditRankingFormProps) {
   const t = useTranslations("Modals");
+  const schema = useEditRankingSchema();
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -52,7 +56,7 @@ export function EditRankingForm({
     setValue,
     formState: { errors, isValid },
   } = useForm<EditRankingValues>({
-    resolver: zodResolver(editRankingSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: ranking.name,
       slug: ranking.slug,
@@ -109,10 +113,50 @@ export function EditRankingForm({
   const onSubmit = async (values: EditRankingValues) => {
     startTransition(async () => {
       try {
-        await updateRanking(ranking.id, {
-          ...values,
-          description: values.description ?? null,
-        });
+        const isElo = values.ratingSystem === "elo";
+
+        if (isElo) {
+          await updateRanking(ranking.id, {
+            ...values,
+            name: values.name,
+            slug: values.slug,
+            ratingSystem: values.ratingSystem,
+            allowDraw: values.allowDraw,
+            description: values.description ?? null,
+            initialElo: values.initialElo ?? ranking.initialElo,
+            kFactor: values.kFactor ?? ranking.kFactor,
+            scoreRelevance: values.scoreRelevance ?? ranking.scoreRelevance,
+            inactivityDecay: values.inactivityDecay ?? ranking.inactivityDecay,
+            inactivityThresholdHours:
+              values.inactivityThresholdHours ??
+              ranking.inactivityThresholdHours,
+            inactivityDecayFloor:
+              values.inactivityDecayFloor ?? ranking.inactivityDecayFloor,
+            // Mantemos os valores atuais de pontos para evitar nulos se a action exigir
+            pointsPerWin: ranking.pointsPerWin,
+            pointsPerDraw: ranking.pointsPerDraw,
+            pointsPerLoss: ranking.pointsPerLoss,
+          });
+        } else {
+          await updateRanking(ranking.id, {
+            ...values,
+            name: values.name,
+            slug: values.slug,
+            ratingSystem: values.ratingSystem,
+            allowDraw: values.allowDraw,
+            description: values.description ?? null,
+            pointsPerWin: values.pointsPerWin ?? ranking.pointsPerWin,
+            pointsPerDraw: values.pointsPerDraw ?? ranking.pointsPerDraw,
+            pointsPerLoss: values.pointsPerLoss ?? ranking.pointsPerLoss,
+            // Mantemos os valores atuais de elo para evitar nulos se a action exigir
+            initialElo: ranking.initialElo,
+            kFactor: ranking.kFactor,
+            scoreRelevance: ranking.scoreRelevance,
+            inactivityDecay: ranking.inactivityDecay,
+            inactivityThresholdHours: ranking.inactivityThresholdHours,
+            inactivityDecayFloor: ranking.inactivityDecayFloor,
+          });
+        }
         toast.success(t("EditRanking.success"));
         onSuccess();
       } catch {
@@ -212,7 +256,9 @@ export function EditRankingForm({
             <div className="grid grid-cols-2 gap-3 sm:w-1/2">
               <button
                 type="button"
-                onClick={() => setValue("ratingSystem", "elo")}
+                onClick={() => {
+                  setValue("ratingSystem", "elo");
+                }}
                 className={cn(
                   "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
                   ratingSystem === "elo"
@@ -225,7 +271,9 @@ export function EditRankingForm({
               </button>
               <button
                 type="button"
-                onClick={() => setValue("ratingSystem", "points")}
+                onClick={() => {
+                  setValue("ratingSystem", "points");
+                }}
                 className={cn(
                   "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
                   ratingSystem === "points"
@@ -275,7 +323,7 @@ export function EditRankingForm({
                         control={control}
                         render={({ field }) => (
                           <NumberInput
-                            value={field.value}
+                            value={field.value ?? 0}
                             onChange={field.onChange}
                             step={100}
                           />
@@ -292,7 +340,7 @@ export function EditRankingForm({
                         control={control}
                         render={({ field }) => (
                           <NumberInput
-                            value={field.value}
+                            value={field.value ?? 0}
                             onChange={field.onChange}
                             min={1}
                             max={100}
@@ -310,7 +358,7 @@ export function EditRankingForm({
                         control={control}
                         render={({ field }) => (
                           <Slider
-                            value={field.value}
+                            value={field.value ?? 0}
                             onChange={(e) =>
                               field.onChange(Number(e.target.value))
                             }
@@ -335,7 +383,7 @@ export function EditRankingForm({
                         control={control}
                         render={({ field }) => (
                           <NumberInput
-                            value={field.value}
+                            value={field.value ?? 0}
                             onChange={field.onChange}
                             className="w-32"
                             min={0}
@@ -355,7 +403,7 @@ export function EditRankingForm({
                           control={control}
                           render={({ field }) => (
                             <NumberInput
-                              value={field.value}
+                              value={field.value ?? 0}
                               onChange={field.onChange}
                               className="w-32"
                               min={0}
@@ -375,7 +423,7 @@ export function EditRankingForm({
                         control={control}
                         render={({ field }) => (
                           <NumberInput
-                            value={field.value}
+                            value={field.value ?? 0}
                             onChange={field.onChange}
                             className="w-32"
                             min={0}
@@ -411,7 +459,7 @@ export function EditRankingForm({
                         control={control}
                         render={({ field }) => (
                           <NumberInput
-                            value={field.value}
+                            value={field.value ?? 0}
                             onChange={field.onChange}
                             min={0}
                           />
@@ -435,7 +483,7 @@ export function EditRankingForm({
                             control={control}
                             render={({ field }) => (
                               <NumberInput
-                                value={field.value}
+                                value={field.value ?? 0}
                                 onChange={field.onChange}
                                 min={1}
                                 unit="h"
@@ -454,7 +502,7 @@ export function EditRankingForm({
                             control={control}
                             render={({ field }) => (
                               <NumberInput
-                                value={field.value}
+                                value={field.value ?? 0}
                                 onChange={field.onChange}
                                 step={100}
                                 min={0}

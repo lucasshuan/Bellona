@@ -1,4 +1,16 @@
 {
+  "Validations": {
+    "min": "Deve ter pelo menos {count} caracteres",
+    "max": "Não pode exceder {count} caracteres",
+    "slugFormat": "O link pode conter apenas letras minúsculas, números e hifens",
+    "usernameFormat": "O nome de usuário pode conter apenas letras minúsculas, números, sublinhados e pontos",
+    "required": "Campo obrigatório",
+    "invalidEmail": "E-mail inválido",
+    "invalidUrl": "URL inválida",
+    "nameMin": "Nome deve ter pelo menos {count} caracteres",
+    "nameMax": "Nome não pode exceder {count} caracteres",
+    "descMax": "Descrição não pode exceder {count} caracteres"
+  },
   "Navbar": {
     "dashboard": "Dashboard",
     "login": "Login",

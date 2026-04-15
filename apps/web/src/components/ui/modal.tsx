@@ -72,11 +72,11 @@ export function Modal({
     <div
       ref={modalContainerRef}
       onClick={handleBackdropClick}
-      className="animate-modal-overlay fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4 [will-change:opacity,backdrop-filter]"
+      className="animate-modal-overlay fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4 will-change-[opacity,backdrop-filter]"
     >
       <div
         className={cn(
-          "glass-panel animate-modal-content flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-4xl bg-[#0a080f] [will-change:transform,opacity]",
+          "glass-panel animate-modal-content flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-4xl bg-[#0a080f] will-change-[transform,opacity]",
           className,
         )}
       >
@@ -114,7 +114,7 @@ export function Modal({
 
         {/* Footer - Fixed */}
         {showFooter && (
-          <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/5 bg-white/[0.02] p-6 lg:px-8">
+          <div className="flex shrink-0 items-center justify-end gap-3 border-t border-white/5 bg-white/2 p-6 lg:px-8">
             {cancelText && (
               <Button
                 intent="ghost"

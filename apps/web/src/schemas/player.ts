@@ -1,19 +1,40 @@
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
-export const addPlayerSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters")
-    .max(30, "Username cannot exceed 30 characters"),
-  userId: z.string().nullable().optional(),
-});
+type TFunction = (
+  key: string,
+  values?: Record<string, string | number | Date>,
+) => string;
 
-export const addPlayerToRankingSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters")
-    .max(30, "Username cannot exceed 30 characters"),
-});
+export const getAddPlayerSchema = (t: TFunction) =>
+  z.object({
+    username: z
+      .string()
+      .min(3, t("min", { count: 3 }))
+      .max(30, t("max", { count: 30 })),
+    userId: z.string().nullable().optional(),
+  });
 
-export type AddPlayerValues = z.infer<typeof addPlayerSchema>;
-export type AddPlayerToRankingValues = z.infer<typeof addPlayerToRankingSchema>;
+export const getAddPlayerToRankingSchema = (t: TFunction) =>
+  z.object({
+    username: z
+      .string()
+      .min(3, t("min", { count: 3 }))
+      .max(30, t("max", { count: 30 })),
+  });
+
+export const useAddPlayerSchema = () => {
+  const t = useTranslations("Validations");
+  return useMemo(() => getAddPlayerSchema(t), [t]);
+};
+
+export const useAddPlayerToRankingSchema = () => {
+  const t = useTranslations("Validations");
+  return useMemo(() => getAddPlayerToRankingSchema(t), [t]);
+};
+
+export type AddPlayerValues = z.infer<ReturnType<typeof getAddPlayerSchema>>;
+export type AddPlayerToRankingValues = z.infer<
+  ReturnType<typeof getAddPlayerToRankingSchema>
+>;

@@ -4,7 +4,7 @@ import { useTransition, useState, useEffect } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  addRankingSchema,
+  useAddRankingSchema,
   type AddRankingValues,
   RANKING_DEFAULT_SETTINGS,
 } from "@/schemas/ranking";
@@ -47,6 +47,7 @@ export function AddRankingForm({
   formId,
 }: AddRankingFormProps) {
   const t = useTranslations("Modals.AddRanking");
+  const schema = useAddRankingSchema();
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -56,7 +57,7 @@ export function AddRankingForm({
     setValue,
     formState: { errors, isValid },
   } = useForm<AddRankingValues>({
-    resolver: zodResolver(addRankingSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       gameId,
       name: "",
@@ -118,27 +119,41 @@ export function AddRankingForm({
   const onSubmit = async (values: AddRankingValues) => {
     startTransition(async () => {
       try {
+        const isElo = values.ratingSystem === "elo";
+
         await addRanking({
           ...values,
           description: values.description ?? null,
-          initialElo: values.initialElo ?? RANKING_DEFAULT_SETTINGS.initialElo,
-          kFactor: values.kFactor ?? RANKING_DEFAULT_SETTINGS.kFactor,
-          scoreRelevance:
-            values.scoreRelevance ?? RANKING_DEFAULT_SETTINGS.scoreRelevance,
-          inactivityDecay:
-            values.inactivityDecay ?? RANKING_DEFAULT_SETTINGS.inactivityDecay,
-          inactivityThresholdHours:
-            values.inactivityThresholdHours ??
-            RANKING_DEFAULT_SETTINGS.inactivityThresholdHours,
-          inactivityDecayFloor:
-            values.inactivityDecayFloor ??
-            RANKING_DEFAULT_SETTINGS.inactivityDecayFloor,
-          pointsPerWin:
-            values.pointsPerWin ?? RANKING_DEFAULT_SETTINGS.pointsPerWin,
-          pointsPerDraw:
-            values.pointsPerDraw ?? RANKING_DEFAULT_SETTINGS.pointsPerDraw,
-          pointsPerLoss:
-            values.pointsPerLoss ?? RANKING_DEFAULT_SETTINGS.pointsPerLoss,
+          initialElo: isElo
+            ? (values.initialElo ?? RANKING_DEFAULT_SETTINGS.initialElo)
+            : RANKING_DEFAULT_SETTINGS.initialElo,
+          kFactor: isElo
+            ? (values.kFactor ?? RANKING_DEFAULT_SETTINGS.kFactor)
+            : RANKING_DEFAULT_SETTINGS.kFactor,
+          scoreRelevance: isElo
+            ? (values.scoreRelevance ?? RANKING_DEFAULT_SETTINGS.scoreRelevance)
+            : RANKING_DEFAULT_SETTINGS.scoreRelevance,
+          inactivityDecay: isElo
+            ? (values.inactivityDecay ??
+              RANKING_DEFAULT_SETTINGS.inactivityDecay)
+            : RANKING_DEFAULT_SETTINGS.inactivityDecay,
+          inactivityThresholdHours: isElo
+            ? (values.inactivityThresholdHours ??
+              RANKING_DEFAULT_SETTINGS.inactivityThresholdHours)
+            : RANKING_DEFAULT_SETTINGS.inactivityThresholdHours,
+          inactivityDecayFloor: isElo
+            ? (values.inactivityDecayFloor ??
+              RANKING_DEFAULT_SETTINGS.inactivityDecayFloor)
+            : RANKING_DEFAULT_SETTINGS.inactivityDecayFloor,
+          pointsPerWin: !isElo
+            ? (values.pointsPerWin ?? RANKING_DEFAULT_SETTINGS.pointsPerWin)
+            : RANKING_DEFAULT_SETTINGS.pointsPerWin,
+          pointsPerDraw: !isElo
+            ? (values.pointsPerDraw ?? RANKING_DEFAULT_SETTINGS.pointsPerDraw)
+            : RANKING_DEFAULT_SETTINGS.pointsPerDraw,
+          pointsPerLoss: !isElo
+            ? (values.pointsPerLoss ?? RANKING_DEFAULT_SETTINGS.pointsPerLoss)
+            : RANKING_DEFAULT_SETTINGS.pointsPerLoss,
           startDate: values.startDate ? new Date(values.startDate) : null,
           endDate: values.endDate ? new Date(values.endDate) : null,
         });
@@ -280,7 +295,10 @@ export function AddRankingForm({
             <div className="grid grid-cols-2 gap-3 sm:w-1/2">
               <button
                 type="button"
-                onClick={() => setValue("ratingSystem", "elo")}
+                onClick={() => {
+                  setValue("ratingSystem", "elo");
+                  // Optional: you could reset points fields here if you want them clean
+                }}
                 className={cn(
                   "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
                   ratingSystem === "elo"
@@ -293,7 +311,9 @@ export function AddRankingForm({
               </button>
               <button
                 type="button"
-                onClick={() => setValue("ratingSystem", "points")}
+                onClick={() => {
+                  setValue("ratingSystem", "points");
+                }}
                 className={cn(
                   "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
                   ratingSystem === "points"

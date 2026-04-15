@@ -3,7 +3,7 @@
 import { useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editGameSchema, type EditGameValues } from "@/schemas/game";
+import { useEditGameSchema, type EditGameValues } from "@/schemas/game";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { updateGame } from "@/actions/game";
@@ -26,6 +26,7 @@ export function EditGameForm({
   formId,
 }: EditGameFormProps) {
   const t = useTranslations("Modals.EditGame");
+  const schema = useEditGameSchema();
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -33,7 +34,7 @@ export function EditGameForm({
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<EditGameValues>({
-    resolver: zodResolver(editGameSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: game.name,
       description: game.description || "",

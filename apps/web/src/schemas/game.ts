@@ -1,24 +1,37 @@
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
-const urlSchema = z
-  .string()
-  .url("Must be a valid URL")
-  .or(z.literal(""))
-  .nullable()
-  .optional();
+type TFunction = (
+  key: string,
+  values?: Record<string, string | number | Date>,
+) => string;
 
-export const editGameSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name cannot exceed 50 characters"),
-  description: z
-    .string()
-    .max(500, "Description cannot exceed 500 characters")
-    .optional(),
-  backgroundImageUrl: urlSchema,
-  thumbnailImageUrl: urlSchema,
-  steamUrl: urlSchema,
-});
+export const getEditGameSchema = (t: TFunction) => {
+  const urlSchema = z
+    .url(t("invalidUrl"))
+    .or(z.literal(""))
+    .nullable()
+    .optional();
 
-export type EditGameValues = z.infer<typeof editGameSchema>;
+  return z.object({
+    name: z
+      .string()
+      .min(2, t("nameMin", { count: 2 }))
+      .max(50, t("nameMax", { count: 50 })),
+    description: z
+      .string()
+      .max(500, t("descMax", { count: 500 }))
+      .optional(),
+    backgroundImageUrl: urlSchema,
+    thumbnailImageUrl: urlSchema,
+    steamUrl: urlSchema,
+  });
+};
+
+export const useEditGameSchema = () => {
+  const t = useTranslations("Validations");
+  return useMemo(() => getEditGameSchema(t), [t]);
+};
+
+export type EditGameValues = z.infer<ReturnType<typeof getEditGameSchema>>;

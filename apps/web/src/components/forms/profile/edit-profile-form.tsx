@@ -2,9 +2,12 @@
 
 import { useTransition, useState, useEffect, useRef } from "react";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editProfileSchema, type EditProfileValues } from "@/schemas/profile";
+import {
+  useEditProfileSchema,
+  type EditProfileValues,
+} from "@/schemas/profile";
 import { Globe, ChevronDown, Search, X, Check } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useTranslations, useLocale } from "next-intl";
@@ -54,6 +57,7 @@ export function EditProfileForm({
   formId,
 }: EditProfileFormProps) {
   const t = useTranslations("Modals.EditProfile");
+  const schema = useEditProfileSchema();
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -64,11 +68,9 @@ export function EditProfileForm({
     register,
     handleSubmit,
     control,
-    watch,
-    setValue,
     formState: { errors, isValid },
   } = useForm<EditProfileValues>({
-    resolver: zodResolver(editProfileSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: user.name || "",
       username: user.username || "",
@@ -79,8 +81,7 @@ export function EditProfileForm({
     mode: "onChange",
   });
 
-  const country = watch("country");
-  const selectedColor = watch("profileColor");
+  const country = useWatch({ control, name: "country" });
 
   // Country Selection Logic
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);

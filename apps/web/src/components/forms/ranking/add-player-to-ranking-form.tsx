@@ -4,7 +4,7 @@ import { useTransition, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  addPlayerToRankingSchema,
+  useAddPlayerToRankingSchema,
   type AddPlayerToRankingValues,
 } from "@/schemas/player";
 import { Search, Plus, LoaderCircle, AlertCircle } from "lucide-react";
@@ -37,6 +37,7 @@ export function AddPlayerToRankingForm({
   onLoadingChange,
 }: AddPlayerToRankingFormProps) {
   const t = useTranslations("Modals.AddPlayerToRanking");
+  const schema = useAddPlayerToRankingSchema();
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -45,7 +46,7 @@ export function AddPlayerToRankingForm({
     watch,
     formState: { errors },
   } = useForm<AddPlayerToRankingValues>({
-    resolver: zodResolver(addPlayerToRankingSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       username: "",
     },

@@ -1,4 +1,16 @@
 {
+  "Validations": {
+    "min": "Must be at least {count} characters",
+    "max": "Cannot exceed {count} characters",
+    "slugFormat": "Slug can only contain lowercase letters, numbers, and hyphens",
+    "usernameFormat": "Username can only contain lowercase letters, numbers, underscores, and dots",
+    "required": "Required field",
+    "invalidEmail": "Invalid email",
+    "invalidUrl": "Invalid URL",
+    "nameMin": "Name must be at least {count} characters",
+    "nameMax": "Name cannot exceed {count} characters",
+    "descMax": "Description cannot exceed {count} characters"
+  },
   "Navbar": {
     "dashboard": "Dashboard",
     "login": "Login",

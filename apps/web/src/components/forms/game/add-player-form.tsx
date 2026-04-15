@@ -1,9 +1,9 @@
 "use client";
 
-import { useTransition, useState, useEffect } from "react";
+import { useTransition, useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addPlayerSchema, type AddPlayerValues } from "@/schemas/player";
+import { useAddPlayerSchema, type AddPlayerValues } from "@/schemas/player";
 import {
   Search,
   Check,
@@ -39,6 +39,7 @@ export function AddPlayerForm({
   formId,
 }: AddPlayerFormProps) {
   const t = useTranslations("Modals.AddPlayer");
+  const schema = useAddPlayerSchema();
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -47,7 +48,7 @@ export function AddPlayerForm({
     setValue,
     formState: { errors, isValid },
   } = useForm<AddPlayerValues>({
-    resolver: zodResolver(addPlayerSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       username: "",
       userId: null,

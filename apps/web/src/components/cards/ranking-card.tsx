@@ -14,7 +14,7 @@ export function RankingCard({ ranking, game }: RankingCardProps) {
   return (
     <Link
       href={`/games/${game}/events/${ranking.slug}`}
-      className="glass-panel group hover:border-primary/30 relative block flex h-full min-h-[320px] flex-col overflow-hidden rounded-4xl border-white/5 p-6 transition-all select-none hover:bg-white/5 active:scale-[0.99]"
+      className="glass-panel group hover:border-primary/30 relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-4xl border-white/5 p-6 transition-all select-none hover:bg-white/5 active:scale-[0.99]"
     >
       {/* Background Glow */}
       <div className="bg-primary/5 absolute -top-24 -right-24 size-48 rounded-full opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
