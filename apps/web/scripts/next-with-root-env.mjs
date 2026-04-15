@@ -5,7 +5,10 @@ import dotenv from "dotenv";
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(currentDir, "../../..");
 
-dotenv.config({ path: path.join(workspaceRoot, ".env.local"), override: false });
+dotenv.config({
+  path: path.join(workspaceRoot, ".env.local"),
+  override: false,
+});
 dotenv.config({ path: path.join(workspaceRoot, ".env"), override: false });
 
 process.env.NEXTAUTH_URL ??= "http://localhost:3000";

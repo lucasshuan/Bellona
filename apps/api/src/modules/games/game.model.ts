@@ -37,8 +37,8 @@ export class Game {
   @Field()
   status: string;
 
-  @Field()
-  authorId: string;
+  @Field({ nullable: true })
+  authorId?: string;
 
   @Field()
   createdAt: Date;

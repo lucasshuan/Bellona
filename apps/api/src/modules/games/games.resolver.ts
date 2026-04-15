@@ -46,6 +46,10 @@ export class GamesResolver {
 
   @ResolveField(() => User, { name: 'author', nullable: true })
   async getAuthor(@Parent() game: Game) {
+    if (!game.authorId) {
+      return null;
+    }
+
     return this.dataLoaderService.userLoader.load(game.authorId);
   }
 

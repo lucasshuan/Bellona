@@ -3,6 +3,38 @@ import { DatabaseProvider } from '../../database/database.provider';
 import { CreateRankingInput, UpdateRankingInput } from './dto/rankings.input';
 import { PaginationInput } from '../../common/pagination/pagination.input';
 
+function mapRankingWithEvent<
+  T extends {
+    eventId: string;
+    event: {
+      gameId: string;
+      id?: string;
+      name: string;
+      slug: string;
+      description: string | null;
+      startDate: Date | null;
+      endDate: Date | null;
+      approvedAt?: Date | null;
+      createdAt: Date;
+      updatedAt: Date;
+    };
+  },
+>(ranking: T) {
+  return {
+    ...ranking,
+    id: ranking.event.id ?? ranking.eventId,
+    gameId: ranking.event.gameId,
+    name: ranking.event.name,
+    slug: ranking.event.slug,
+    description: ranking.event.description,
+    startDate: ranking.event.startDate,
+    endDate: ranking.event.endDate,
+    isApproved: !!ranking.event.approvedAt,
+    createdAt: ranking.event.createdAt,
+    updatedAt: ranking.event.updatedAt,
+  };
+}
+
 @Injectable()
 export class RankingsService {
   constructor(private databaseProvider: DatabaseProvider) {}
@@ -31,7 +63,7 @@ export class RankingsService {
     ]);
 
     return {
-      nodes,
+      nodes: nodes.map(mapRankingWithEvent),
       totalCount,
       hasNextPage: skip + take < totalCount,
     };
@@ -65,7 +97,7 @@ export class RankingsService {
     });
     if (!game) return null;
 
-    return this.databaseProvider.ranking.findFirst({
+    const ranking = await this.databaseProvider.ranking.findFirst({
       where: {
         event: {
           gameId: game.id,
@@ -80,6 +112,8 @@ export class RankingsService {
         },
       },
     });
+
+    return ranking ? mapRankingWithEvent(ranking) : null;
   }
 
   async update(id: string, data: UpdateRankingInput, userId?: string) {
@@ -94,7 +128,7 @@ export class RankingsService {
     }
 
     const { name, slug, description, ...rankingData } = data;
-    return this.databaseProvider.ranking.update({
+    const ranking = await this.databaseProvider.ranking.update({
       where: { eventId: id },
       data: {
         event: {
@@ -108,6 +142,8 @@ export class RankingsService {
       },
       include: { event: true },
     });
+
+    return mapRankingWithEvent(ranking);
   }
 
   async create(data: CreateRankingInput) {
@@ -121,7 +157,7 @@ export class RankingsService {
       authorId,
       ...rankingData
     } = data;
-    return this.databaseProvider.ranking.create({
+    const ranking = await this.databaseProvider.ranking.create({
       data: {
         event: {
           create: {
@@ -139,6 +175,8 @@ export class RankingsService {
       },
       include: { event: true },
     });
+
+    return mapRankingWithEvent(ranking);
   }
 
   async addPlayer(rankingId: string, playerId: string, initialElo?: number) {

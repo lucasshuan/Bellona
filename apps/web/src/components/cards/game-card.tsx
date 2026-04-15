@@ -38,9 +38,9 @@ export function GameCard({
         <div className="absolute inset-0 bg-linear-to-b from-[#0b080f]/0 to-[#0b080f]/80 transition-opacity duration-500 group-hover:opacity-40" />
       </div>
 
-      <div className="flex flex-col p-5">
+      <div className="flex min-h-[6.5rem] flex-col px-5 pt-5 pb-8">
         <div className="mb-2 flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 min-h-[3rem] text-lg leading-tight font-semibold">
+          <h3 className="line-clamp-2 flex-1 text-lg leading-tight font-semibold">
             {game.name}
           </h3>
           {game.status === "pending" && pendingLabel && (
@@ -91,7 +91,7 @@ export function GameCardSkeleton({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-4 p-5">
+      <div className="flex items-center justify-between gap-4 px-5 pt-5 pb-8">
         <div className="w-full min-w-0">
           {isFallbackState ? (
             <>

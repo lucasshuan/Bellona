@@ -5,6 +5,38 @@ import { AddPlayerToGameInput } from './dto/players.input';
 import { PaginationInput } from '../../common/pagination/pagination.input';
 import { Prisma } from '@ares/db';
 
+function mapRankingWithEvent<
+  T extends {
+    eventId: string;
+    event: {
+      gameId: string;
+      id?: string;
+      name: string;
+      slug: string;
+      description: string | null;
+      startDate: Date | null;
+      endDate: Date | null;
+      approvedAt?: Date | null;
+      createdAt: Date;
+      updatedAt: Date;
+    };
+  },
+>(ranking: T) {
+  return {
+    ...ranking,
+    id: ranking.event.id ?? ranking.eventId,
+    gameId: ranking.event.gameId,
+    name: ranking.event.name,
+    slug: ranking.event.slug,
+    description: ranking.event.description,
+    startDate: ranking.event.startDate,
+    endDate: ranking.event.endDate,
+    isApproved: !!ranking.event.approvedAt,
+    createdAt: ranking.event.createdAt,
+    updatedAt: ranking.event.updatedAt,
+  };
+}
+
 @Injectable()
 export class GamesService {
   constructor(private databaseProvider: DatabaseProvider) {}
@@ -71,11 +103,14 @@ export class GamesService {
   }
 
   async getRankings(gameId: string) {
-    return this.databaseProvider.ranking.findMany({
+    const rankings = await this.databaseProvider.ranking.findMany({
       where: {
         event: {
           gameId: gameId,
         },
+      },
+      include: {
+        event: true,
       },
       orderBy: {
         event: {
@@ -83,6 +118,8 @@ export class GamesService {
         },
       },
     });
+
+    return rankings.map(mapRankingWithEvent);
   }
 
   async create(data: CreateGameInput, authorId?: string) {

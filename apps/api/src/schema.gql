@@ -78,7 +78,7 @@ type Game {
   backgroundImageUrl: String
   steamUrl: String
   status: String!
-  authorId: String!
+  authorId: String
   createdAt: DateTime!
   updatedAt: DateTime!
   author: User

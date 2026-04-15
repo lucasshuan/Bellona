@@ -1,5 +1,5 @@
-import { Github } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { FaGithub } from "react-icons/fa";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ export function SiteFooter() {
             "size-10 shrink-0 px-0",
           )}
         >
-          <Github className="size-4" />
+          <FaGithub className="size-4" />
         </a>
       </div>
     </footer>
