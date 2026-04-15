@@ -5,7 +5,7 @@
       "dependsOn": ["^build"],
       "inputs": ["src/**", "package.json", "tsconfig.json"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "env": ["NODE_ENV", "DATABASE_URL", "NEXT_PUBLIC_*"]
+      "env": ["NODE_ENV", "DATABASE_URL", "NEXTAUTH_SECRET", "NEXT_PUBLIC_*"]
     },
     "lint": {
       "dependsOn": ["^build"],

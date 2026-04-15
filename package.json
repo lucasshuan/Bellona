@@ -7,7 +7,6 @@
     "dev:web": "turbo run dev --filter @ares/web",
     "dev:api": "turbo run dev --filter @ares/api",
     "build": "turbo run build",
-    "build:web": "pnpm --filter @ares/web build",
     "lint": "turbo run lint",
     "format": "turbo run format || true",
     "typecheck": "turbo run typecheck",
