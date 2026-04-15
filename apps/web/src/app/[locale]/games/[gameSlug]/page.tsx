@@ -106,7 +106,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
     <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
       {/* Sidebar */}
       <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
-        <div className="sticky top-28 space-y-6">
+        <div className="sticky top-28 space-y-4">
           <Link
             href="/games"
             className="group flex items-center gap-2 text-sm font-medium text-white/40 transition-colors hover:text-white"
@@ -131,7 +131,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
               )}
             </div>
 
-            <div className="space-y-8 p-6">
+            <div className="space-y-6 p-5">
               <div>
                 {game.status === "pending" && (
                   <div className="animate-pending-pulse mb-4 flex items-center gap-3 rounded-2xl border border-orange-500/20 bg-orange-500/10 px-4 py-3 text-orange-400">
@@ -141,10 +141,10 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                     </p>
                   </div>
                 )}
-                <h1 className="text-foreground text-3xl font-bold tracking-tight">
+                <h1 className="text-foreground text-2xl font-bold tracking-tight">
                   {game.name}
                 </h1>
-                <p className="text-muted mt-3 text-sm leading-relaxed">
+                <p className="text-muted mt-2 text-[13px] leading-snug">
                   {game.description ?? t("sidebarDescription")}
                 </p>
               </div>
@@ -153,7 +153,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
               {game.status !== "pending" && (
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                  <div className="rounded-xl border border-white/5 bg-white/5 px-3 py-2 transition-colors hover:bg-white/10">
                     <p className="text-muted font-mono text-[9px] opacity-60">
                       {t("events")}
                     </p>
@@ -164,7 +164,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                       )}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                  <div className="rounded-xl border border-white/5 bg-white/5 px-3 py-2 transition-colors hover:bg-white/10">
                     <p className="text-muted font-mono text-[9px] opacity-60">
                       {t("sidebarPlayers")}
                     </p>
@@ -172,7 +172,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
                       {formatCompactNumber(gameWithCounts.playerCount || 0)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 transition-colors hover:bg-white/10">
+                  <div className="rounded-xl border border-white/5 bg-white/5 px-3 py-2 transition-colors hover:bg-white/10">
                     <p className="text-muted font-mono text-[9px] opacity-60">
                       {t("posts")}
                     </p>

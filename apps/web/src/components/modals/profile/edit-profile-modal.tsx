@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { Modal } from "@/components/ui/modal";
 import { COUNTRIES } from "@/lib/countries";
 import { cn } from "@/lib/utils";
+import { LabelTooltip } from "@/components/ui/label-tooltip";
 
 export type UserData = {
   id: string;
@@ -183,43 +184,7 @@ export function EditProfileModal({
         className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2"
       >
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="username"
-            className="ml-1 text-sm font-medium text-white/70"
-          >
-            {t("username.label")}
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            required
-            defaultValue={user.username ?? ""}
-            placeholder={t("username.placeholder")}
-            className={`focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white outline-hidden transition-all placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4 ${
-              fieldErrors.username
-                ? "border-red-500/50"
-                : "focus:border-primary/50 border-white/10"
-            }`}
-          />
-          {fieldErrors.username ? (
-            <p className="ml-1 text-xs text-red-400">
-              {t(fieldErrors.username)}
-            </p>
-          ) : (
-            <p className="ml-1 text-[10px] text-white/40">
-              {t("username.description")}
-            </p>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="name"
-            className="ml-1 text-sm font-medium text-white/70"
-          >
-            {t("name.label")}
-          </label>
+          <LabelTooltip label={t("name.label")} htmlFor="name" required />
           <input
             type="text"
             id="name"
@@ -238,11 +203,36 @@ export function EditProfileModal({
           )}
         </div>
 
+        <div className="flex flex-col gap-2">
+          <LabelTooltip
+            label={t("username.label")}
+            tooltip={t("username.description")}
+            htmlFor="username"
+            required
+          />
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            defaultValue={user.username ?? ""}
+            placeholder={t("username.placeholder")}
+            className={`focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white outline-hidden transition-all placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4 ${
+              fieldErrors.username
+                ? "border-red-500/50"
+                : "focus:border-primary/50 border-white/10"
+            }`}
+          />
+          {fieldErrors.username && (
+            <p className="ml-1 text-xs text-red-400">
+              {t(fieldErrors.username)}
+            </p>
+          )}
+        </div>
+
         {/* Country Selector */}
         <div className="flex flex-col gap-2">
-          <label className="ml-1 text-sm font-medium text-white/70">
-            {t("country.label")}
-          </label>
+          <LabelTooltip label={t("country.label")} />
           <div className="relative" ref={dropdownRef}>
             <button
               ref={countryTriggerRef}
@@ -374,12 +364,7 @@ export function EditProfileModal({
         </div>
 
         <div className="col-span-full flex flex-col gap-2">
-          <label
-            htmlFor="bio"
-            className="ml-1 text-sm font-medium text-white/70"
-          >
-            {t("bio.label")}
-          </label>
+          <LabelTooltip label={t("bio.label")} htmlFor="bio" />
           <textarea
             id="bio"
             name="bio"
@@ -390,9 +375,10 @@ export function EditProfileModal({
           />
         </div>
         <div className="col-span-full flex flex-col gap-3">
-          <label className="ml-1 text-sm font-medium text-white/70">
-            {t("color.label")}
-          </label>
+          <LabelTooltip
+            label={t("color.label")}
+            tooltip={t("color.description")}
+          />
           <div className="flex flex-wrap gap-3 p-1">
             {PROFILE_COLORS.map((color) => (
               <button
@@ -413,9 +399,6 @@ export function EditProfileModal({
             ))}
           </div>
           <input type="hidden" name="profileColor" value={selectedColor} />
-          <p className="ml-1 text-[10px] text-white/40">
-            {t("color.description")}
-          </p>
         </div>
       </form>
     </Modal>

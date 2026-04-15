@@ -9,9 +9,6 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { getServerAuthSession } from "@/auth";
-import { canManageGames } from "@/lib/permissions";
-import { AddGameTrigger } from "@/components/triggers/game/add-game-trigger";
 import { safeServerQuery } from "@/lib/apollo/safe-server-query";
 
 interface GamesPageProps {
@@ -24,17 +21,12 @@ export const dynamic = "force-dynamic";
 export default async function GamesPage({ searchParams }: GamesPageProps) {
   const { search, sort } = await searchParams;
   const t = await getTranslations("GamesPage");
-  const session = await getServerAuthSession();
-  const viewerCanManageGames = canManageGames(session);
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 pt-14 pb-12 sm:px-10 lg:px-12">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-6">
           <SectionHeader title={t("title")} description={t("description")} />
-          <div className="w-full max-w-xs">
-            <AddGameTrigger isAdmin={viewerCanManageGames} />
-          </div>
         </div>
 
         <div className="flex w-full flex-col gap-4 lg:max-w-md lg:items-end">

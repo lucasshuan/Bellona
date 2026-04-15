@@ -149,47 +149,6 @@
       "cancel": "Cancelar",
       "success": "Perfil atualizado com sucesso!"
     },
-    "AddGame": {
-      "trigger": "Sugerir Jogo",
-      "triggerAdmin": "Adicionar jogo",
-      "title": "Sugerir Jogo",
-      "description": "Preencha os dados iniciais para cadastrar um novo jogo.",
-      "descriptionLoggedOut": "Entre para enviar uma nova ideia de jogo.",
-      "reviewAlert": {
-        "title": "Seu jogo vai passar por publicação",
-        "description": "Jogos podem ser sugeridos por qualquer um, mas precisam ser aprovados antes de ficar disponíveis."
-      },
-      "loginHint": "Precisamos da sua conta para registrar quem foi o autor da ideia.",
-      "loginAction": "Entrar para adicionar",
-      "name": {
-        "label": "Nome do Jogo",
-        "placeholder": "Digite o nome do jogo..."
-      },
-      "slug": {
-        "label": "Link do Jogo",
-        "placeholder": "identificador-do-jogo",
-        "description": "Personaliza a URL deste jogo (ex: /games/superfighters-deluxe)."
-      },
-      "descriptionField": {
-        "label": "Descricao",
-        "placeholder": "Descreva a proposta do jogo..."
-      },
-      "backgroundImage": {
-        "label": "URL da Imagem de Fundo"
-      },
-      "thumbnailImage": {
-        "label": "URL da Thumbnail"
-      },
-      "steamUrl": {
-        "label": "URL da Steam"
-      },
-      "submit": "Confirmar Jogo",
-      "submitting": "Criando...",
-      "cancel": "Cancelar",
-      "successApproved": "Jogo criado com sucesso!",
-      "successPending": "Ideia enviada! O jogo ficou pendente de aprovacao.",
-      "error": "Erro ao adicionar jogo."
-    },
     "RegisterConfirm": {
       "title": "Confirmar Inscrição",
       "description": "Você iniciará no ranking com {elo} pontos Elo. Deseja continuar?",
@@ -256,10 +215,10 @@
       "slug": {
         "label": "Identificador",
         "placeholder": "identificador-do-ranking",
-        "tooltip": "Personaliza a URL deste ranking (ex: /rankings/pro-league)."
+        "tooltip": "Personaliza a URL deste ranking (ex: /events/pro-league)."
       },
       "descriptionField": {
-        "label": "Descrição (Opcional)",
+        "label": "Descrição",
         "placeholder": "Descreva este ranking..."
       },
       "ratingSystem": {
@@ -277,15 +236,18 @@
       },
       "scoreRelevance": {
         "label": "Relevância da Pontuação",
-        "tooltip": "0.0: Margem de vitória não importa. 1.0: Margem é extremamente relevante para o cálculo."
+        "tooltip": "Define o quanto a diferença de placar pesa no ganho ou perda de pontos. Valores maiores dão mais bônus por vitórias esmagadoras."
       },
       "inactivityDecay": {
         "label": "Decaimento por inatividade (diário)",
+        "labelShort": "Decaimento",
         "tooltip": "Pontos perdidos por cada dia de inatividade."
       },
       "inactivityThreshold": {
         "label": "Horas até inatividade",
-        "tooltip": "Tempo sem jogos antes do decaimento começar."
+        "labelShort": "Janela (h)",
+        "tooltip": "Tempo sem jogos antes do decaimento começar.",
+        "unit": "horas"
       },
       "inactivityFloor": {
         "label": "Piso de Decaimento",
@@ -304,12 +266,17 @@
         "title": "Lógica do Formato",
         "elo": {
           "title": "Sistema Elo",
-          "description": "Jogadores ganham pontos ao vencer e perdem ao perder. A quantidade depende da habilidade do oponente.",
-          "relevance_low": "Margem de vitória é ignorada.",
-          "relevance_high": "Margem de vitória é altamente impactante.",
+          "description": "Jogadores ganham pontos ao vencer e perdem ao sofrer derrotas. A quantia exata é calculada com base na diferença de nível entre os oponentes (Probabilidade de Vitória).",
+          "relevance_1": "A margem de vitória é ignorada; apenas o resultado final importa.",
+          "relevance_2": "A margem de vitória tem baixo impacto no cálculo final.",
+          "relevance_3": "A margem de vitória tem impacto moderado no desempenho.",
+          "relevance_4": "A margem de vitória é altamente relevante para o ganho de pontos.",
+          "relevance_5": "A margem de vitória é o fator primário; vitórias esmagadoras dão bônus massivos.",
           "draws_enabled": "Empates são permitidos.",
           "draws_disabled": "Partidas devem ter um vencedor.",
-          "decay": "Inativos perdem {amount} pts por dia após {hours}h (Piso: {floor})."
+          "decay": "Inativos perdem {amount} pts por dia após {hours}h (Piso: {floor}).",
+          "thresholds": "Impacto da Margem de Vitória:",
+          "win_margin": "Vitória por {margin}"
         },
         "points": {
           "title": "Pontos Corridos",
@@ -325,7 +292,7 @@
           "placeholder": "Selecione a data de início"
         },
         "end": {
-          "label": "Data de Término (Opcional)",
+          "label": "Data de Término",
           "placeholder": "Selecione a data de término"
         }
       },
@@ -348,7 +315,7 @@
         "placeholder": "Digite o nick do jogador..."
       },
       "link": {
-        "label": "Vincular a Usuário (Opcional)",
+        "label": "Vincular a Usuário",
         "placeholder": "Buscar por nome ou @username...",
         "selected": "Vinculado a @{username}",
         "selectedDesc": "A nacionalidade e o histórico serão sincronizados com este perfil.",
@@ -373,10 +340,10 @@
       "slug": {
         "label": "Link do Ranking",
         "placeholder": "identificador-do-ranking",
-        "description": "Personaliza a URL deste ranking (ex: /rankings/blitz)."
+        "description": "Personaliza a URL deste ranking (ex: /events/blitz)."
       },
       "descriptionField": {
-        "label": "Descrição (Opcional)",
+        "label": "Descrição",
         "placeholder": "Descreva este ranking..."
       },
       "initialElo": {
@@ -410,5 +377,13 @@
       "success": "Jogador registrado com sucesso!",
       "error": "Erro ao registrar jogador."
     }
+  },
+  "NotFound": {
+    "title": "Essa batalha não existe",
+    "description": "O campo de batalha que você procura foi desativado, nunca existiu, ou foi deletado do servidor.",
+    "descriptionHighlight": "Recalibrar coordenadas?",
+    "errorInfo": "ERR_ROUTE_NOT_FOUND · HTTP 404",
+    "backHome": "Voltar para o início",
+    "goBack": "Página anterior"
   }
 }

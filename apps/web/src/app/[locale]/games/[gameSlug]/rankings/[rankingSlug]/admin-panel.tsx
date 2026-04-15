@@ -16,8 +16,7 @@ interface RankingAdminPanelProps {
 export function RankingAdminPanel({ ranking }: RankingAdminPanelProps) {
   const { canManageRankings, canManagePlayers } = useUser();
   const hasAnyAction = canManageRankings || canManagePlayers;
-  const t = useTranslations("Admin");
-  const tModals = useTranslations("Modals");
+  const t = useTranslations();
   const [isEditRankingOpen, setIsEditRankingOpen] = useState(false);
   const [isAddPlayerOpen, setIsAddPlayerOpen] = useState(false);
 
@@ -28,7 +27,7 @@ export function RankingAdminPanel({ ranking }: RankingAdminPanelProps) {
       <div className="mb-4 flex items-center gap-3 px-1">
         <div className="h-px flex-1 bg-white/5" />
         <span className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">
-          {t("panel")}
+          {t("Admin.panel")}
         </span>
         <div className="h-px flex-1 bg-white/5" />
       </div>
@@ -36,7 +35,7 @@ export function RankingAdminPanel({ ranking }: RankingAdminPanelProps) {
       {canManageRankings && (
         <ActionButton
           icon={Settings2}
-          label={tModals("EditRanking.trigger")}
+          label={t("Modals.EditRanking.trigger")}
           onClick={() => setIsEditRankingOpen(true)}
         />
       )}
@@ -44,7 +43,7 @@ export function RankingAdminPanel({ ranking }: RankingAdminPanelProps) {
       {canManagePlayers && (
         <ActionButton
           icon={UserPlus}
-          label={tModals("AddPlayerToRanking.trigger")}
+          label={t("Modals.AddPlayerToRanking.trigger")}
           onClick={() => setIsAddPlayerOpen(true)}
         />
       )}

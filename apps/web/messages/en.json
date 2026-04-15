@@ -150,47 +150,6 @@
       "cancel": "Cancel",
       "success": "Profile updated successfully!"
     },
-    "AddGame": {
-      "trigger": "Suggest Game",
-      "triggerAdmin": "Add game",
-      "title": "Suggest Game",
-      "description": "Fill in the initial details to register a new game.",
-      "descriptionLoggedOut": "Sign in to submit a new game idea.",
-      "reviewAlert": {
-        "title": "Your game will go through publication",
-        "description": "Because you do not have Manage Games permission, this game will be saved as pending and must be approved before becoming public to everyone."
-      },
-      "loginHint": "We need your account so the game can keep track of who suggested it.",
-      "loginAction": "Sign in to add",
-      "name": {
-        "label": "Game Name",
-        "placeholder": "Enter game name..."
-      },
-      "slug": {
-        "label": "Game Link",
-        "placeholder": "game-identifier",
-        "description": "Customizes this game's URL (e.g. /games/superfighters-deluxe)."
-      },
-      "descriptionField": {
-        "label": "Description",
-        "placeholder": "Describe the game idea..."
-      },
-      "backgroundImage": {
-        "label": "Background Image URL"
-      },
-      "thumbnailImage": {
-        "label": "Thumbnail Image URL"
-      },
-      "steamUrl": {
-        "label": "Steam URL"
-      },
-      "submit": "Create Game",
-      "submitting": "Creating...",
-      "cancel": "Cancel",
-      "successApproved": "Game created successfully!",
-      "successPending": "Game idea submitted! It is now pending approval.",
-      "error": "Error adding game."
-    },
     "RegisterConfirm": {
       "title": "Confirm Registration",
       "description": "You will start with {elo} Elo points. Do you want to continue?",
@@ -257,10 +216,10 @@
       "slug": {
         "label": "Identifier",
         "placeholder": "ranking-identifier",
-        "tooltip": "Personalizes the URL for this ranking (e.g., /rankings/pro-league)."
+        "tooltip": "Personalizes the URL for this ranking (e.g., /events/pro-league)."
       },
       "descriptionField": {
-        "label": "Description (Optional)",
+        "label": "Description",
         "placeholder": "Describe this ranking..."
       },
       "ratingSystem": {
@@ -278,15 +237,18 @@
       },
       "scoreRelevance": {
         "label": "Score Relevance",
-        "tooltip": "0.0: Win margin doesn't matter. 1.0: Margin is extremely relevant for the Elo calculation."
+        "tooltip": "Determines how much the final score difference influences the rating change. Higher values grant more bonuses for crushing victories."
       },
       "inactivityDecay": {
-        "label": "Inactivity Decay (daily)",
-        "tooltip": "Points lost per day of inactivity."
+        "label": "Inactivity decay (daily)",
+        "labelShort": "Decay",
+        "tooltip": "Points lost for each day of inactivity."
       },
       "inactivityThreshold": {
         "label": "Hours until inactivity",
-        "tooltip": "Time without games before decay starts."
+        "labelShort": "Delay (h)",
+        "tooltip": "Time without matches before decay starts.",
+        "unit": "hours"
       },
       "inactivityFloor": {
         "label": "Decay Floor",
@@ -305,12 +267,17 @@
         "title": "Format Logic",
         "elo": {
           "title": "Elo System",
-          "description": "Players gain points by winning and lose by losing. The amount depends on the opponent's skill.",
-          "relevance_low": "Victory margin is ignored.",
-          "relevance_high": "Victory margin is highly impactful.",
+          "description": "Players gain points by winning and lose by losing. The exact amount is calculated based on the skill gap between opponents (Win Probability).",
+          "relevance_1": "Win margin is ignored; only the final result matters.",
+          "relevance_2": "Win margin has low impact on the final calculation.",
+          "relevance_3": "Win margin has moderate impact on performance.",
+          "relevance_4": "Win margin is highly relevant for point gains.",
+          "relevance_5": "Win margin is the primary factor; crushing victories grant massive bonuses.",
           "draws_enabled": "Draws are permitted.",
           "draws_disabled": "Matches must have a winner.",
-          "decay": "Inactive players lose {amount} points daily after {hours}h (Floor: {floor})."
+          "decay": "Inactive players lose {amount} points daily after {hours}h (Floor: {floor}).",
+          "thresholds": "Win Margin Impact:",
+          "win_margin": "Win by {margin}"
         },
         "points": {
           "title": "Points System",
@@ -326,7 +293,7 @@
           "placeholder": "Select start date"
         },
         "end": {
-          "label": "End Date (Optional)",
+          "label": "End Date",
           "placeholder": "Select end date"
         }
       },
@@ -349,7 +316,7 @@
         "placeholder": "Enter player's nick..."
       },
       "link": {
-        "label": "Link to User (Optional)",
+        "label": "Link to User",
         "placeholder": "Search name or @username...",
         "selected": "Linked to @{username}",
         "selectedDesc": "Nationality and history will be synced with this profile.",
@@ -374,10 +341,10 @@
       "slug": {
         "label": "Ranking Link",
         "placeholder": "ranking-identifier",
-        "description": "Personalizes the URL for this ranking (e.g., /rankings/blitz)."
+        "description": "Personalizes the URL for this ranking (e.g., /events/blitz)."
       },
       "descriptionField": {
-        "label": "Description (Optional)",
+        "label": "Description",
         "placeholder": "Describe this ranking..."
       },
       "initialElo": {
@@ -411,5 +378,13 @@
       "success": "Player registered successfully!",
       "error": "Error registering player."
     }
+  },
+  "NotFound": {
+    "title": "This battle doesn't exist",
+    "description": "The battlefield you're looking for was deactivated, never existed, or was deleted from the server.",
+    "descriptionHighlight": "Recalibrate coordinates?",
+    "errorInfo": "ERR_ROUTE_NOT_FOUND · HTTP 404",
+    "backHome": "Back to home",
+    "goBack": "Previous page"
   }
 }

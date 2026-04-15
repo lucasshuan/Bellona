@@ -30,8 +30,7 @@ export function GameAdminPanel({ game }: GameAdminPanelProps) {
     (game.status === "pending" && canApproveGame) ||
     (game.status === "approved" && (canManageRankings || canManagePlayers));
 
-  const t = useTranslations("Admin");
-  const tModals = useTranslations("Modals");
+  const t = useTranslations();
   const [isEditGameOpen, setIsEditGameOpen] = useState(false);
   const [isAddPlayerOpen, setIsAddPlayerOpen] = useState(false);
   const [isApproveOpen, setIsApproveOpen] = useState(false);
@@ -39,11 +38,11 @@ export function GameAdminPanel({ game }: GameAdminPanelProps) {
   if (!hasAnyAction) return null;
 
   return (
-    <div className="mt-8 space-y-3">
-      <div className="mb-4 flex items-center gap-3 px-1">
+    <div className="mt-6 space-y-3">
+      <div className="mb-2 flex items-center gap-3 px-1">
         <div className="h-px flex-1 bg-white/5" />
         <span className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">
-          {t("panel")}
+          {t("Admin.panel")}
         </span>
         <div className="h-px flex-1 bg-white/5" />
       </div>
@@ -51,7 +50,7 @@ export function GameAdminPanel({ game }: GameAdminPanelProps) {
       {canEditGame && (
         <ActionButton
           icon={Settings2}
-          label={tModals("EditGame.trigger")}
+          label={t("Modals.EditGame.trigger")}
           onClick={() => setIsEditGameOpen(true)}
         />
       )}
@@ -60,7 +59,7 @@ export function GameAdminPanel({ game }: GameAdminPanelProps) {
         <ActionButton
           icon={CheckCheck}
           intent="primary"
-          label={tModals("ApproveGame.trigger")}
+          label={t("Modals.ApproveGame.trigger")}
           onClick={() => setIsApproveOpen(true)}
         />
       )}
@@ -68,7 +67,7 @@ export function GameAdminPanel({ game }: GameAdminPanelProps) {
       {game.status === "approved" && canManagePlayers && (
         <ActionButton
           icon={UserPlus}
-          label={tModals("AddPlayer.trigger")}
+          label={t("Modals.AddPlayer.trigger")}
           onClick={() => setIsAddPlayerOpen(true)}
         />
       )}

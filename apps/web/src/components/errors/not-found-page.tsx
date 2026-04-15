@@ -6,6 +6,7 @@ import { Link } from "@/i18n/routing";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Home, RotateCcw } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -190,6 +191,8 @@ function Scanlines() {
 }
 
 export function NotFoundPage() {
+  const t = useTranslations("NotFound");
+
   return (
     <main className="relative flex min-h-[calc(100vh-137px)] flex-col items-center justify-center overflow-hidden px-6 py-20 text-center">
       <ParticleCanvas />
@@ -209,18 +212,22 @@ export function NotFoundPage() {
 
         <div className="space-y-3">
           <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Essa batalha não existe
+            {t("title")}
           </h1>
           <p className="text-muted mx-auto max-w-md text-sm leading-7 sm:text-base">
-            O campo de batalha que você procura foi desativado, nunca existiu,
-            ou foi deletado do servidor.{" "}
-            <span className="text-[#c00b3b]">Recalibrar coordenadas?</span>
+            {t("description")}{" "}
+            <Link
+              href="/"
+              className="text-[#c00b3b] transition-colors hover:text-[#c00b3b]/80 hover:underline"
+            >
+              {t("descriptionHighlight")}
+            </Link>
           </p>
         </div>
 
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 font-mono text-xs text-white/50 backdrop-blur-sm">
           <span className="size-1.5 animate-pulse rounded-full bg-[#c00b3b]" />
-          ERR_ROUTE_NOT_FOUND · HTTP 404
+          {t("errorInfo")}
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -232,7 +239,7 @@ export function NotFoundPage() {
             )}
           >
             <Home className="size-4 transition-transform group-hover:-translate-y-0.5" />
-            Voltar para o início
+            {t("backHome")}
           </Link>
           <button
             type="button"
@@ -243,7 +250,7 @@ export function NotFoundPage() {
             )}
           >
             <RotateCcw className="size-4 transition-transform group-hover:-rotate-45" />
-            Página anterior
+            {t("goBack")}
           </button>
         </div>
       </div>
