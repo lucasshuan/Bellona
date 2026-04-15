@@ -8,7 +8,7 @@
     "build": "prisma generate --schema=./prisma/schema.prisma",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings=0",
-    "postinstall": "prisma generate --schema=./prisma/schema.prisma",
+    "postinstall": "node -e \"if (process.env.CI || process.env.VERCEL) process.exit(0); const { spawnSync } = require('node:child_process'); const result = spawnSync('prisma generate --schema=./prisma/schema.prisma', { stdio: 'inherit', shell: true }); if (result.error) throw result.error; process.exit(result.status ?? 0);\"",
     "typecheck": "tsc --noEmit"
   },
   "prisma": {
