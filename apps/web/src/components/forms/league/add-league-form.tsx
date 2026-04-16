@@ -118,6 +118,24 @@ export function AddLeagueForm({
     inactivityThresholdHours,
     locale,
   );
+  const getEloExplanationText = (
+    key: "initial_score" | "match_impact",
+    values: { initialElo?: number; kFactor?: number } = {},
+  ) => {
+    try {
+      return t(`explanation.elo.${key}`, values);
+    } catch {
+      if (key === "initial_score") {
+        return locale === "pt"
+          ? `Todos começam com ${values.initialElo ?? 0} pts.`
+          : `Everyone starts with ${values.initialElo ?? 0} pts.`;
+      }
+
+      return locale === "pt"
+        ? `Os resultados desta liga costumam mover a pontuação em cerca de ${values.kFactor ?? 0} pts.`
+        : `Results in this league typically move ratings by around ${values.kFactor ?? 0} pts.`;
+    }
+  };
 
   const [isSlugModified, setIsSlugModified] = useState(false);
   const [games, setGames] = useState<SimpleGame[]>([]);
@@ -857,12 +875,40 @@ export function AddLeagueForm({
                       {ratingSystem === "elo" ? (
                         <>
                           <div className="flex items-center gap-3">
+                            <div
+                              className={cn(
+                                "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5",
+                                allowDraw ? "text-primary" : "text-white/40",
+                              )}
+                            >
+                              {allowDraw ? (
+                                <Equal className="size-3" />
+                              ) : (
+                                <Swords className="size-3" />
+                              )}
+                            </div>
+                            <span>
+                              {allowDraw
+                                ? t("explanation.elo.draws_enabled")
+                                : t("explanation.elo.draws_disabled")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
                             <div className="text-primary flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5">
                               <Trophy className="size-3" />
                             </div>
                             <span>
-                              {t("explanation.elo.initial_settings", {
+                              {getEloExplanationText("initial_score", {
                                 initialElo,
+                              })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="text-primary flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5">
+                              <ArrowUpRight className="size-3" />
+                            </div>
+                            <span>
+                              {getEloExplanationText("match_impact", {
                                 kFactor,
                               })}
                             </span>
@@ -916,25 +962,6 @@ export function AddLeagueForm({
                                 );
                               })}
                             </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={cn(
-                                "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5",
-                                allowDraw ? "text-primary" : "text-white/40",
-                              )}
-                            >
-                              {allowDraw ? (
-                                <Equal className="size-3" />
-                              ) : (
-                                <Swords className="size-3" />
-                              )}
-                            </div>
-                            <span>
-                              {allowDraw
-                                ? t("explanation.elo.draws_enabled")
-                                : t("explanation.elo.draws_disabled")}
-                            </span>
                           </div>
                           {inactivityDecay > 0 && (
                             <div className="flex items-center gap-3">

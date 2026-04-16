@@ -91,6 +91,24 @@ export function EditLeagueForm({
     inactivityThresholdHours,
     locale,
   );
+  const getEloExplanationText = (
+    key: "initial_score" | "match_impact",
+    values: { initialElo?: number; kFactor?: number } = {},
+  ) => {
+    try {
+      return t(`AddLeague.explanation.elo.${key}`, values);
+    } catch {
+      if (key === "initial_score") {
+        return locale === "pt"
+          ? `Todos começam com ${values.initialElo ?? 0} pts.`
+          : `Everyone starts with ${values.initialElo ?? 0} pts.`;
+      }
+
+      return locale === "pt"
+        ? `Os resultados desta liga costumam mover a pontuação em cerca de ${values.kFactor ?? 0} pts.`
+        : `Results in this league typically move ratings by around ${values.kFactor ?? 0} pts.`;
+    }
+  };
 
   const [isSlugModified, setIsSlugModified] = useState(false);
 
@@ -528,8 +546,17 @@ export function EditLeagueForm({
                             <Trophy className="size-3" />
                           </div>
                           <span>
-                            {t("AddLeague.explanation.elo.initial_settings", {
+                            {getEloExplanationText("initial_score", {
                               initialElo,
+                            })}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="text-primary flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5">
+                            <ArrowUpRight className="size-3" />
+                          </div>
+                          <span>
+                            {getEloExplanationText("match_impact", {
                               kFactor,
                             })}
                           </span>
