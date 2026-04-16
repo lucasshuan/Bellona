@@ -204,7 +204,7 @@ importers:
       '@apollo/client':
         specifier: ^4.1.7
         version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)(subscriptions-transport-ws@0.11.0(graphql@16.13.2))
-      '@apollo/experimental-nextjs-app-support':
+      '@apollo/client-integration-nextjs':
         specifier: ^0.14.5
         version: 0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)(subscriptions-transport-ws@0.11.0(graphql@16.13.2)))(@types/react@19.2.14)(graphql@16.13.2)(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)
       '@ares/core':
@@ -450,14 +450,6 @@ packages:
         optional: true
       subscriptions-transport-ws:
         optional: true
-
-  '@apollo/experimental-nextjs-app-support@0.14.5':
-    resolution: {integrity: sha512-66E646B/CXMMzFpT3abHLCx+wVg5y8Uu2mUr0YbeXUKDMQmQLxEl4W27YQ3ukkYunMg5CSAq99MP1Tje1KSthA==}
-    peerDependencies:
-      '@apollo/client': ^4.0.0
-      next: ^15.2.3
-      react: ^19
-      rxjs: ^7.3.0
 
   '@apollo/protobufjs@1.2.7':
     resolution: {integrity: sha512-Lahx5zntHPZia35myYDBRuF58tlwPskwHc5CWBZC/4bMKB6siTBWwtMrkqXcsNwQiFSzSx5hKdRPUmemrEp3Gg==}
@@ -7001,18 +6993,6 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       subscriptions-transport-ws: 0.11.0(graphql@16.13.2)
-
-  '@apollo/experimental-nextjs-app-support@0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)(subscriptions-transport-ws@0.11.0(graphql@16.13.2)))(@types/react@19.2.14)(graphql@16.13.2)(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)':
-    dependencies:
-      '@apollo/client': 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)(subscriptions-transport-ws@0.11.0(graphql@16.13.2))
-      '@apollo/client-integration-nextjs': 0.14.5(@apollo/client@4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)(subscriptions-transport-ws@0.11.0(graphql@16.13.2)))(@types/react@19.2.14)(graphql@16.13.2)(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.1)
-      next: 16.2.3(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react: 19.2.4
-      rxjs: 7.8.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - graphql
-      - react-dom
 
   '@apollo/protobufjs@1.2.7':
     dependencies:

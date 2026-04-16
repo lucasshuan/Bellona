@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.1.7",
-    "@apollo/experimental-nextjs-app-support": "^0.14.5",
+    "@apollo/client-integration-nextjs": "^0.14.5",
     "@ares/core": "workspace:^",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-popover": "1.1.2",
