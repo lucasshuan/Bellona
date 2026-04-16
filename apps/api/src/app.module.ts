@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join, resolve } from 'path';
+import { LoggerModule } from 'nestjs-pino';
 import { DatabaseModule } from './database/database.module';
 import { GamesModule } from './modules/games/games.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -11,17 +12,16 @@ import { UsersModule } from './modules/users/users.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { parseEnv } from './env';
 import { CommonModule } from './common/common.module';
+import { pinoLoggerConfig } from './common/configs/pino-logger.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        resolve(process.cwd(), '.env.local'),
-        resolve(process.cwd(), '.env'),
-      ],
+      envFilePath: [resolve(process.cwd(), '.env')],
       validate: (config) => parseEnv(config),
     }),
+    LoggerModule.forRoot(pinoLoggerConfig),
     CommonModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,

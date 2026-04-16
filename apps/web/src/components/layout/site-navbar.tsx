@@ -13,12 +13,12 @@ export async function SiteNavbar() {
   return (
     <nav className="bg-background/80 sticky top-0 z-50 border-b border-white/6 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 sm:px-10 lg:px-12">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-0.5">
           <div
             className="bg-primary shrink-0"
             style={{
-              width: 28,
-              height: 28,
+              width: 22,
+              height: 22,
               maskImage: `url(/icon.svg)`,
               WebkitMaskImage: `url(/icon.svg)`,
               maskSize: "contain",
@@ -31,7 +31,7 @@ export async function SiteNavbar() {
             aria-label="Ares icon"
             role="img"
           />
-          <p className="text-primary text-lg font-semibold tracking-[-0.04em]">
+          <p className="text-primary text-lg font-semibold -tracking-widest">
             Ares
           </p>
         </Link>

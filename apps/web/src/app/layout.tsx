@@ -4,31 +4,33 @@ import { getLocale } from "next-intl/server";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { env } from "@/env";
 import { routing } from "@/i18n/routing";
 
 import "./[locale]/globals.css";
 import "flag-icons/css/flag-icons.min.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXTAUTH_URL),
   title: {
     default: "Ares",
     template: "%s | Ares",
   },
   description: "Plataforma de league e torneios para jogos.",
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
   openGraph: {
     title: "Ares",
     description: "Plataforma de league e torneios para jogos.",
     images: [
       {
-        url: "/icon.svg",
+        url: "/logo.png",
         alt: "Ares",
         width: 120,
         height: 120,
-        type: "image/svg+xml",
+        type: "image/png",
       },
     ],
   },

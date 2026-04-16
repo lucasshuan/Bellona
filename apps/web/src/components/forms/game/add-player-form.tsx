@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition, useState, useEffect } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddPlayerSchema, type AddPlayerValues } from "@/schemas/player";
@@ -73,20 +73,19 @@ export function AddPlayerForm({
 
   useEffect(() => {
     if (searchQuery.length < 2) {
-      setSearchResults([]);
       return;
     }
 
     const timer = setTimeout(async () => {
       setIsSearching(true);
-      try {
-        const results = await searchPlayersByGame(gameId, searchQuery);
-        setSearchResults(results);
-      } catch (error) {
-        console.error("Search failed:", error);
-      } finally {
-        setIsSearching(false);
+      const result = await searchPlayersByGame(gameId, searchQuery);
+      if (result.success && result.data) {
+        setSearchResults(result.data);
+      } else {
+        console.error("Search failed:", result.error);
+        setSearchResults([]);
       }
+      setIsSearching(false);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -94,23 +93,20 @@ export function AddPlayerForm({
 
   const onSubmit = async (values: AddPlayerValues) => {
     startTransition(async () => {
-      try {
-        const result = await addPlayerToGame(gameId, {
-          username: values.username.trim(),
-          userId: values.userId || null,
-        });
+      const result = await addPlayerToGame(gameId, {
+        username: values.username.trim(),
+        userId: values.userId || null,
+      });
 
-        if (result.success) {
-          toast.success(
-            values.userId
-              ? t("successExisting", { username: values.username })
-              : t("successNew", { username: values.username }),
-          );
-          onSuccess();
-        }
-      } catch (error) {
-        toast.error(t("error"));
-        console.error(error);
+      if (result.success) {
+        toast.success(
+          values.userId
+            ? t("successExisting", { username: values.username })
+            : t("successNew", { username: values.username }),
+        );
+        onSuccess();
+      } else {
+        toast.error(result.error || t("error"));
       }
     });
   };
@@ -126,6 +122,19 @@ export function AddPlayerForm({
   const handleRemoveLink = () => {
     setSelectedUser(null);
     setValue("userId", null, { shouldValidate: true });
+  };
+
+  const handleSearchQueryChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = event.target.value;
+
+    setSearchQuery(value);
+
+    if (value.length < 2) {
+      setIsSearching(false);
+      setSearchResults([]);
+    }
   };
 
   return (
@@ -179,7 +188,7 @@ export function AddPlayerForm({
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchQueryChange}
               placeholder={t("link.placeholder")}
               className="focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border border-white/10 bg-white/5 py-3 pr-4 pl-11 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4"
             />

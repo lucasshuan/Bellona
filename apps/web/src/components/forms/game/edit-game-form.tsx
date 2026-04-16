@@ -57,18 +57,19 @@ export function EditGameForm({
 
   const onSubmit = async (values: EditGameValues) => {
     startTransition(async () => {
-      try {
-        await updateGame(game.id, {
-          ...values,
-          backgroundImageUrl: values.backgroundImageUrl || null,
-          thumbnailImageUrl: values.thumbnailImageUrl || null,
-          steamUrl: values.steamUrl || null,
-          description: values.description ?? null,
-        });
+      const result = await updateGame(game.id, {
+        ...values,
+        backgroundImageUrl: values.backgroundImageUrl || null,
+        thumbnailImageUrl: values.thumbnailImageUrl || null,
+        steamUrl: values.steamUrl || null,
+        description: values.description ?? null,
+      });
+
+      if (result.success) {
         toast.success(t("success"));
         onSuccess();
-      } catch {
-        toast.error(t("error"));
+      } else {
+        toast.error(result.error || t("error"));
       }
     });
   };

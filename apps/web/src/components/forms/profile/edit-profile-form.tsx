@@ -159,39 +159,35 @@ export function EditProfileForm({
 
   const onSubmit = async (values: EditProfileValues) => {
     startTransition(async () => {
-      try {
-        const formData = new FormData();
-        Object.entries(values).forEach(([key, value]) => {
-          if (value !== null && value !== undefined) {
-            formData.append(key, value);
-          }
-        });
-
-        const result = await updateProfile(formData);
-        if (!result.success) {
-          toast.error("Ocorreu um erro ao atualizar o perfil.");
-          return;
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formData.append(key, value);
         }
+      });
 
-        toast.success(t("success"));
-
-        // Refresh session
-        await update({
-          username: values.username,
-          name: values.name,
-        });
-
-        if (result.success && result.slug) {
-          const isProfilePage = pathname.includes("/profile/");
-          if (isProfilePage) {
-            router.push(`/profile/${result.slug}`);
-          }
-        }
-
-        onSuccess();
-      } catch {
-        toast.error("Ocorreu um erro ao atualizar o perfil. Tente novamente.");
+      const result = await updateProfile(formData);
+      if (!result.success) {
+        toast.error(result.error || "Ocorreu um erro ao atualizar o perfil.");
+        return;
       }
+
+      toast.success(t("success"));
+
+      // Refresh session
+      await update({
+        username: values.username,
+        name: values.name,
+      });
+
+      if (result.success && result.data) {
+        const isProfilePage = pathname.includes("/profile/");
+        if (isProfilePage) {
+          router.push(`/profile/${result.data}`);
+        }
+      }
+
+      onSuccess();
     });
   };
 

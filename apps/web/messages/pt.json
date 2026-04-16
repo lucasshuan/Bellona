@@ -127,7 +127,9 @@
       "title": "Entrar ou criar conta",
       "close": "Fechar",
       "signingIn": "Entrando...",
-      "continueWithDiscord": "Continuar com Discord"
+      "continueWithDiscord": "Continuar com Discord",
+      "title1": "Junte-se à",
+      "title2": "guerra"
     },
     "EditProfile": {
       "trigger": "Editar Perfil",

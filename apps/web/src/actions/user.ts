@@ -8,19 +8,22 @@ import { revalidatePath } from "next/cache";
 import { UpdateProfileMutation } from "@/lib/apollo/generated/graphql";
 import { normalizeOptionalText } from "@/lib/utils";
 
-export async function updateProfile(formData: FormData) {
-  const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+import { createSafeAction } from "@/lib/action-utils";
 
-  const data = {
-    name: (formData.get("name") as string).trim(),
-    username: (formData.get("username") as string).trim(),
-    bio: normalizeOptionalText(formData.get("bio") as string),
-    profileColor: formData.get("profileColor") as string,
-    country: normalizeOptionalText(formData.get("country") as string),
-  };
+export const updateProfile = createSafeAction(
+  "updateProfile",
+  async (formData: FormData) => {
+    const session = await getServerAuthSession();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  try {
+    const data = {
+      name: (formData.get("name") as string).trim(),
+      username: (formData.get("username") as string).trim(),
+      bio: normalizeOptionalText(formData.get("bio") as string),
+      profileColor: formData.get("profileColor") as string,
+      country: normalizeOptionalText(formData.get("country") as string),
+    };
+
     const { data: result } = await getClient().mutate<UpdateProfileMutation>({
       mutation: UPDATE_PROFILE,
       variables: { input: data },
@@ -31,14 +34,9 @@ export async function updateProfile(formData: FormData) {
       revalidatePath("/");
       revalidatePath(`/profile/${session.user.id}`);
       revalidatePath(`/profile/${updatedUsername}`);
-      return { success: true, slug: updatedUsername };
+      return updatedUsername;
     }
 
-    return { success: false, errors: { username: "update.failed" } };
-  } catch (error) {
-    if (error instanceof Error && error.message.includes("Username taken")) {
-      return { success: false, errors: { username: "username.taken" } };
-    }
-    throw error;
-  }
-}
+    throw new Error("update.failed");
+  },
+);

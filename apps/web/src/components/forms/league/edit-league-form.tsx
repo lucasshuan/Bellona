@@ -107,55 +107,56 @@ export function EditLeagueForm({
 
   const onSubmit = async (values: EditLeagueValues) => {
     startTransition(async () => {
-      try {
-        const isElo = values.ratingSystem === "elo";
+      const isElo = values.ratingSystem === "elo";
+      let result;
 
-        if (isElo) {
-          await updateLeague(league.id, {
-            ...values,
-            name: values.name,
-            slug: values.slug,
-            ratingSystem: values.ratingSystem,
-            allowDraw: values.allowDraw,
-            description: values.description ?? null,
-            initialElo: values.initialElo ?? league.initialElo,
-            kFactor: values.kFactor ?? league.kFactor,
-            scoreRelevance: values.scoreRelevance ?? league.scoreRelevance,
-            inactivityDecay: values.inactivityDecay ?? league.inactivityDecay,
-            inactivityThresholdHours:
-              values.inactivityThresholdHours ??
-              league.inactivityThresholdHours,
-            inactivityDecayFloor:
-              values.inactivityDecayFloor ?? league.inactivityDecayFloor,
-            // Mantemos os valores atuais de pontos para evitar nulos se a action exigir
-            pointsPerWin: league.pointsPerWin,
-            pointsPerDraw: league.pointsPerDraw,
-            pointsPerLoss: league.pointsPerLoss,
-          });
-        } else {
-          await updateLeague(league.id, {
-            ...values,
-            name: values.name,
-            slug: values.slug,
-            ratingSystem: values.ratingSystem,
-            allowDraw: values.allowDraw,
-            description: values.description ?? null,
-            pointsPerWin: values.pointsPerWin ?? league.pointsPerWin,
-            pointsPerDraw: values.pointsPerDraw ?? league.pointsPerDraw,
-            pointsPerLoss: values.pointsPerLoss ?? league.pointsPerLoss,
-            // Mantemos os valores atuais de elo para evitar nulos se a action exigir
-            initialElo: league.initialElo,
-            kFactor: league.kFactor,
-            scoreRelevance: league.scoreRelevance,
-            inactivityDecay: league.inactivityDecay,
-            inactivityThresholdHours: league.inactivityThresholdHours,
-            inactivityDecayFloor: league.inactivityDecayFloor,
-          });
-        }
+      if (isElo) {
+        result = await updateLeague(league.id, {
+          ...values,
+          name: values.name,
+          slug: values.slug,
+          ratingSystem: values.ratingSystem,
+          allowDraw: values.allowDraw,
+          description: values.description ?? null,
+          initialElo: values.initialElo ?? league.initialElo,
+          kFactor: values.kFactor ?? league.kFactor,
+          scoreRelevance: values.scoreRelevance ?? league.scoreRelevance,
+          inactivityDecay: values.inactivityDecay ?? league.inactivityDecay,
+          inactivityThresholdHours:
+            values.inactivityThresholdHours ?? league.inactivityThresholdHours,
+          inactivityDecayFloor:
+            values.inactivityDecayFloor ?? league.inactivityDecayFloor,
+          // Mantemos os valores atuais de pontos para evitar nulos se a action exigir
+          pointsPerWin: league.pointsPerWin,
+          pointsPerDraw: league.pointsPerDraw,
+          pointsPerLoss: league.pointsPerLoss,
+        });
+      } else {
+        result = await updateLeague(league.id, {
+          ...values,
+          name: values.name,
+          slug: values.slug,
+          ratingSystem: values.ratingSystem,
+          allowDraw: values.allowDraw,
+          description: values.description ?? null,
+          pointsPerWin: values.pointsPerWin ?? league.pointsPerWin,
+          pointsPerDraw: values.pointsPerDraw ?? league.pointsPerDraw,
+          pointsPerLoss: values.pointsPerLoss ?? league.pointsPerLoss,
+          // Mantemos os valores atuais de elo para evitar nulos se a action exigir
+          initialElo: league.initialElo,
+          kFactor: league.kFactor,
+          scoreRelevance: league.scoreRelevance,
+          inactivityDecay: league.inactivityDecay,
+          inactivityThresholdHours: league.inactivityThresholdHours,
+          inactivityDecayFloor: league.inactivityDecayFloor,
+        });
+      }
+
+      if (result.success) {
         toast.success(t("EditLeague.success"));
         onSuccess();
-      } catch {
-        toast.error(t("EditLeague.error"));
+      } else {
+        toast.error(result.error || t("EditLeague.error"));
       }
     });
   };

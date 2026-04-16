@@ -124,19 +124,21 @@ export function AddLeagueForm({
   useEffect(() => {
     const fetchGames = async () => {
       setIsGamesLoading(true);
-      const data = await getGamesSimple(gameSearch);
-      setGames(data);
+      const result = await getGamesSimple(gameSearch);
+      if (result.success && result.data) {
+        setGames(result.data);
 
-      // Initial load if gameId is provided and we haven't initialized yet
-      if (gameId && data.length > 0 && !hasInitialized.current) {
-        const g = data.find((x) => x.id === gameId);
-        if (g) {
-          setSelectedGame(g);
-          setGameSearch(g.name);
-          hasInitialized.current = true;
-          // Synchronize form immediately
-          setValue("gameId", g.id, { shouldValidate: true });
-          setValue("gameName", undefined, { shouldValidate: true });
+        // Initial load if gameId is provided and we haven't initialized yet
+        if (gameId && result.data.length > 0 && !hasInitialized.current) {
+          const g = result.data.find((x) => x.id === gameId);
+          if (g) {
+            setSelectedGame(g);
+            setGameSearch(g.name);
+            hasInitialized.current = true;
+            // Synchronize form immediately
+            setValue("gameId", g.id, { shouldValidate: true });
+            setValue("gameName", undefined, { shouldValidate: true });
+          }
         }
       }
 
@@ -221,49 +223,49 @@ export function AddLeagueForm({
 
   const onSubmit = async (values: AddLeagueValues) => {
     startTransition(async () => {
-      try {
-        const isElo = values.ratingSystem === "elo";
+      const isElo = values.ratingSystem === "elo";
 
-        await addLeague({
-          ...values,
-          description: values.description ?? null,
-          initialElo: isElo
-            ? (values.initialElo ?? LEAGUE_DEFAULT_SETTINGS.initialElo)
-            : LEAGUE_DEFAULT_SETTINGS.initialElo,
-          kFactor: isElo
-            ? (values.kFactor ?? LEAGUE_DEFAULT_SETTINGS.kFactor)
-            : LEAGUE_DEFAULT_SETTINGS.kFactor,
-          scoreRelevance: isElo
-            ? (values.scoreRelevance ?? LEAGUE_DEFAULT_SETTINGS.scoreRelevance)
-            : LEAGUE_DEFAULT_SETTINGS.scoreRelevance,
-          inactivityDecay: isElo
-            ? (values.inactivityDecay ??
-              LEAGUE_DEFAULT_SETTINGS.inactivityDecay)
-            : LEAGUE_DEFAULT_SETTINGS.inactivityDecay,
-          inactivityThresholdHours: isElo
-            ? (values.inactivityThresholdHours ??
-              LEAGUE_DEFAULT_SETTINGS.inactivityThresholdHours)
-            : LEAGUE_DEFAULT_SETTINGS.inactivityThresholdHours,
-          inactivityDecayFloor: isElo
-            ? (values.inactivityDecayFloor ??
-              LEAGUE_DEFAULT_SETTINGS.inactivityDecayFloor)
-            : LEAGUE_DEFAULT_SETTINGS.inactivityDecayFloor,
-          pointsPerWin: !isElo
-            ? (values.pointsPerWin ?? LEAGUE_DEFAULT_SETTINGS.pointsPerWin)
-            : LEAGUE_DEFAULT_SETTINGS.pointsPerWin,
-          pointsPerDraw: !isElo
-            ? (values.pointsPerDraw ?? LEAGUE_DEFAULT_SETTINGS.pointsPerDraw)
-            : LEAGUE_DEFAULT_SETTINGS.pointsPerDraw,
-          pointsPerLoss: !isElo
-            ? (values.pointsPerLoss ?? LEAGUE_DEFAULT_SETTINGS.pointsPerLoss)
-            : LEAGUE_DEFAULT_SETTINGS.pointsPerLoss,
-          startDate: values.startDate ? new Date(values.startDate) : null,
-          endDate: values.endDate ? new Date(values.endDate) : null,
-        });
+      const result = await addLeague({
+        ...values,
+        description: values.description ?? null,
+        initialElo: isElo
+          ? (values.initialElo ?? LEAGUE_DEFAULT_SETTINGS.initialElo)
+          : LEAGUE_DEFAULT_SETTINGS.initialElo,
+        kFactor: isElo
+          ? (values.kFactor ?? LEAGUE_DEFAULT_SETTINGS.kFactor)
+          : LEAGUE_DEFAULT_SETTINGS.kFactor,
+        scoreRelevance: isElo
+          ? (values.scoreRelevance ?? LEAGUE_DEFAULT_SETTINGS.scoreRelevance)
+          : LEAGUE_DEFAULT_SETTINGS.scoreRelevance,
+        inactivityDecay: isElo
+          ? (values.inactivityDecay ?? LEAGUE_DEFAULT_SETTINGS.inactivityDecay)
+          : LEAGUE_DEFAULT_SETTINGS.inactivityDecay,
+        inactivityThresholdHours: isElo
+          ? (values.inactivityThresholdHours ??
+            LEAGUE_DEFAULT_SETTINGS.inactivityThresholdHours)
+          : LEAGUE_DEFAULT_SETTINGS.inactivityThresholdHours,
+        inactivityDecayFloor: isElo
+          ? (values.inactivityDecayFloor ??
+            LEAGUE_DEFAULT_SETTINGS.inactivityDecayFloor)
+          : LEAGUE_DEFAULT_SETTINGS.inactivityDecayFloor,
+        pointsPerWin: !isElo
+          ? (values.pointsPerWin ?? LEAGUE_DEFAULT_SETTINGS.pointsPerWin)
+          : LEAGUE_DEFAULT_SETTINGS.pointsPerWin,
+        pointsPerDraw: !isElo
+          ? (values.pointsPerDraw ?? LEAGUE_DEFAULT_SETTINGS.pointsPerDraw)
+          : LEAGUE_DEFAULT_SETTINGS.pointsPerDraw,
+        pointsPerLoss: !isElo
+          ? (values.pointsPerLoss ?? LEAGUE_DEFAULT_SETTINGS.pointsPerLoss)
+          : LEAGUE_DEFAULT_SETTINGS.pointsPerLoss,
+        startDate: values.startDate ? new Date(values.startDate) : null,
+        endDate: values.endDate ? new Date(values.endDate) : null,
+      });
+
+      if (result.success) {
         toast.success(t("success"));
         onSuccess();
-      } catch {
-        toast.error(t("error"));
+      } else {
+        toast.error(result.error || t("error"));
       }
     });
   };

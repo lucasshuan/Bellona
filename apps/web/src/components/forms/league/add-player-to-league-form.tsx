@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
-import { useTransition, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState, useTransition } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useAddPlayerToLeagueSchema,
@@ -43,7 +43,7 @@ export function AddPlayerToLeagueForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<AddPlayerToLeagueValues>({
     resolver: zodResolver(schema),
@@ -53,10 +53,26 @@ export function AddPlayerToLeagueForm({
     mode: "onChange",
   });
 
-  const searchQuery = watch("username");
+  const searchQuery = useWatch({
+    control,
+    name: "username",
+    defaultValue: "",
+  });
   const [searchResults, setSearchResults] = useState<PlayerResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
+  const usernameField = register("username", {
+    onChange: (event) => {
+      const value = event.target.value as string;
+
+      if (value.length < 2) {
+        setIsSearching(false);
+        setSearchResults([]);
+        setHasSearched(false);
+      }
+    },
+  });
 
   // Notify parent about loading state
   useEffect(() => {
@@ -65,22 +81,20 @@ export function AddPlayerToLeagueForm({
 
   useEffect(() => {
     if (searchQuery.length < 2) {
-      setSearchResults([]);
-      setHasSearched(false);
       return;
     }
 
     const timer = setTimeout(async () => {
       setIsSearching(true);
-      try {
-        const results = await searchPlayersByGame(gameId, searchQuery);
-        setSearchResults(results);
+      const result = await searchPlayersByGame(gameId, searchQuery);
+      if (result.success && result.data) {
+        setSearchResults(result.data);
         setHasSearched(true);
-      } catch {
-        console.error("Error occurred while searching players");
-      } finally {
-        setIsSearching(false);
+      } else {
+        console.error("Error occurred while searching players:", result.error);
+        setSearchResults([]);
       }
+      setIsSearching(false);
     }, 300);
 
     return () => clearTimeout(timer);
@@ -88,24 +102,28 @@ export function AddPlayerToLeagueForm({
 
   const handleAddExisting = (playerId: string) => {
     startTransition(async () => {
-      try {
-        await addPlayerToLeague(leagueId, playerId);
+      const result = await addPlayerToLeague(leagueId, playerId);
+      if (result.success) {
         toast.success(t("success"));
         onSuccess();
-      } catch {
-        toast.error(t("error"));
+      } else {
+        toast.error(result.error || t("error"));
       }
     });
   };
 
   const handleCreateAndAdd = handleSubmit(async (values) => {
     startTransition(async () => {
-      try {
-        await createAndAddPlayerToLeague(gameId, leagueId, values.username);
+      const result = await createAndAddPlayerToLeague(
+        gameId,
+        leagueId,
+        values.username,
+      );
+      if (result.success) {
         toast.success(t("success"));
         onSuccess();
-      } catch {
-        toast.error(t("error"));
+      } else {
+        toast.error(result.error || t("error"));
       }
     });
   });
@@ -115,7 +133,7 @@ export function AddPlayerToLeagueForm({
       <div className="relative">
         <Search className="absolute top-3.5 left-4 size-5 text-white/30" />
         <input
-          {...register("username")}
+          {...usernameField}
           autoFocus
           type="text"
           placeholder={t("search.placeholder")}

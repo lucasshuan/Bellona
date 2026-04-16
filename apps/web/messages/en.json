@@ -128,7 +128,9 @@
       "title": "Sign in or sign up",
       "close": "Close",
       "signingIn": "Signing in...",
-      "continueWithDiscord": "Continue with Discord"
+      "continueWithDiscord": "Continue with Discord",
+      "title1": "Join the",
+      "title2": "fight"
     },
     "EditProfile": {
       "trigger": "Edit Profile",

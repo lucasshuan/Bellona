@@ -4,10 +4,13 @@ import { getClient } from "@/lib/apollo/apollo-client";
 import { GET_GAMES_SIMPLE } from "@/lib/apollo/queries/games";
 import { GetGamesSimpleQuery } from "@/lib/apollo/generated/graphql";
 
+import { createSafeAction } from "@/lib/action-utils";
+
 export type SimpleGame = GetGamesSimpleQuery["games"]["nodes"][number];
 
-export async function getGamesSimple(search?: string): Promise<SimpleGame[]> {
-  try {
+export const getGamesSimple = createSafeAction(
+  "getGamesSimple",
+  async (search?: string): Promise<SimpleGame[]> => {
     const { data } = await getClient().query<GetGamesSimpleQuery>({
       query: GET_GAMES_SIMPLE,
       variables: {
@@ -22,8 +25,5 @@ export async function getGamesSimple(search?: string): Promise<SimpleGame[]> {
     }
 
     return data.games.nodes;
-  } catch (error) {
-    console.error("Error fetching games simple:", error);
-    return [];
-  }
-}
+  },
+);

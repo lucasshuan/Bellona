@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useTransition } from "react";
 import { Trophy } from "lucide-react";
@@ -25,14 +25,12 @@ export function RegisterConfirmModal({
 
   const onConfirm = () => {
     startTransition(async () => {
-      try {
-        const result = await registerSelfToLeague(leagueId);
-        if (result.success) {
-          toast.success(t("success"));
-          onClose();
-        }
-      } catch {
-        toast.error("Error registering.");
+      const result = await registerSelfToLeague(leagueId);
+      if (result.success) {
+        toast.success(t("success"));
+        onClose();
+      } else {
+        toast.error(result.error || t("error") || "Error registering.");
       }
     });
   };

@@ -26,12 +26,12 @@ export function ApproveGameModal({
 
   const handleApprove = () => {
     startTransition(async () => {
-      try {
-        await approveGame(gameId);
+      const result = await approveGame(gameId);
+      if (result.success) {
         toast.success(t("success"));
         onClose();
-      } catch {
-        toast.error(t("error"));
+      } else {
+        toast.error(result.error || t("error"));
       }
     });
   };

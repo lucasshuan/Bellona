@@ -189,7 +189,7 @@ function AuthModalInner({
                 style={{ background: "rgba(192,11,59,0.2)" }}
               />
               <div
-                className="bg-primary size-14 shrink-0 sm:size-16 lg:size-20"
+                className="bg-primary size-14 shrink-0 sm:size-16 lg:size-14"
                 style={{
                   maskImage: `url(/icon.svg)`,
                   WebkitMaskImage: `url(/icon.svg)`,
@@ -208,7 +208,7 @@ function AuthModalInner({
             {/* Wordmark */}
             <div className="space-y-1 text-center">
               <h2 className="text-2xl font-black tracking-tight text-white">
-                Junte-se à{" "}
+                {t("title1")}{" "}
                 <span
                   className="bg-clip-text text-transparent"
                   style={{
@@ -216,7 +216,7 @@ function AuthModalInner({
                       "linear-gradient(135deg, #f7f0f3, #c00b3b)",
                   }}
                 >
-                  guerra
+                  {t("title2")}
                 </span>
               </h2>
               <p className="text-sm leading-5 text-white/40">{t("title")}</p>
