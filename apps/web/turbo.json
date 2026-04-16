@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "env": ["NODE_ENV", "NEXTAUTH_SECRET", "NEXT_PUBLIC_*"]
+      "env": ["NODE_ENV", "NEXTAUTH_SECRET", "NEXTAUTH_URL", "NEXT_PUBLIC_*"]
     }
   }
 }
