@@ -2,13 +2,38 @@
 
 import { getClient } from "@/lib/apollo/apollo-client";
 import { UPDATE_PROFILE } from "@/lib/apollo/queries/user-mutations";
+import { GET_USER } from "@/lib/apollo/queries/user";
 import { getServerAuthSession } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-import { UpdateProfileMutation } from "@/lib/apollo/generated/graphql";
+import {
+  GetUserQuery,
+  UpdateProfileMutation,
+} from "@/lib/apollo/generated/graphql";
 import { normalizeOptionalText } from "@/lib/utils";
 
 import { createSafeAction } from "@/lib/action-utils";
+
+export const checkUsernameAvailability = createSafeAction(
+  "checkUsernameAvailability",
+  async (username: string, currentUserId?: string) => {
+    const normalizedUsername = username.trim().toLowerCase();
+
+    if (!normalizedUsername) {
+      return { available: true };
+    }
+
+    const { data } = await getClient().query<GetUserQuery>({
+      query: GET_USER,
+      variables: { username: normalizedUsername },
+      fetchPolicy: "network-only",
+    });
+
+    return {
+      available: !data?.user || data.user.id === currentUserId,
+    };
+  },
+);
 
 export const updateProfile = createSafeAction(
   "updateProfile",

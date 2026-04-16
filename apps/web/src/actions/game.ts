@@ -228,6 +228,30 @@ export const addLeague = createSafeAction(
   },
 );
 
+export const checkLeagueSlugAvailability = createSafeAction(
+  "checkLeagueSlugAvailability",
+  async (gameIdOrSlug: string, slug: string, currentLeagueId?: string) => {
+    const normalizedSlug = slugify(slug);
+
+    if (!gameIdOrSlug || !normalizedSlug) {
+      return { available: true };
+    }
+
+    const game = await getGameRecord(gameIdOrSlug);
+
+    if (!game) {
+      return { available: true };
+    }
+
+    const conflict = game.leagues.some(
+      (league) =>
+        league.slug === normalizedSlug && league.id !== currentLeagueId,
+    );
+
+    return { available: !conflict };
+  },
+);
+
 export const addPlayerToGame = createSafeAction(
   "addPlayerToGame",
   async (

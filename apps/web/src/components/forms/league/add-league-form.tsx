@@ -25,7 +25,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 // Removido Popover import se não for usado em outro lugar, mas vou manter se necessário.
-import { addLeague } from "@/actions/game";
+import { addLeague, checkLeagueSlugAvailability } from "@/actions/game";
 import { getGamesSimple, type SimpleGame } from "@/actions/get-games";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
@@ -34,7 +34,7 @@ import { LabelTooltip } from "@/components/ui/label-tooltip";
 import { DateInput } from "@/components/ui/date-input";
 import { NumberInput } from "@/components/ui/number-input";
 import { formatHoursDuration } from "@/lib/date-utils";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 
 interface AddLeagueFormProps {
   gameId: string;
@@ -67,7 +67,6 @@ export function AddLeagueForm({
     handleSubmit,
     control,
     setValue,
-    trigger,
     getValues,
     formState: { errors, isValid, touchedFields },
   } = useForm<AddLeagueValues>({
@@ -140,11 +139,21 @@ export function AddLeagueForm({
   const [isSlugModified, setIsSlugModified] = useState(false);
   const [games, setGames] = useState<SimpleGame[]>([]);
   const [isGamesLoading, setIsGamesLoading] = useState(false);
+  const [slugAvailability, setSlugAvailability] = useState<{
+    value: string;
+    gameId: string | null;
+    status: "idle" | "available" | "conflict";
+  }>({
+    value: "",
+    gameId: null,
+    status: "idle",
+  });
   const [gameSearch, setGameSearch] = useState(initialGame?.name || "");
   const [selectedGame, setSelectedGame] = useState<SimpleGame | null>(
     initialGame || null,
   );
   const [showResults, setShowResults] = useState(false);
+  const slugRequestRef = useRef(0);
 
   const hasExactMatch = useMemo(() => {
     if (!gameSearch) return false;
@@ -217,11 +226,61 @@ export function AddLeagueForm({
   // Auto-generate slug from name
   useEffect(() => {
     if (!isSlugModified && watchName) {
-      setValue("slug", watchName.toLowerCase().replace(/[^a-z0-9-]/g, "-"), {
+      setValue("slug", slugify(watchName), {
         shouldValidate: true,
       });
     }
   }, [watchName, isSlugModified, setValue]);
+
+  const canCheckSlug =
+    !!watchGameId &&
+    !!watchSlug &&
+    schema.shape.slug.safeParse(watchSlug).success;
+  const isSlugChecking =
+    canCheckSlug &&
+    (slugAvailability.value !== watchSlug ||
+      slugAvailability.gameId !== watchGameId);
+  const hasSlugConflict =
+    canCheckSlug &&
+    slugAvailability.value === watchSlug &&
+    slugAvailability.gameId === watchGameId &&
+    slugAvailability.status === "conflict";
+
+  useEffect(() => {
+    if (!canCheckSlug) {
+      slugRequestRef.current += 1;
+      return;
+    }
+
+    const requestId = ++slugRequestRef.current;
+
+    const timeoutId = window.setTimeout(async () => {
+      const result = await checkLeagueSlugAvailability(watchGameId, watchSlug);
+
+      if (slugRequestRef.current !== requestId) {
+        return;
+      }
+
+      if (!result.success) {
+        setSlugAvailability({
+          value: watchSlug,
+          gameId: watchGameId,
+          status: "available",
+        });
+        return;
+      }
+
+      setSlugAvailability({
+        value: watchSlug,
+        gameId: watchGameId,
+        status: result.data?.available ? "available" : "conflict",
+      });
+    }, 400);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [canCheckSlug, watchGameId, watchSlug]);
 
   // Notify parent about loading state
   useEffect(() => {
@@ -229,9 +288,11 @@ export function AddLeagueForm({
   }, [isPending, onLoadingChange]);
 
   // Notify parent about validation state
+  const isFormValid = isValid && !isSlugChecking && !hasSlugConflict;
+
   useEffect(() => {
-    onValidationChange?.(isValid);
-  }, [isValid, onValidationChange]);
+    onValidationChange?.(isFormValid);
+  }, [isFormValid, onValidationChange]);
 
   // Per-step validation logic
   useEffect(() => {
@@ -253,6 +314,10 @@ export function AddLeagueForm({
           );
           isStepValid = !hasStep2Errors;
         }
+
+        if (isStepValid) {
+          isStepValid = !isSlugChecking && !hasSlugConflict;
+        }
       } else if (currentStep === 2) {
         isStepValid = true; // Step 3 has defaults
       }
@@ -267,13 +332,18 @@ export function AddLeagueForm({
     watchSlug,
     watchStartDate,
     onStepValidationChange,
-    trigger,
     watchGameName,
     getValues,
+    hasSlugConflict,
+    isSlugChecking,
     schema,
   ]);
 
   const onSubmit = async (values: AddLeagueValues) => {
+    if (isSlugChecking || hasSlugConflict) {
+      return;
+    }
+
     startTransition(async () => {
       const isElo = values.ratingSystem === "elo";
 
@@ -520,26 +590,39 @@ export function AddLeagueForm({
                 tooltip={t("slug.tooltip")}
                 required
               />
-              <input
-                type="text"
-                {...register("slug")}
-                onChange={(e) => {
-                  setValue(
-                    "slug",
-                    e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
-                    { shouldValidate: true },
-                  );
-                  setIsSlugModified(true);
-                }}
-                placeholder={t("slug.placeholder")}
-                className={cn(
-                  "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-                  errors.slug ? "border-red-500/50" : "border-white/10",
+              <div className="relative">
+                <input
+                  type="text"
+                  {...register("slug")}
+                  onChange={(e) => {
+                    setValue("slug", slugify(e.target.value), {
+                      shouldValidate: true,
+                    });
+                    setIsSlugModified(true);
+                  }}
+                  placeholder={t("slug.placeholder")}
+                  className={cn(
+                    "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 pr-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
+                    errors.slug || hasSlugConflict
+                      ? "border-red-500/50"
+                      : "border-white/10",
+                  )}
+                />
+                {isSlugChecking && (
+                  <LoaderCircle className="text-primary absolute top-1/2 right-4 size-4 -translate-y-1/2 animate-spin" />
                 )}
-              />
+              </div>
               {errors.slug && touchedFields.slug && (
                 <p className="ml-1 text-xs text-red-400">
                   {errors.slug.message}
+                </p>
+              )}
+              {!errors.slug && hasSlugConflict && (
+                <p className="ml-1 text-xs text-red-400">{t("slug.taken")}</p>
+              )}
+              {!errors.slug && !hasSlugConflict && isSlugChecking && (
+                <p className="text-primary ml-1 text-xs">
+                  {t("slug.checking")}
                 </p>
               )}
             </div>

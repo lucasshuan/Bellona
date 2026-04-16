@@ -147,6 +147,7 @@
         "label": "Link do Perfil",
         "placeholder": "Identificador único (sem espaços)",
         "description": "Personaliza a URL do seu perfil (ex: /profile/seunome).",
+        "checking": "Verificando disponibilidade...",
         "taken": "Este link de perfil já está em uso."
       },
       "name": {
@@ -237,7 +238,9 @@
       "slug": {
         "label": "Identificador",
         "placeholder": "identificador-da-liga",
-        "tooltip": "Personaliza a URL desta liga (ex: /events/pro-league)."
+        "tooltip": "Personaliza a URL desta liga (ex: /events/pro-league).",
+        "checking": "Verificando disponibilidade...",
+        "taken": "Este identificador já está em uso neste jogo."
       },
       "descriptionField": {
         "label": "Descrição",

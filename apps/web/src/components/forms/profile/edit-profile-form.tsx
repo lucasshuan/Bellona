@@ -8,11 +8,18 @@ import {
   useEditProfileSchema,
   type EditProfileValues,
 } from "@/schemas/profile";
-import { Globe, ChevronDown, Search, X, Check } from "lucide-react";
+import {
+  Globe,
+  ChevronDown,
+  Search,
+  X,
+  Check,
+  LoaderCircle,
+} from "lucide-react";
 import { createPortal } from "react-dom";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
-import { updateProfile } from "@/actions/user";
+import { checkUsernameAvailability, updateProfile } from "@/actions/user";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { useSession } from "next-auth/react";
 import { COUNTRIES } from "@/lib/countries";
@@ -82,6 +89,15 @@ export function EditProfileForm({
   });
 
   const country = useWatch({ control, name: "country" });
+  const username = useWatch({ control, name: "username" }) || "";
+  const [usernameAvailability, setUsernameAvailability] = useState<{
+    value: string;
+    status: "idle" | "available" | "conflict";
+  }>({
+    value: user.username,
+    status: "available",
+  });
+  const usernameRequestRef = useRef(0);
 
   // Country Selection Logic
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
@@ -153,11 +169,65 @@ export function EditProfileForm({
   }, [isPending, onLoadingChange]);
 
   // Notify parent about validation state
+  const normalizedUsername = username.trim().toLowerCase();
+  const canCheckUsername =
+    !!normalizedUsername &&
+    normalizedUsername !== user.username &&
+    schema.shape.username.safeParse(normalizedUsername).success;
+  const isUsernameChecking =
+    canCheckUsername && usernameAvailability.value !== normalizedUsername;
+  const hasUsernameConflict =
+    canCheckUsername &&
+    usernameAvailability.value === normalizedUsername &&
+    usernameAvailability.status === "conflict";
+  const isFormValid = isValid && !isUsernameChecking && !hasUsernameConflict;
+
   useEffect(() => {
-    onValidationChange?.(isValid);
-  }, [isValid, onValidationChange]);
+    onValidationChange?.(isFormValid);
+  }, [isFormValid, onValidationChange]);
+
+  useEffect(() => {
+    if (!canCheckUsername) {
+      usernameRequestRef.current += 1;
+      return;
+    }
+
+    const requestId = ++usernameRequestRef.current;
+
+    const timeoutId = window.setTimeout(async () => {
+      const result = await checkUsernameAvailability(
+        normalizedUsername,
+        user.id,
+      );
+
+      if (usernameRequestRef.current !== requestId) {
+        return;
+      }
+
+      if (!result.success) {
+        setUsernameAvailability({
+          value: normalizedUsername,
+          status: "available",
+        });
+        return;
+      }
+
+      setUsernameAvailability({
+        value: normalizedUsername,
+        status: result.data?.available ? "available" : "conflict",
+      });
+    }, 400);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [canCheckUsername, normalizedUsername, user.id]);
 
   const onSubmit = async (values: EditProfileValues) => {
+    if (isUsernameChecking || hasUsernameConflict) {
+      return;
+    }
+
     startTransition(async () => {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
@@ -223,20 +293,31 @@ export function EditProfileForm({
           htmlFor="username"
           required
         />
-        <input
-          type="text"
-          id="username"
-          {...register("username")}
-          placeholder={t("username.placeholder")}
-          className={cn(
-            "focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.username
-              ? "border-red-500/50"
-              : "focus:border-primary/50 border-white/10",
+        <div className="relative">
+          <input
+            type="text"
+            id="username"
+            {...register("username")}
+            placeholder={t("username.placeholder")}
+            className={cn(
+              "focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 pr-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
+              errors.username || hasUsernameConflict
+                ? "border-red-500/50"
+                : "focus:border-primary/50 border-white/10",
+            )}
+          />
+          {isUsernameChecking && (
+            <LoaderCircle className="text-primary absolute top-1/2 right-4 size-4 -translate-y-1/2 animate-spin" />
           )}
-        />
+        </div>
         {errors.username && (
           <p className="ml-1 text-xs text-red-400">{errors.username.message}</p>
+        )}
+        {!errors.username && hasUsernameConflict && (
+          <p className="ml-1 text-xs text-red-400">{t("username.taken")}</p>
+        )}
+        {!errors.username && !hasUsernameConflict && isUsernameChecking && (
+          <p className="text-primary ml-1 text-xs">{t("username.checking")}</p>
         )}
       </div>
 

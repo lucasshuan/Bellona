@@ -148,6 +148,7 @@
         "label": "Profile Link",
         "placeholder": "Unique identifier (no spaces)",
         "description": "Customizes your profile URL (e.g., /profile/yourname).",
+        "checking": "Checking availability...",
         "taken": "This profile link is already taken."
       },
       "name": {
@@ -238,7 +239,9 @@
       "slug": {
         "label": "Identifier",
         "placeholder": "league-identifier",
-        "tooltip": "Personalizes the URL for this league (e.g., /events/pro-league)."
+        "tooltip": "Personalizes the URL for this league (e.g., /events/pro-league).",
+        "checking": "Checking availability...",
+        "taken": "This identifier is already in use for this game."
       },
       "descriptionField": {
         "label": "Description",
