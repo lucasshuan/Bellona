@@ -24,23 +24,23 @@
       "pnpm -C apps/web codegen"
     ],
     "apps/web/**/*.{ts,tsx}": [
-      "pnpm -C apps/web exec eslint --fix",
-      "prettier --write"
+      "pnpm -C apps/web exec eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write --cache"
     ],
     "apps/api/**/*.ts": [
-      "pnpm -C apps/api exec eslint --fix",
-      "prettier --write"
+      "pnpm -C apps/api exec eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write --cache"
     ],
     "packages/core/**/*.{ts,tsx}": [
-      "pnpm -C packages/core exec eslint --fix",
-      "prettier --write"
+      "pnpm -C packages/core exec eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write --cache"
     ],
     "packages/db/**/*.{ts,tsx}": [
-      "pnpm -C packages/db exec eslint --fix",
-      "prettier --write"
+      "pnpm -C packages/db exec eslint --fix --cache --cache-location .eslintcache",
+      "prettier --write --cache"
     ],
     "*.{json,md,yml,yaml}": [
-      "prettier --write"
+      "prettier --write --cache"
     ]
   },
   "packageManager": "pnpm@9.1.1"
