@@ -10,8 +10,19 @@ import { routing } from "@/i18n/routing";
 import "./[locale]/globals.css";
 import "flag-icons/css/flag-icons.min.css";
 
+const metadataBaseUrl =
+  env.NEXTAUTH_URL ??
+  env.NEXT_PUBLIC_APP_URL ??
+  (env.NODE_ENV === "development" ? "http://localhost:3000" : null);
+
+if (!metadataBaseUrl) {
+  throw new Error(
+    "Missing site URL environment variable. Set NEXTAUTH_URL or NEXT_PUBLIC_APP_URL.",
+  );
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+  metadataBase: new URL(metadataBaseUrl),
   title: {
     default: "Ares",
     template: "%s | Ares",
