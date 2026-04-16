@@ -17,6 +17,7 @@ const eslintConfig = [
     ".next/**",
     "out/**",
     "build/**",
+    "codegen.js",
     "next-env.d.ts",
     "eslint.config.mjs",
     "postcss.config.mjs",

@@ -10,7 +10,7 @@
     "codegen": {
       "inputs": [
         "src/lib/apollo/queries/**/*.ts",
-        "codegen.ts",
+        "codegen.js",
         "../api/src/schema.gql"
       ],
       "outputs": ["src/lib/apollo/generated/**"]

@@ -1,6 +1,5 @@
-import type { CodegenConfig } from "@graphql-codegen/cli";
-
-const config: CodegenConfig = {
+/** @type {import("@graphql-codegen/cli").CodegenConfig} */
+const config = {
   overwrite: true,
   schema: "../api/src/schema.gql",
   documents: "src/lib/apollo/queries/**/*.ts",
