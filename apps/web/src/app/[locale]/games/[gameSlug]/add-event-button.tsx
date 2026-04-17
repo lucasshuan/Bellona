@@ -100,6 +100,7 @@ export function AddEventButton({
       <AddLeagueModal
         gameId={gameId}
         initialGame={game}
+        isGameFixed={true}
         isOpen={isAddLeagueOpen}
         onClose={() => setIsAddLeagueOpen(false)}
       />

@@ -81,7 +81,7 @@ export class LeaguesResolver {
 
   @Mutation(() => LeagueEntry)
   @UseGuards(GqlAuthGuard, PermissionsGuard)
-  @RequiredPermissions('manage_leagues')
+  @RequiredPermissions('manage_events')
   async addPlayerToLeague(
     @Args('leagueId', { type: () => ID }) leagueId: string,
     @Args('playerId', { type: () => ID }) playerId: string,

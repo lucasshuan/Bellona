@@ -47,6 +47,7 @@ interface AddLeagueFormProps {
   formId: string;
   currentStep: number;
   initialGame?: SimpleGame;
+  isGameFixed?: boolean;
 }
 
 export function AddLeagueForm({
@@ -58,6 +59,7 @@ export function AddLeagueForm({
   formId,
   currentStep,
   initialGame,
+  isGameFixed,
 }: AddLeagueFormProps) {
   const t = useTranslations("Modals.AddLeague");
   const locale = useLocale();
@@ -417,8 +419,10 @@ export function AddLeagueForm({
                     setShowResults(true);
                     if (selectedGame) setSelectedGame(null);
                   }}
+                  disabled={isGameFixed}
                   className={cn(
                     "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 py-3.5 pr-4 pl-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
+                    "disabled:cursor-not-allowed disabled:opacity-50",
                     errors.gameId || errors.gameName
                       ? "border-red-500/50"
                       : "border-white/10",

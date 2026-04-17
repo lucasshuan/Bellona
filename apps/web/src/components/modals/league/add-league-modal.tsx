@@ -13,6 +13,7 @@ interface AddLeagueModalProps {
   initialGame?: SimpleGame;
   isOpen: boolean;
   onClose: () => void;
+  isGameFixed?: boolean;
 }
 
 export function AddLeagueModal({
@@ -20,6 +21,7 @@ export function AddLeagueModal({
   initialGame,
   isOpen,
   onClose,
+  isGameFixed,
 }: AddLeagueModalProps) {
   const t = useTranslations("Modals.AddLeague");
   const locale = useLocale();
@@ -126,6 +128,7 @@ export function AddLeagueModal({
           formId="add-league-form"
           gameId={gameId}
           initialGame={initialGame}
+          isGameFixed={isGameFixed}
           currentStep={currentStep}
           onSuccess={handleClose}
           onLoadingChange={setIsLoading}
