@@ -67,9 +67,9 @@ export function ConfirmModal({
           <div
             className={cn(
               "animate-pop-in mb-6 flex size-20 items-center justify-center rounded-full bg-white/5",
-              variant === "danger" && "bg-red-500/10 text-red-400",
-              variant === "success" && "bg-green-500/10 text-green-400",
-              variant === "warning" && "bg-yellow-500/10 text-yellow-400",
+              variant === "danger" && "bg-danger/10 text-danger",
+              variant === "success" && "bg-success/10 text-success",
+              variant === "warning" && "bg-warning/10 text-warning",
               variant === "info" && "bg-primary/10 text-primary",
             )}
           >

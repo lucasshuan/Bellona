@@ -442,11 +442,11 @@ export function AddLeagueForm({
                   }}
                   disabled={isGameFixed}
                   className={cn(
-                    "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 py-3.5 pr-4 pl-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
+                    "field-base py-3.5 pr-4 pl-12",
                     "disabled:cursor-not-allowed disabled:opacity-50",
                     errors.gameId || errors.gameName
-                      ? "border-red-500/50"
-                      : "border-white/10",
+                      ? "field-border-error"
+                      : "field-border-default",
                   )}
                 />
                 {isGamesLoading && (
@@ -525,7 +525,7 @@ export function AddLeagueForm({
             </div>
 
             {/* Box de Preview ou Aviso */}
-            <div className="relative flex h-[180px] flex-col items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/2 p-6 transition-all">
+            <div className="relative flex h-45 flex-col items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/2 p-6 transition-all">
               {selectedGame ? (
                 <div className="animate-in fade-in zoom-in-95 flex w-full flex-col gap-4 duration-300">
                   <div className="flex items-center gap-4">
@@ -562,14 +562,14 @@ export function AddLeagueForm({
                 !hasExactMatch &&
                 !isGamesLoading ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 flex w-full flex-col items-center justify-center gap-4 text-center duration-500">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-warning/10 text-warning">
                     <AlertTriangle className="size-6" />
                   </div>
                   <div className="w-full space-y-2">
                     <p className="text-sm font-bold tracking-wider text-white uppercase">
                       {t("gameSelect.newGameWarning")}
                     </p>
-                    <p className="mx-auto max-w-[440px] text-xs leading-relaxed text-white/30">
+                    <p className="mx-auto max-w-110 text-xs leading-relaxed text-white/30">
                       {t("gameSelect.newGameInstructions")}
                     </p>
                   </div>
@@ -598,12 +598,12 @@ export function AddLeagueForm({
                 {...register("name")}
                 placeholder={t("name.placeholder")}
                 className={cn(
-                  "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-                  errors.name ? "border-red-500/50" : "border-white/10",
+                    "field-base",
+                    errors.name ? "field-border-error" : "field-border-default",
                 )}
               />
               {errors.name && touchedFields.name && (
-                <p className="ml-1 text-xs text-red-400">
+                <p className="field-error-text">
                   {errors.name.message}
                 </p>
               )}
@@ -627,29 +627,29 @@ export function AddLeagueForm({
                   }}
                   placeholder={t("slug.placeholder")}
                   className={cn(
-                    "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 pr-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
+                    "field-with-icon",
                     errors.slug || hasSlugConflict
-                      ? "border-red-500/50"
-                      : "border-white/10",
+                      ? "field-border-error"
+                      : "field-border-default",
                   )}
                 />
                 {isSlugChecking ? (
                   <LoaderCircle className="absolute top-1/2 right-4 size-4 -translate-y-1/2 animate-spin text-white/20" />
                 ) : canCheckSlug && !errors.slug ? (
                   hasSlugConflict ? (
-                    <X className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-red-500" />
+                    <X className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-danger" />
                   ) : (
-                    <Check className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-emerald-500" />
+                    <Check className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-success" />
                   )
                 ) : null}
               </div>
               {errors.slug && touchedFields.slug && (
-                <p className="ml-1 text-xs text-red-400">
+                <p className="field-error-text">
                   {errors.slug.message}
                 </p>
               )}
               {!errors.slug && hasSlugConflict && (
-                <p className="ml-1 text-xs text-red-400">{t("slug.taken")}</p>
+                <p className="field-error-text">{t("slug.taken")}</p>
               )}
             </div>
 
@@ -659,12 +659,14 @@ export function AddLeagueForm({
                 {...register("description")}
                 placeholder={t("descriptionField.placeholder")}
                 className={cn(
-                  "focus:border-primary/50 focus:ring-primary/10 custom-scrollbar min-h-[80px] w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-                  errors.description ? "border-red-500/50" : "border-white/10",
+                  "field-textarea custom-scrollbar min-h-20",
+                  errors.description
+                    ? "field-border-error"
+                    : "field-border-default",
                 )}
               />
               {errors.description && touchedFields.description && (
-                <p className="ml-1 text-xs text-red-400">
+                <p className="field-error-text">
                   {errors.description.message}
                 </p>
               )}
@@ -685,7 +687,7 @@ export function AddLeagueForm({
                 )}
               />
               {errors.startDate && touchedFields.startDate && (
-                <p className="ml-1 text-xs text-red-400">
+                <p className="field-error-text">
                   {errors.startDate.message}
                 </p>
               )}
@@ -1073,7 +1075,7 @@ export function AddLeagueForm({
                           </div>
                           {inactivityDecay > 0 && (
                             <div className="flex items-center gap-3">
-                              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5 text-red-500/50">
+                              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5 text-danger/50">
                                 <Activity className="size-3" />
                               </div>
                               <span>
@@ -1089,7 +1091,7 @@ export function AddLeagueForm({
                       ) : (
                         <div className="grid gap-3">
                           <div className="flex items-center gap-3">
-                            <ArrowUpRight className="size-4 text-emerald-500" />
+                            <ArrowUpRight className="size-4 text-success" />
                             <span className="text-white/80">
                               {t("explanation.points.win", {
                                 amount: pointsPerWin || 0,
@@ -1098,7 +1100,7 @@ export function AddLeagueForm({
                           </div>
                           {allowDraw && (
                             <div className="flex items-center gap-3">
-                              <Equal className="size-4 text-amber-500" />
+                              <Equal className="size-4 text-warning" />
                               <span className="text-white/80">
                                 {t("explanation.points.draw", {
                                   amount: pointsPerDraw || 0,
@@ -1107,7 +1109,7 @@ export function AddLeagueForm({
                             </div>
                           )}
                           <div className="flex items-center gap-3">
-                            <ArrowDownRight className="size-4 text-rose-500" />
+                            <ArrowDownRight className="size-4 text-danger" />
                             <span className="text-white/80">
                               {t("explanation.points.loss", {
                                 amount: pointsPerLoss || 0,
@@ -1163,7 +1165,7 @@ export function AddLeagueForm({
           </div>
 
           {allowedFormats.length === 0 && (
-            <p className="text-xs text-red-400">{t("matchFormats.required")}</p>
+            <p className="text-xs text-danger">{t("matchFormats.required")}</p>
           )}
         </section>
       )}

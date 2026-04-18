@@ -21,7 +21,7 @@ export function PrimaryAction({
   const variantStyles = {
     primary:
       "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/50",
-    red: "border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:border-red-500/50",
+    red: "border-danger/30 bg-danger/10 text-danger hover:border-danger/50 hover:bg-danger/20",
   };
 
   return (

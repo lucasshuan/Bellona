@@ -342,6 +342,18 @@ O deploy básico já existe via GitHub -> Vercel/Render, então CD não é o gar
   - [x] Usar camadas diferentes de relevância de logs (debug, info, warn, error) e permitir filtrar por elas.
   - dificuldade: média | impacto: médio
 
+- [ ] **4.3 Corrigir inconsistências de UI**
+  - [ ] Unificar o design dos modais e formulários para criar uma experiência mais coesa.
+  - [ ] Garantir que as mensagens de erro sejam claras e consistentes em toda a aplicação.
+  - arquivos afetados: `apps/web/src/components/*`
+  - dificuldade: média | impacto: baixo
+
+- [x] **4.4 Corrigir Tailwind e estilos**
+  - [x] Certificar-se de que não existem cores hardcoded e que todas as cores estão utilizando as variáveis definidas no Tailwind.
+  - [x] Garantir que os estilos sejam consistentes e reutilizáveis, evitando duplicação de código CSS.
+  - arquivos afetados: `apps/web/src/**/*.tsx`
+  - dificuldade: média | impacto: baixo
+
 ## Validation Basis
 
 - `tsc --noEmit` passou em `apps/web`, `apps/api`, `packages/core` e `packages/db`

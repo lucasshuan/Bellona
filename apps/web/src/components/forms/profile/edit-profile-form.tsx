@@ -275,14 +275,12 @@ export function EditProfileForm({
           {...register("name")}
           placeholder={t("name.placeholder")}
           className={cn(
-            "focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.name
-              ? "border-red-500/50"
-              : "focus:border-primary/50 border-white/10",
+            "field-base",
+            errors.name ? "field-border-error" : "field-border-default",
           )}
         />
         {errors.name && (
-          <p className="ml-1 text-xs text-red-400">{errors.name.message}</p>
+          <p className="field-error-text">{errors.name.message}</p>
         )}
       </div>
 
@@ -300,27 +298,27 @@ export function EditProfileForm({
             {...register("username")}
             placeholder={t("username.placeholder")}
             className={cn(
-              "focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 pr-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
+              "field-with-icon",
               errors.username || hasUsernameConflict
-                ? "border-red-500/50"
-                : "focus:border-primary/50 border-white/10",
+                ? "field-border-error"
+                : "field-border-default",
             )}
           />
           {isUsernameChecking ? (
             <LoaderCircle className="absolute top-1/2 right-4 size-4 -translate-y-1/2 animate-spin text-white/20" />
           ) : canCheckUsername && !errors.username ? (
             hasUsernameConflict ? (
-              <X className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-red-500" />
+              <X className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-danger" />
             ) : (
-              <Check className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-emerald-500" />
+              <Check className="absolute top-1/2 right-4 size-4 -translate-y-1/2 text-success" />
             )
           ) : null}
         </div>
         {errors.username && (
-          <p className="ml-1 text-xs text-red-400">{errors.username.message}</p>
+          <p className="field-error-text">{errors.username.message}</p>
         )}
         {!errors.username && hasUsernameConflict && (
-          <p className="ml-1 text-xs text-red-400">{t("username.taken")}</p>
+          <p className="field-error-text">{t("username.taken")}</p>
         )}
       </div>
 
@@ -473,12 +471,12 @@ export function EditProfileForm({
           placeholder={t("bio.placeholder")}
           rows={3}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 custom-scrollbar w-full resize-none rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.bio ? "border-red-500/50" : "border-white/10",
+            "field-textarea custom-scrollbar",
+            errors.bio ? "field-border-error" : "field-border-default",
           )}
         />
         {errors.bio && (
-          <p className="ml-1 text-xs text-red-400">{errors.bio.message}</p>
+          <p className="field-error-text">{errors.bio.message}</p>
         )}
       </div>
       <div className="col-span-full flex flex-col gap-3">
@@ -500,7 +498,7 @@ export function EditProfileForm({
                     className={cn(
                       "relative flex size-8 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-110 active:scale-95",
                       field.value === color &&
-                        "ring-primary ring-2 ring-offset-2 ring-offset-[#0b080f]",
+                        "ring-primary ring-2 ring-offset-2 ring-offset-background",
                     )}
                     style={{ backgroundColor: color }}
                   >

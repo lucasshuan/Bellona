@@ -129,7 +129,7 @@ export function DateInput({
         <Popover.Portal>
           <Popover.Content sideOffset={8} align="end" className="z-9999">
             <div
-              className="animate-in fade-in zoom-in-95 transform-gpu rounded-2xl border border-white/20 bg-black/50 p-1 shadow-2xl duration-200"
+              className="animate-in fade-in zoom-in-95 transform-gpu rounded-2xl border border-white/20 bg-card-strong/60 p-1 shadow-2xl duration-200"
               style={{
                 backdropFilter: "blur(16px)",
                 WebkitBackdropFilter: "blur(16px)",

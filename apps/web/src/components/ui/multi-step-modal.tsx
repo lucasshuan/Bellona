@@ -137,7 +137,7 @@ export function MultiStepModal({
                       isActive
                         ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                         : isPast || isUnlocked
-                          ? "cursor-pointer border-emerald-500/20 bg-emerald-500/5 text-emerald-500/70 hover:bg-emerald-500/10"
+                          ? "cursor-pointer border-success/20 bg-success/5 text-success/70 hover:bg-success/10"
                           : "cursor-not-allowed border-white/5 bg-white/5 text-white/30",
                     )}
                   >
@@ -147,7 +147,7 @@ export function MultiStepModal({
                         isActive
                           ? "bg-primary text-white"
                           : isPast || isUnlocked
-                            ? "bg-emerald-500 text-white"
+                            ? "bg-success text-white"
                             : "bg-white/10 text-white/40",
                       )}
                     >
@@ -163,7 +163,7 @@ export function MultiStepModal({
                       className={cn(
                         "h-px w-6",
                         isPast || isUnlocked
-                          ? "bg-emerald-500/20"
+                          ? "bg-success/20"
                           : "bg-white/5",
                       )}
                     />

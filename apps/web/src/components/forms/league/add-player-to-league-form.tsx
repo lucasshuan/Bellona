@@ -138,8 +138,8 @@ export function AddPlayerToLeagueForm({
           type="text"
           placeholder={t("search.placeholder")}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 pt-3.5 pr-12 pb-3.5 pl-12 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.username ? "border-red-500/50" : "border-white/10",
+            "field-base pt-3.5 pr-12 pb-3.5 pl-12",
+            errors.username ? "field-border-error" : "field-border-default",
           )}
         />
         {isSearching && (
@@ -150,7 +150,7 @@ export function AddPlayerToLeagueForm({
       </div>
 
       {errors.username && (
-        <p className="ml-1 text-xs text-red-400">{errors.username.message}</p>
+        <p className="field-error-text">{errors.username.message}</p>
       )}
 
       <div className="space-y-2">
@@ -185,14 +185,14 @@ export function AddPlayerToLeagueForm({
         {hasSearched &&
           searchResults.length === 0 &&
           searchQuery.length >= 2 && (
-            <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4">
+            <div className="rounded-2xl border border-warning/20 bg-warning/5 p-4">
               <div className="flex items-start gap-4">
-                <AlertCircle className="mt-0.5 size-5 text-yellow-500" />
+                <AlertCircle className="mt-0.5 size-5 text-warning" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-500">
+                  <p className="text-sm font-medium text-warning">
                     {t("search.notFound")}
                   </p>
-                  <p className="mt-1 text-xs text-yellow-500/60">
+                  <p className="mt-1 text-xs text-warning/60">
                     {t("createPlayer.warning")}
                   </p>
                   <button

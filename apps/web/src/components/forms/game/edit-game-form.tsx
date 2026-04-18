@@ -93,12 +93,12 @@ export function EditGameForm({
           {...register("name")}
           placeholder={t("name.placeholder")}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.name ? "border-red-500/50" : "border-white/10",
+            "field-base",
+            errors.name ? "field-border-error" : "field-border-default",
           )}
         />
         {errors.name && (
-          <p className="ml-1 text-xs text-red-400">{errors.name.message}</p>
+          <p className="field-error-text">{errors.name.message}</p>
         )}
       </div>
 
@@ -115,12 +115,12 @@ export function EditGameForm({
           {...register("description")}
           placeholder={t("descriptionField.placeholder")}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 custom-scrollbar w-full resize-none rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.description ? "border-red-500/50" : "border-white/10",
+            "field-textarea custom-scrollbar",
+            errors.description ? "field-border-error" : "field-border-default",
           )}
         />
         {errors.description && (
-          <p className="ml-1 text-xs text-red-400">
+          <p className="field-error-text">
             {errors.description.message}
           </p>
         )}
@@ -138,12 +138,14 @@ export function EditGameForm({
           type="text"
           {...register("backgroundImageUrl")}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.backgroundImageUrl ? "border-red-500/50" : "border-white/10",
+            "field-base",
+            errors.backgroundImageUrl
+              ? "field-border-error"
+              : "field-border-default",
           )}
         />
         {errors.backgroundImageUrl && (
-          <p className="ml-1 text-xs text-red-400">
+          <p className="field-error-text">
             {errors.backgroundImageUrl.message}
           </p>
         )}
@@ -161,12 +163,14 @@ export function EditGameForm({
           type="text"
           {...register("thumbnailImageUrl")}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.thumbnailImageUrl ? "border-red-500/50" : "border-white/10",
+            "field-base",
+            errors.thumbnailImageUrl
+              ? "field-border-error"
+              : "field-border-default",
           )}
         />
         {errors.thumbnailImageUrl && (
-          <p className="ml-1 text-xs text-red-400">
+          <p className="field-error-text">
             {errors.thumbnailImageUrl.message}
           </p>
         )}
@@ -184,12 +188,12 @@ export function EditGameForm({
           type="text"
           {...register("steamUrl")}
           className={cn(
-            "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-            errors.steamUrl ? "border-red-500/50" : "border-white/10",
+            "field-base",
+            errors.steamUrl ? "field-border-error" : "field-border-default",
           )}
         />
         {errors.steamUrl && (
-          <p className="ml-1 text-xs text-red-400">{errors.steamUrl.message}</p>
+          <p className="field-error-text">{errors.steamUrl.message}</p>
         )}
       </div>
     </form>

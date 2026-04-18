@@ -158,8 +158,8 @@ export function AddPlayerForm({
             {...register("username")}
             placeholder={t("username.placeholder")}
             className={cn(
-              "focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border bg-white/5 px-5 py-3 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4",
-              errors.username ? "border-red-500/50" : "border-white/10",
+              "field-base",
+              errors.username ? "field-border-error" : "field-border-default",
             )}
           />
           {selectedUser && (
@@ -173,7 +173,7 @@ export function AddPlayerForm({
           )}
         </div>
         {errors.username && (
-          <p className="ml-1 text-xs text-red-400">{errors.username.message}</p>
+          <p className="field-error-text">{errors.username.message}</p>
         )}
       </div>
 
@@ -190,7 +190,7 @@ export function AddPlayerForm({
               value={searchQuery}
               onChange={handleSearchQueryChange}
               placeholder={t("link.placeholder")}
-              className="focus:border-primary/50 focus:ring-primary/10 w-full rounded-2xl border border-white/10 bg-white/5 py-3 pr-4 pl-11 text-sm text-white transition-all outline-none placeholder:text-white/20 focus:bg-white/[0.07] focus:ring-4"
+              className="field-base border-white/10 py-3 pr-4 pl-11"
             />
           </div>
 
