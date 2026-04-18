@@ -207,7 +207,7 @@ export function DropdownMenu({
               zIndex: 1000,
             }}
             className={cn(
-              "animate-in fade-in zoom-in-95 glass-panel min-w-[200px] overflow-hidden rounded-2xl bg-[#0d0a14] p-1.5 shadow-2xl ring-1 ring-white/10",
+              "animate-in fade-in zoom-in-95 glass-panel min-w-50 overflow-hidden rounded-2xl bg-[#0d0a14] p-1.5 shadow-2xl ring-1 ring-white/10",
               coords.actualSide === "right"
                 ? "slide-in-from-left-2"
                 : "slide-in-from-top-2",

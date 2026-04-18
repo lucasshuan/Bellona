@@ -55,7 +55,7 @@
     "noPlayers": "Nenhum jogador ainda."
   },
   "GamesPage": {
-    "title": "Comunidades",
+    "title": "Jogos",
     "description": "Escolha um jogo para visualizar suas ligas, histórico de desempenho e tabelas.",
     "cardFallbackDescription": "Abra a página do jogo para inspecionar as ligas atuais.",
     "noGamesTitle": "Nenhum jogo disponível",
@@ -202,6 +202,10 @@
       "name": {
         "label": "Nome do Jogo",
         "placeholder": "Digite o nome do jogo..."
+      },
+      "slug": {
+        "label": "Identificador",
+        "placeholder": "identificador-do-jogo"
       },
       "descriptionField": {
         "label": "Descrição",

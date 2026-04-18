@@ -46,6 +46,11 @@ export class UpdateGameInput {
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
+  slug?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
   description?: string;
 
   @Field({ nullable: true })

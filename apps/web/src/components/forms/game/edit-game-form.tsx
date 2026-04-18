@@ -1,8 +1,7 @@
 "use client";
 
 import { useTransition, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";import { zodResolver } from "@hookform/resolvers/zod";
 import { useEditGameSchema, type EditGameValues } from "@/schemas/game";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -35,11 +34,13 @@ export function EditGameForm({
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors, isValid },
   } = useForm<EditGameValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: game.name,
+      slug: game.slug,
       description: game.description || "",
       backgroundImageUrl: game.backgroundImageUrl || "",
       thumbnailImageUrl: game.thumbnailImageUrl || "",
@@ -74,6 +75,7 @@ export function EditGameForm({
 
       const result = await updateGame(game.id, {
         ...values,
+        slug: values.slug,
         backgroundImageUrl,
         thumbnailImageUrl,
         steamUrl: values.steamUrl || null,
@@ -95,7 +97,7 @@ export function EditGameForm({
       onSubmit={handleSubmit(onSubmit)}
       className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2"
     >
-      <div className="col-span-full flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="name"
           className="ml-1 text-sm font-medium text-white/70"
@@ -114,6 +116,36 @@ export function EditGameForm({
         />
         {errors.name && (
           <p className="field-error-text">{errors.name.message}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="slug"
+          className="ml-1 text-sm font-medium text-white/70"
+        >
+          {t("slug.label")}
+        </label>
+        <input
+          id="slug"
+          type="text"
+          {...register("slug")}
+          onChange={(e) => {
+            const sanitized = e.target.value
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace(/[^a-z0-9_-]/g, "");
+            setValue("slug", sanitized, { shouldValidate: true });
+          }}
+          placeholder={t("slug.placeholder")}
+          className={cn(
+            "field-base",
+            errors.slug ? "field-border-error" : "field-border-default",
+          )}
+        />
+        {errors.slug && (
+          <p className="field-error-text">{errors.slug.message}</p>
         )}
       </div>
 

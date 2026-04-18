@@ -5,7 +5,6 @@ import {
   User as UserIcon,
   Medal,
   Gamepad2,
-  Edit2,
   Calendar,
 } from "lucide-react";
 import { GET_USER } from "@/lib/apollo/queries/user";
@@ -13,8 +12,7 @@ import { GetUserQuery } from "@/lib/apollo/generated/graphql";
 import { getServerAuthSession } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import { buttonVariants } from "@/components/ui/button";
-import { EditProfileTrigger } from "@/components/triggers/profile/edit-profile-trigger";
-import { ActionButton } from "@/components/ui/action-button";
+import { ProfileManageActions } from "./profile-manage-actions";
 import { ProfileTabs } from "@/components/ui/tabs";
 import { Metadata } from "next";
 import { safeServerQuery } from "@/lib/apollo/safe-server-query";
@@ -49,7 +47,6 @@ export async function generateMetadata({
 export default async function UserProfilePage({ params }: ProfilePageProps) {
   const session = await getServerAuthSession();
   const t = await getTranslations("ProfilePage");
-  const tModals = await getTranslations("Modals");
   const { username, locale } = await params;
 
   const data = await safeServerQuery<GetUserQuery>({
@@ -95,59 +92,57 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
         {/* Sidebar */}
         <aside className="w-full shrink-0 lg:w-[320px] xl:w-90">
           <div className="sticky top-28 flex flex-col gap-4">
-            <div className="glass-panel overflow-hidden rounded-4xl">
-              {/* Subtle decorations removed */}
+            <div>
+              <div className={`glass-panel overflow-hidden rounded-4xl${isOwnProfile ? " rounded-br-none" : ""}`}>
+                {/* Subtle decorations removed */}
 
-              <div className="relative z-10 flex flex-col items-center p-8 text-center">
-                {targetUser.imageUrl ? (
-                  <Image
-                    src={targetUser.imageUrl}
-                    alt={targetUser.name ?? targetUser.username ?? "Avatar"}
-                    width={140}
-                    height={140}
-                    className="size-32 rounded-full object-cover shadow-xl"
-                  />
-                ) : (
-                  <div className="flex size-32 items-center justify-center rounded-full bg-white/5 shadow-xl">
-                    <UserIcon className="size-14 text-white/50" />
+                <div className="relative z-10 flex flex-col items-center p-8 text-center">
+                  {targetUser.imageUrl ? (
+                    <Image
+                      src={targetUser.imageUrl}
+                      alt={targetUser.name ?? targetUser.username ?? "Avatar"}
+                      width={140}
+                      height={140}
+                      className="size-32 rounded-full object-cover shadow-xl"
+                    />
+                  ) : (
+                    <div className="flex size-32 items-center justify-center rounded-full bg-white/5 shadow-xl">
+                      <UserIcon className="size-14 text-white/50" />
+                    </div>
+                  )}
+
+                  <h1 className="mt-6 text-2xl font-bold tracking-tight">
+                    {targetUser.name ?? targetUser.username ?? t("fallbackUser")}
+                  </h1>
+
+                  {targetUser.bio ? (
+                    <p className="mt-6 max-w-70 text-sm leading-relaxed text-white/60">
+                      {targetUser.bio}
+                    </p>
+                  ) : isOwnProfile ? (
+                    <p className="mt-6 text-xs text-white/30 italic">
+                      Você ainda não definiu uma biografia.
+                    </p>
+                  ) : null}
+
+                  <div className="mt-6 flex items-center gap-2 text-xs font-medium text-white/40">
+                    <Calendar className="size-3.5" />
+                    <span>
+                      {t("joined")}{" "}
+                      {new Intl.DateTimeFormat(locale, {
+                        month: "long",
+                        year: "numeric",
+                      }).format(new Date(targetUser.createdAt))}
+                    </span>
                   </div>
-                )}
-
-                <h1 className="mt-6 text-2xl font-bold tracking-tight">
-                  {targetUser.name ?? targetUser.username ?? t("fallbackUser")}
-                </h1>
-
-                {targetUser.bio ? (
-                  <p className="mt-6 max-w-70 text-sm leading-relaxed text-white/60">
-                    {targetUser.bio}
-                  </p>
-                ) : isOwnProfile ? (
-                  <p className="mt-6 text-xs text-white/30 italic">
-                    Você ainda não definiu uma biografia.
-                  </p>
-                ) : null}
-
-                <div className="mt-6 flex items-center gap-2 text-xs font-medium text-white/40">
-                  <Calendar className="size-3.5" />
-                  <span>
-                    {t("joined")}{" "}
-                    {new Intl.DateTimeFormat(locale, {
-                      month: "long",
-                      year: "numeric",
-                    }).format(new Date(targetUser.createdAt))}
-                  </span>
                 </div>
               </div>
+              {isOwnProfile && (
+                <div className="-mt-px flex w-full justify-end">
+                  <ProfileManageActions user={targetUser} />
+                </div>
+              )}
             </div>
-
-            {isOwnProfile && (
-              <EditProfileTrigger user={targetUser}>
-                <ActionButton
-                  icon={Edit2}
-                  label={tModals("EditProfile.trigger")}
-                />
-              </EditProfileTrigger>
-            )}
           </div>
         </aside>
 

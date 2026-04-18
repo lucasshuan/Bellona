@@ -95,7 +95,6 @@ export function AddLeagueModal({
     { label: t("steps.game") },
     { label: t("steps.general") },
     { label: t("steps.format") },
-    { label: t("steps.matchFormats") },
   ];
 
   const handleClose = () => {

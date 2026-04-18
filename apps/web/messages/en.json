@@ -55,7 +55,7 @@
     "noPlayers": "No players yet."
   },
   "GamesPage": {
-    "title": "Communities",
+    "title": "Games",
     "description": "Choose a game to view its leagues, performance history and ladders.",
     "cardFallbackDescription": "Open the game page to inspect current leagues.",
     "noGamesTitle": "No games available",
@@ -203,6 +203,10 @@
       "name": {
         "label": "Game Name",
         "placeholder": "Enter game name..."
+      },
+      "slug": {
+        "label": "Identifier",
+        "placeholder": "game-identifier"
       },
       "descriptionField": {
         "label": "Description",

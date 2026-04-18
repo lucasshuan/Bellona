@@ -24,6 +24,11 @@ export const getEditGameSchema = (t: TFunction) => {
       .string()
       .min(2, t("nameMin", { count: 2 }))
       .max(50, t("nameMax", { count: 50 })),
+    slug: z
+      .string()
+      .min(2, t("min", { count: 2 }))
+      .max(50, t("max", { count: 50 }))
+      .regex(/^[a-z0-9_-]+$/, t("slugFormat")),
     description: z
       .string()
       .max(500, t("descMax", { count: 500 }))

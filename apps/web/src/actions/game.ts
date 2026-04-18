@@ -77,6 +77,7 @@ export const updateGame = createSafeAction(
     gameId: string,
     data: {
       name: string;
+      slug: string;
       description: string | null;
       backgroundImageUrl: string | null;
       thumbnailImageUrl: string | null;
@@ -104,6 +105,7 @@ export const updateGame = createSafeAction(
         id: game.id,
         input: {
           name: data.name.trim(),
+          slug: data.slug.trim(),
           description: normalizeOptionalText(data.description),
           backgroundImageUrl: normalizeOptionalText(data.backgroundImageUrl),
           thumbnailImageUrl: normalizeOptionalText(data.thumbnailImageUrl),

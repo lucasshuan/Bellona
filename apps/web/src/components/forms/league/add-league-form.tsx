@@ -326,8 +326,6 @@ export function AddLeagueForm({
           isStepValid = !isSlugChecking && !hasSlugConflict;
         }
       } else if (currentStep === 2) {
-        isStepValid = true; // Rating config step has defaults
-      } else if (currentStep === 3) {
         isStepValid = allowedFormats.length > 0;
       }
       onStepValidationChange?.(isStepValid);
@@ -620,7 +618,12 @@ export function AddLeagueForm({
                   type="text"
                   {...register("slug")}
                   onChange={(e) => {
-                    setValue("slug", slugify(e.target.value), {
+                    const sanitized = e.target.value
+                      .toLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z0-9_-]/g, "");
+                    setValue("slug", sanitized, {
                       shouldValidate: true,
                     });
                     setIsSlugModified(true);
@@ -716,6 +719,45 @@ export function AddLeagueForm({
       {currentStep === 2 && (
         <section className="animate-in fade-in slide-in-from-right-4 space-y-8 duration-500">
           <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-4">
+              <LabelTooltip
+                label={t("matchFormats.title")}
+                tooltip={t("matchFormats.help")}
+                required
+              />
+
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {matchFormatOptions.map((option) => {
+                  const isSelected = allowedFormats.includes(option.value);
+
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => toggleMatchFormat(option.value)}
+                      className={cn(
+                        "flex items-center justify-between gap-1.5 rounded-xl border px-3 py-2 text-left transition-all",
+                        isSelected
+                          ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
+                          : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10",
+                      )}
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-xs font-bold">{option.label}</span>
+                        <span className="text-[10px] text-white/40 leading-tight">
+                          {option.description}
+                        </span>
+                      </div>
+                      {isSelected && <Check className="size-3 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {allowedFormats.length === 0 && (
+                <p className="text-xs text-danger">{t("matchFormats.required")}</p>
+              )}
+            </div>
             <div className="flex flex-col gap-4">
               <LabelTooltip label={t("ratingSystem.label")} />
               <div className="grid grid-cols-2 gap-3 sm:w-1/2">
@@ -1127,48 +1169,6 @@ export function AddLeagueForm({
         </section>
       )}
 
-      {/* Step 4: Match Formats */}
-      {currentStep === 3 && (
-        <section className="animate-in fade-in slide-in-from-right-4 space-y-8 duration-500">
-          <LabelTooltip
-            label={t("matchFormats.title")}
-            tooltip={t("matchFormats.help")}
-            required
-          />
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {matchFormatOptions.map((option) => {
-              const isSelected = allowedFormats.includes(option.value);
-
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => toggleMatchFormat(option.value)}
-                  className={cn(
-                    "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
-                    isSelected
-                      ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
-                      : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10",
-                  )}
-                >
-                  <div className="flex w-full items-center justify-between gap-2">
-                    <span className="text-sm font-bold">{option.label}</span>
-                    {isSelected && <Check className="size-4" />}
-                  </div>
-                  <span className="text-xs text-white/50">
-                    {option.description}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {allowedFormats.length === 0 && (
-            <p className="text-xs text-danger">{t("matchFormats.required")}</p>
-          )}
-        </section>
-      )}
     </form>
   );
 }

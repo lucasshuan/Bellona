@@ -21,7 +21,10 @@ export function UserMenu({ user: initialUser }: { user: UserProps }) {
   const { data: session } = useSession();
 
   // Use session user if available, fallback to initialUser from SSR
-  const user = (session?.user as unknown as UserProps) || initialUser;
+  const sessionUser = session?.user as unknown as UserProps | undefined;
+  const user: UserProps = sessionUser
+    ? { ...sessionUser, imageUrl: sessionUser.imageUrl ?? (session?.user?.image as string | null) ?? null }
+    : initialUser;
 
   return (
     <div className="group relative z-50">

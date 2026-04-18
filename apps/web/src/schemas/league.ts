@@ -19,7 +19,7 @@ export const getAddLeagueSchema = (t: TFunction) => {
         .string()
         .min(2, t("min", { count: 2 }))
         .max(50, t("max", { count: 50 }))
-        .regex(/^[a-z0-9-]+$/, t("slugFormat")),
+        .regex(/^[a-z0-9_-]+$/, t("slugFormat")),
       description: z
         .string()
         .max(500, t("descMax", { count: 500 }))
@@ -146,7 +146,7 @@ export const getEditLeagueSchema = (t: TFunction) => {
         .string()
         .min(2, t("min", { count: 2 }))
         .max(50, t("max", { count: 50 }))
-        .regex(/^[a-z0-9-]+$/, t("slugFormat")),
+        .regex(/^[a-z0-9_-]+$/, t("slugFormat")),
       description: z
         .string()
         .max(500, t("descMax", { count: 500 }))

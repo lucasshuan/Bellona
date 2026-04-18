@@ -179,6 +179,7 @@ export const authOptions = {
         session.user.id = token.id;
         session.user.username = token.username;
         session.user.image = token.imageUrl ?? null;
+        session.user.imageUrl = token.imageUrl ?? null;
         session.user.isAdmin = token.isAdmin;
         session.user.accessToken = token.accessToken;
         session.user.permissions = token.permissions ?? [];

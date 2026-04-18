@@ -285,18 +285,20 @@ export function EditProfileForm({
       className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2"
     >
       <div className="md:col-span-2">
-        <Controller
-          name="imageUrl"
-          control={control}
-          render={({ field }) => (
-            <ImageUploadInput
-              value={field.value}
-              onChange={field.onChange}
-              label={t("avatar.label")}
-              dropzoneClassName="h-32"
-            />
-          )}
-        />
+        <div className="w-25">
+          <Controller
+            name="imageUrl"
+            control={control}
+            render={({ field }) => (
+              <ImageUploadInput
+                value={field.value}
+                onChange={field.onChange}
+                label={t("avatar.label")}
+                dropzoneClassName="h-[100px]"
+              />
+            )}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">

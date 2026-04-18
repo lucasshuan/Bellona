@@ -30,7 +30,7 @@ type Documents = {
     "\n  mutation AddPlayerToGame($input: AddPlayerToGameInput!) {\n    addPlayerToGame(input: $input) {\n      id\n    }\n  }\n": typeof types.AddPlayerToGameDocument,
     "\n  query SearchPlayers($gameId: ID!, $query: String!) {\n    searchPlayers(gameId: $gameId, query: $query) {\n      nodes {\n        id\n        username\n        player {\n          id\n          user {\n            id\n            country\n          }\n        }\n      }\n    }\n  }\n": typeof types.SearchPlayersDocument,
     "\n  query GetPlayer($id: ID!) {\n    player(id: $id) {\n      id\n      currentElo\n      user {\n        name\n        username\n        imageUrl\n        country\n        createdAt\n      }\n      usernames {\n        id\n        username\n      }\n    }\n  }\n": typeof types.GetPlayerDocument,
-    "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n    }\n  }\n": typeof types.UpdateProfileDocument,
+    "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n      imageUrl\n    }\n  }\n": typeof types.UpdateProfileDocument,
     "\n  query GetUser($username: String!) {\n    user(username: $username) {\n      id\n      name\n      username\n      imageUrl\n      bio\n      profileColor\n      isAdmin\n      createdAt\n      players {\n        id\n        game {\n          id\n          name\n          slug\n          backgroundImageUrl\n        }\n        leagueEntries {\n          id\n          currentElo\n          position\n          league {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n": typeof types.GetUserDocument,
     "\n  query SearchUsers($pagination: PaginationInput, $query: String) {\n    searchUsers(pagination: $pagination, query: $query) {\n      nodes {\n        id\n        name\n        username\n        imageUrl\n      }\n      totalCount\n      hasNextPage\n    }\n  }\n": typeof types.SearchUsersDocument,
 };
@@ -51,7 +51,7 @@ const documents: Documents = {
     "\n  mutation AddPlayerToGame($input: AddPlayerToGameInput!) {\n    addPlayerToGame(input: $input) {\n      id\n    }\n  }\n": types.AddPlayerToGameDocument,
     "\n  query SearchPlayers($gameId: ID!, $query: String!) {\n    searchPlayers(gameId: $gameId, query: $query) {\n      nodes {\n        id\n        username\n        player {\n          id\n          user {\n            id\n            country\n          }\n        }\n      }\n    }\n  }\n": types.SearchPlayersDocument,
     "\n  query GetPlayer($id: ID!) {\n    player(id: $id) {\n      id\n      currentElo\n      user {\n        name\n        username\n        imageUrl\n        country\n        createdAt\n      }\n      usernames {\n        id\n        username\n      }\n    }\n  }\n": types.GetPlayerDocument,
-    "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n    }\n  }\n": types.UpdateProfileDocument,
+    "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n      imageUrl\n    }\n  }\n": types.UpdateProfileDocument,
     "\n  query GetUser($username: String!) {\n    user(username: $username) {\n      id\n      name\n      username\n      imageUrl\n      bio\n      profileColor\n      isAdmin\n      createdAt\n      players {\n        id\n        game {\n          id\n          name\n          slug\n          backgroundImageUrl\n        }\n        leagueEntries {\n          id\n          currentElo\n          position\n          league {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n": types.GetUserDocument,
     "\n  query SearchUsers($pagination: PaginationInput, $query: String) {\n    searchUsers(pagination: $pagination, query: $query) {\n      nodes {\n        id\n        name\n        username\n        imageUrl\n      }\n      totalCount\n      hasNextPage\n    }\n  }\n": types.SearchUsersDocument,
 };
@@ -137,7 +137,7 @@ export function graphql(source: "\n  query GetPlayer($id: ID!) {\n    player(id:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n    }\n  }\n"];
+export function graphql(source: "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n      imageUrl\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      id\n      username\n      name\n      imageUrl\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
