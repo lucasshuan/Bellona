@@ -13,6 +13,8 @@
   },
   "Navbar": {
     "dashboard": "Dashboard",
+    "games": "Jogos",
+    "events": "Eventos",
     "login": "Login",
     "logout": "Sair",
     "viewProfile": "Ver perfil",
@@ -41,6 +43,16 @@
       "noGamesDescription": "Adicione jogos ao banco de dados ou reconecte o banco atual para carregar a lista aqui.",
       "viewAll": "Ver todos os jogos"
     }
+  },
+  "EventsPage": {
+    "title": "Eventos",
+    "description": "Explore todas as ligas e torneios competitivos de todos os jogos.",
+    "noEventsTitle": "Nenhum evento disponível",
+    "noEventsDescription": "Os eventos aparecerão aqui quando forem criados.",
+    "players": "{count, plural, one {# jogador} other {# jogadores}}",
+    "leagueType": "Liga",
+    "tournamentType": "Torneio",
+    "noPlayers": "Nenhum jogador ainda."
   },
   "GamesPage": {
     "title": "Comunidades",

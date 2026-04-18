@@ -346,3 +346,35 @@ button:hover {
     transform: translate(0, 0) skewX(0deg);
   }
 }
+
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border-rotate {
+  to { --border-angle: 360deg; }
+}
+
+.border-glow-animation {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 6%,
+    var(--primary) 10%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 14%,
+    transparent 20%,
+    transparent 50%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 56%,
+    var(--primary) 60%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 64%,
+    transparent 70%,
+    transparent 100%
+  );
+  animation: border-rotate 4s linear infinite;
+}
+
+.border-glow-animation button:hover {
+  transform: none;
+}

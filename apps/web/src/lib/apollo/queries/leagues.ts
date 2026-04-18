@@ -1,5 +1,44 @@
 import { gql } from "@apollo/client";
 
+export const GET_LEAGUES = gql`
+  query GetLeagues($pagination: PaginationInput) {
+    leagues(pagination: $pagination) {
+      nodes {
+        id
+        name
+        slug
+        description
+        type
+        ratingSystem
+        isApproved
+        createdAt
+        game {
+          id
+          name
+          slug
+          thumbnailImageUrl
+        }
+        entries {
+          id
+          currentElo
+          position
+          player {
+            id
+            user {
+              id
+              name
+              username
+              country
+            }
+          }
+        }
+      }
+      totalCount
+      hasNextPage
+    }
+  }
+`;
+
 export const GET_LEAGUE = gql`
   query GetLeague($gameSlug: String!, $leagueSlug: String!) {
     league(gameSlug: $gameSlug, slug: $leagueSlug) {

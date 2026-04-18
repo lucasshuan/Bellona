@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCheck, ChevronDown, Settings2, UserPlus } from "lucide-react";
+import { CheckCheck, ChevronDown, Settings2 } from "lucide-react";
 import { type Game } from "@/lib/apollo/generated/graphql";
 import { useTranslations } from "next-intl";
 import { DropdownItem, DropdownMenu } from "@/components/ui/dropdown-menu";
 import { EditGameModal } from "@/components/modals/game/edit-game-modal";
-import { AddPlayerModal } from "@/components/modals/game/add-player-modal";
 import { ApproveGameModal } from "@/components/modals/game/approve-game-modal";
 
 interface PageAdminActionsProps {
@@ -24,7 +23,6 @@ export function PageAdminActions({
 }: PageAdminActionsProps) {
   const t = useTranslations();
   const [isEditGameOpen, setIsEditGameOpen] = useState(false);
-  const [isAddPlayerOpen, setIsAddPlayerOpen] = useState(false);
   const [isApproveOpen, setIsApproveOpen] = useState(false);
 
   return (
@@ -33,14 +31,16 @@ export function PageAdminActions({
         align="end"
         width={280}
         trigger={
-          <button
-            type="button"
-            className="glass-panel hover:border-primary/30 flex h-11 items-center gap-2 rounded-2xl border border-white/10 px-4 text-xs font-bold tracking-wider text-white/80 uppercase transition-all hover:bg-white/10"
-          >
-            <Settings2 className="size-4" />
-            <span>{t("Admin.panel")}</span>
-            <ChevronDown className="size-4 text-white/50" />
-          </button>
+          <div className="border-glow-animation rounded-2xl p-px transition-transform hover:-translate-y-0.5">
+            <button
+              type="button"
+              className="flex h-11 items-center gap-2 rounded-[15px] bg-[#0e0a12] px-4 text-xs font-bold tracking-wider text-white/80 uppercase transition-colors hover:translate-y-0 hover:bg-[#130e18]"
+            >
+              <Settings2 className="size-4" />
+              <span>{t("Admin.panel")}</span>
+              <ChevronDown className="size-4 text-white/50" />
+            </button>
+          </div>
         }
       >
         {canEditGame && (
@@ -60,15 +60,6 @@ export function PageAdminActions({
             {t("Modals.ApproveGame.trigger")}
           </DropdownItem>
         )}
-
-        {game.status === "APPROVED" && canManagePlayers && (
-          <DropdownItem
-            icon={UserPlus}
-            onClick={() => setIsAddPlayerOpen(true)}
-          >
-            {t("Modals.AddPlayer.trigger")}
-          </DropdownItem>
-        )}
       </DropdownMenu>
 
       {canEditGame && (
@@ -76,14 +67,6 @@ export function PageAdminActions({
           game={game}
           isOpen={isEditGameOpen}
           onClose={() => setIsEditGameOpen(false)}
-        />
-      )}
-
-      {game.status === "APPROVED" && canManagePlayers && (
-        <AddPlayerModal
-          gameId={game.id}
-          isOpen={isAddPlayerOpen}
-          onClose={() => setIsAddPlayerOpen(false)}
         />
       )}
 

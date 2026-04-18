@@ -13,6 +13,8 @@
   },
   "Navbar": {
     "dashboard": "Dashboard",
+    "games": "Games",
+    "events": "Events",
     "login": "Login",
     "logout": "Logout",
     "viewProfile": "View profile",
@@ -41,6 +43,16 @@
       "noGamesDescription": "Add games to the database or reconnect the current database to load the list here.",
       "viewAll": "View all games"
     }
+  },
+  "EventsPage": {
+    "title": "Events",
+    "description": "Browse all competitive leagues and tournaments across all games.",
+    "noEventsTitle": "No events available",
+    "noEventsDescription": "Events will appear here once they are created.",
+    "players": "{count, plural, one {# player} other {# players}}",
+    "leagueType": "League",
+    "tournamentType": "Tournament",
+    "noPlayers": "No players yet."
   },
   "GamesPage": {
     "title": "Communities",
