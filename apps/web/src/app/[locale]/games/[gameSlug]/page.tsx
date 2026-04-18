@@ -8,8 +8,8 @@ import { Suspense } from "react";
 
 import {
   canEditGame,
-  canManagePlayers,
   canManageLeagues,
+  canManagePlayers,
 } from "@/lib/permissions";
 import { LeagueCard } from "@/components/cards/league-card";
 import { AlertCircle, ChevronLeft, Ghost } from "lucide-react";
@@ -17,14 +17,10 @@ import { UserChip } from "@/components/ui/user-chip";
 import { Link } from "@/i18n/routing";
 import { formatCompactNumber } from "@/lib/utils";
 
-import nextDynamic from "next/dynamic";
 import { AddEventButton } from "./add-event-button";
+import { PageAdminActions } from "./page-admin-actions";
 import { safeServerQuery } from "@/lib/apollo/safe-server-query";
 import type { SimpleGame } from "@/actions/get-games";
-
-const GameAdminPanel = nextDynamic(() =>
-  import("./admin-panel").then((mod) => mod.GameAdminPanel),
-);
 
 type GamePageProps = {
   params: Promise<{
@@ -95,8 +91,12 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
   const canEditCurrentGame = canEditGame(session, game.authorId);
   const viewerCanManagePlayers = canManagePlayers(session);
   const viewerCanManageLeagues = canManageLeagues(session);
+  const canApproveGame = !!session?.user?.permissions?.includes("manage_games");
   const canSeeAdminActions =
-    canEditCurrentGame || viewerCanManagePlayers || viewerCanManageLeagues;
+    canEditCurrentGame ||
+    viewerCanManagePlayers ||
+    viewerCanManageLeagues ||
+    canApproveGame;
 
   const gameWithCounts = {
     ...game,
@@ -108,12 +108,27 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
   return (
     <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
+      {canSeeAdminActions && (
+        <div className="pointer-events-none absolute inset-x-0 -top-65 z-20">
+          <div className="mx-auto flex w-full max-w-7xl justify-end px-6 sm:px-10 lg:px-12">
+            <div className="pointer-events-auto">
+              <PageAdminActions
+                game={game as Game}
+                canEditGame={canEditCurrentGame}
+                canApproveGame={canApproveGame}
+                canManagePlayers={viewerCanManagePlayers}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
         <div className="sticky top-28 space-y-4">
           <Link
             href="/games"
-            className="group flex items-center gap-2 text-sm font-medium text-white/40 transition-colors hover:text-white"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-white/40 transition-colors hover:text-white"
           >
             <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-1" />
             {t("backToGames")}
@@ -217,8 +232,6 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
               </span>
             </div>
           )}
-
-          {canSeeAdminActions && <GameAdminPanel game={game as Game} />}
         </div>
       </aside>
 

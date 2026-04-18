@@ -31,7 +31,7 @@ export default async function GameLayout({
   return (
     <>
       <section
-        className="relative min-h-[320px] w-full overflow-hidden"
+        className="relative min-h-70 w-full overflow-hidden"
         style={{
           maskImage:
             "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",

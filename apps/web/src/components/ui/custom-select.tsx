@@ -77,7 +77,7 @@ export function CustomSelect<T extends string | number>({
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="glass-panel custom-scrollbar animate-in fade-in zoom-in-95 fixed z-[9999] mt-2 max-h-64 min-w-[100px] overflow-y-auto rounded-xl py-1 shadow-2xl duration-100"
+            className="glass-panel custom-scrollbar animate-in fade-in zoom-in-95 fixed z-9999 mt-2 max-h-64 min-w-25 overflow-y-auto rounded-xl py-1 shadow-2xl duration-100"
             style={{
               top: coords.top,
               left: coords.left,
