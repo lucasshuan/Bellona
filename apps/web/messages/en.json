@@ -32,7 +32,8 @@
     "pt": "Português"
   },
   "HomePage": {
-    "heroSubtitle": "Leagues and tournaments for competitive games.",
+    "heroTagline": "Tournament manager",
+    "heroSubtitle": "Leagues and tournaments for E-sports and competitive games.",
     "explore": "Explore",
     "join": "Join",
     "games": {
@@ -41,7 +42,10 @@
       "cardFallbackDescription": "Open the game page to inspect current leagues.",
       "noGamesTitle": "No games available",
       "noGamesDescription": "Add games to the database or reconnect the current database to load the list here.",
-      "viewAll": "View all games"
+      "viewAll": "View all games",
+      "leagues": "Leagues",
+      "players": "Players",
+      "exploreGame": "Explore game"
     }
   },
   "EventsPage": {
@@ -268,8 +272,10 @@
       },
       "ratingSystem": {
         "label": "Classification System",
-        "elo": "Elo",
-        "points": "Points (Ladder)"
+        "elo": "Skill Rating",
+        "elo_description": "Skill-based system for Elo, MMR, and similar rating models.",
+        "points": "Points",
+        "points_description": "Fixed-point system per result, ideal for standings and traditional leagues."
       },
       "allowDraw": {
         "label": "Allow Draw",
@@ -323,7 +329,24 @@
           "draws_disabled": "Matches must have a winner.",
           "decay": "Inactive players lose {amount} points daily after {window} without playing (Floor: {floor}).",
           "thresholds": "Win Margin Impact:",
-          "win_margin": "Win by {margin}"
+          "win_margin": "Win by {margin}",
+          "simulate": {
+            "title": "Match Simulator",
+            "rating": "Rating",
+            "player_a": "You",
+            "player_b": "Opponent",
+            "score": "Score",
+            "score_value": "S (Score Value)",
+            "estimated_elo": "Estimated Elo",
+            "match_draw": "Draw",
+            "match_near_draw": "Near Draw",
+            "match_close": "Close Match",
+            "match_moderate": "Moderate Win",
+            "match_dominant": "Dominant Win",
+            "match_shutout": "Shutout",
+            "pts": "pts",
+            "footer": "S = score component in Elo. Closer to 0.5 means less Elo exchanged."
+          }
         },
         "points": {
           "title": "Points System",
@@ -455,7 +478,8 @@
       },
       "ratingSystem": {
         "label": "Rating System",
-        "elo": "Elo"
+        "elo": "Skill Rating",
+        "points": "Points"
       },
       "submit": "Save Changes",
       "submitting": "Saving...",

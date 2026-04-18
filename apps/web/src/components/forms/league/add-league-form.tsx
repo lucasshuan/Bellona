@@ -38,6 +38,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { formatHoursDuration } from "@/lib/date-utils";
 import { cn, slugify } from "@/lib/utils";
 import { MATCH_FORMATS } from "@ares/core";
+import { EloMatchSimulator } from "./elo-match-simulator";
 
 interface AddLeagueFormProps {
   gameId: string;
@@ -720,72 +721,43 @@ export function AddLeagueForm({
         <section className="animate-in fade-in slide-in-from-right-4 space-y-8 duration-500">
           <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-4">
-              <LabelTooltip
-                label={t("matchFormats.title")}
-                tooltip={t("matchFormats.help")}
-                required
-              />
-
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {matchFormatOptions.map((option) => {
-                  const isSelected = allowedFormats.includes(option.value);
-
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => toggleMatchFormat(option.value)}
-                      className={cn(
-                        "flex items-center justify-between gap-1.5 rounded-xl border px-3 py-2 text-left transition-all",
-                        isSelected
-                          ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
-                          : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10",
-                      )}
-                    >
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-xs font-bold">{option.label}</span>
-                        <span className="text-[10px] text-white/40 leading-tight">
-                          {option.description}
-                        </span>
-                      </div>
-                      {isSelected && <Check className="size-3 shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {allowedFormats.length === 0 && (
-                <p className="text-xs text-danger">{t("matchFormats.required")}</p>
-              )}
-            </div>
-            <div className="flex flex-col gap-4">
               <LabelTooltip label={t("ratingSystem.label")} />
-              <div className="grid grid-cols-2 gap-3 sm:w-1/2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <button
                   type="button"
                   onClick={() => setValue("ratingSystem", "elo")}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
+                    "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
                     ratingSystem === "elo"
                       ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                       : "border-white/5 bg-white/5 text-white/40 hover:bg-white/10",
                   )}
                 >
-                  <Trophy className="size-4" />
-                  {t("ratingSystem.elo")}
+                  <div className="flex items-center gap-2">
+                    <Trophy className="size-4" />
+                    <span className="text-sm font-bold">{t("ratingSystem.elo")}</span>
+                  </div>
+                  <span className="text-xs leading-relaxed text-white/50">
+                    {t("ratingSystem.elo_description")}
+                  </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setValue("ratingSystem", "points")}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
+                    "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
                     ratingSystem === "points"
                       ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                       : "border-white/5 bg-white/5 text-white/40 hover:bg-white/10",
                   )}
                 >
-                  <Hash className="size-4" />
-                  {t("ratingSystem.points")}
+                  <div className="flex items-center gap-2">
+                    <Hash className="size-4" />
+                    <span className="text-sm font-bold">{t("ratingSystem.points")}</span>
+                  </div>
+                  <span className="text-xs leading-relaxed text-white/50">
+                    {t("ratingSystem.points_description")}
+                  </span>
                 </button>
               </div>
             </div>
@@ -1090,31 +1062,11 @@ export function AddLeagueForm({
                               })()}
                             </span>
                           </div>
-                          <div className="mt-1 space-y-2 rounded-2xl bg-white/2 p-4">
-                            <p className="text-[10px] font-bold tracking-wider text-white/30 uppercase">
-                              {t("explanation.elo.thresholds")}
-                            </p>
-                            <div className="grid grid-cols-2 gap-4 gap-y-3 sm:grid-cols-3">
-                              {[1, 3, 5, 10, 20].map((m) => {
-                                const multiplier = 1 + (m - 1) * scoreRelevance;
-                                return (
-                                  <div
-                                    key={m}
-                                    className="flex flex-col gap-0.5"
-                                  >
-                                    <span className="text-[10px] text-white/40">
-                                      {t("explanation.elo.win_margin", {
-                                        margin: m,
-                                      })}
-                                    </span>
-                                    <span className="text-xs font-bold text-white/90">
-                                      {multiplier.toFixed(1)}x
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
+                          <EloMatchSimulator
+                            scoreRelevance={scoreRelevance}
+                            kFactor={kFactor}
+                            initialElo={initialElo}
+                          />
                           {inactivityDecay > 0 && (
                             <div className="flex items-center gap-3">
                               <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5 text-danger/50">
@@ -1164,6 +1116,46 @@ export function AddLeagueForm({
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <LabelTooltip
+                label={t("matchFormats.title")}
+                tooltip={t("matchFormats.help")}
+                required
+              />
+
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {matchFormatOptions.map((option) => {
+                  const isSelected = allowedFormats.includes(option.value);
+
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => toggleMatchFormat(option.value)}
+                      className={cn(
+                        "flex items-center justify-between gap-1.5 rounded-xl border px-3 py-2 text-left transition-all",
+                        isSelected
+                          ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
+                          : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10",
+                      )}
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-xs font-bold">{option.label}</span>
+                        <span className="text-[10px] leading-tight text-white/40">
+                          {option.description}
+                        </span>
+                      </div>
+                      {isSelected && <Check className="size-3 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {allowedFormats.length === 0 && (
+                <p className="text-xs text-danger">{t("matchFormats.required")}</p>
+              )}
             </div>
           </div>
         </section>

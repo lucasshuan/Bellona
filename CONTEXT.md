@@ -107,9 +107,28 @@ O `scoreRelevance` **não multiplica** o Elo ganho. Ele **modifica o valor de S*
 - `scoreRelevance > 0` → vitórias apertadas fazem S se aproximar de 0.5 (quase empate para o Elo)
 - `scoreRelevance = 1` → uma vitória por 15×14 pode gerar quase o mesmo Elo que um empate
 
-> **Status**: a fórmula exata de mapeamento margem→S ainda **não está implementada** no backend.
-> O campo `scoreRelevance` existe no schema e é configurável, mas o cálculo real de Elo por
-> partida (mutations de Result) ainda não foi construído.
+#### Fórmula de mapeamento margem → S
+
+```
+S = 1 - scoreRelevance × (loserScore / winnerScore) × 0.5
+```
+
+**Propriedades:**
+
+- `loserScore = 0` (vitória total) → `S = 1.0` sempre, independente do `scoreRelevance`
+- `loserScore → winnerScore` (vitória mínima) → `S → 1 - scoreRelevance × 0.5` (mínimo de `0.5` quando `scoreRelevance = 1`)
+- `scoreRelevance = 0` → `S = 1.0` sempre (bypass explícito; margem ignorada)
+- `scoreRelevance = 1` e placar `10×9` → `S = 1 - 1 × (9/10) × 0.5 = 0.55`
+- `scoreRelevance = 1` e placar `10×2` → `S = 1 - 1 × (2/10) × 0.5 = 0.90`
+
+A probabilidade esperada `E` usa a escala padrão de 400 pontos:
+
+```
+E = 1 / (1 + 10^((eloB - eloA) / 400))
+```
+
+> **Status**: a fórmula está definida e implementada no simulador do frontend (Format Logic).
+> O cálculo real de Elo por partida no backend (mutations de Result) ainda não foi construído.
 
 ### Permissões (RBAC)
 
@@ -206,7 +225,7 @@ A sessão no web é revalidada a cada **5 minutos** via `/auth/me`.
 
 ### Pendente / Em progresso ⏳
 
-- **Cálculo de Elo**: a lógica real de cálculo por resultado (com `scoreRelevance` → S) não existe ainda no backend; `eloDifference` no `ResultEntry` provavelmente ainda é manual ou placeholder
+- **Cálculo de Elo no backend**: a fórmula está definida (ver seção acima), mas a mutation de Result com cálculo automático de Elo ainda não foi implementada; `eloDifference` em `ResultEntry` provavelmente ainda é manual ou placeholder
 - **Registro de partidas**: mutation de Result com cálculo de Elo automático
 - **N+1 / DataLoaders**: existem, mas cobrem pouco
 - **Testes**: cobertura quase zero (só boilerplate)

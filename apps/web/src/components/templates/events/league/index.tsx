@@ -89,7 +89,7 @@ async function LeagueContent({
   return (
     <div className="relative mx-auto mt-4 flex w-full max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-8 lg:px-12">
       {/* Sidebar (Left) */}
-      <aside className="w-full shrink-0 lg:w-[320px] xl:w-[360px]">
+      <aside className="w-full shrink-0 lg:w-[320px] xl:w-90">
         <div className="sticky top-28 space-y-4">
           <Link
             href={`/games/${gameSlug}`}
@@ -206,7 +206,7 @@ function LeaguePageSkeleton() {
     <div className="animate-pulse">
       <div className="mx-auto mt-4 flex max-w-7xl flex-col gap-8 px-6 pb-12 sm:px-10 lg:flex-row lg:gap-12 lg:px-12">
         {/* Sidebar */}
-        <div className="w-full space-y-4 lg:w-[320px] xl:w-[360px]">
+        <div className="w-full space-y-4 lg:w-[320px] xl:w-90">
           <div className="h-14 w-full rounded-3xl bg-white/5" />
           <div className="h-64 w-full rounded-4xl bg-white/5" />
           <div className="h-14 w-full rounded-2xl bg-white/5" />

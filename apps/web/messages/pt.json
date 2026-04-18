@@ -32,7 +32,8 @@
     "pt": "Português"
   },
   "HomePage": {
-    "heroSubtitle": "Ligas e torneios para jogos competitivos.",
+    "heroTagline": "Gerenciador de torneios",
+    "heroSubtitle": "Ligas e torneios para E-sports e jogos competitivos.",
     "explore": "Explorar",
     "join": "Entrar",
     "games": {
@@ -41,7 +42,10 @@
       "cardFallbackDescription": "Abra a página do jogo para inspecionar as ligas atuais.",
       "noGamesTitle": "Nenhum jogo disponível",
       "noGamesDescription": "Adicione jogos ao banco de dados ou reconecte o banco atual para carregar a lista aqui.",
-      "viewAll": "Ver todos os jogos"
+      "viewAll": "Ver todos os jogos",
+      "leagues": "Ligas",
+      "players": "Jogadores",
+      "exploreGame": "Explorar jogo"
     }
   },
   "EventsPage": {
@@ -267,8 +271,10 @@
       },
       "ratingSystem": {
         "label": "Sistema de Classificação",
-        "elo": "Elo",
-        "points": "Pontos Corridos"
+        "elo": "Skill Rating",
+        "elo_description": "Sistema baseado em classificação por habilidade, como Elo, MMR e variações.",
+        "points": "Points",
+        "points_description": "Sistema baseado em pontos fixos por resultado, ideal para tabelas e ligas tradicionais."
       },
       "allowDraw": {
         "label": "Permitir Empate",
@@ -322,7 +328,24 @@
           "draws_disabled": "Partidas devem ter um vencedor.",
           "decay": "Inativos perdem {amount} pts por dia após {window} sem jogar (Piso: {floor}).",
           "thresholds": "Impacto da Margem de Vitória:",
-          "win_margin": "Vitória por {margin}"
+          "win_margin": "Vitória por {margin}",
+          "simulate": {
+            "title": "Simulador de Partida",
+            "rating": "Rating",
+            "player_a": "Você",
+            "player_b": "Oponente",
+            "score": "Placar",
+            "score_value": "S (Score Value)",
+            "estimated_elo": "Elo Estimado",
+            "match_draw": "Empate",
+            "match_near_draw": "Quase Empate",
+            "match_close": "Partida Acirrada",
+            "match_moderate": "Vitória Móderada",
+            "match_dominant": "Vitória Dominante",
+            "match_shutout": "Shutout",
+            "pts": "pts",
+            "footer": "S = componente de score na fórmula Elo. Mais próximo de 0.5 = menos Elo trocado."
+          }
         },
         "points": {
           "title": "Pontos Corridos",
@@ -453,8 +476,9 @@
         "label": "Pontuação Inicial (Elo)"
       },
       "ratingSystem": {
-        "label": "Sistema de Liga",
-        "elo": "Elo"
+        "label": "Sistema de Classificação",
+        "elo": "Skill Rating",
+        "points": "Points"
       },
       "submit": "Salvar Alterações",
       "submitting": "Salvando...",

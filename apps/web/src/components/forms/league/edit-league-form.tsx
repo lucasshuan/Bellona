@@ -30,6 +30,7 @@ import { type League } from "@/lib/apollo/generated/graphql";
 import { formatHoursDuration } from "@/lib/date-utils";
 import { cn, slugify } from "@/lib/utils";
 import { MATCH_FORMATS } from "@ares/core";
+import { EloMatchSimulator } from "./elo-match-simulator";
 
 interface EditLeagueFormProps {
   league: League;
@@ -447,21 +448,28 @@ export function EditLeagueForm({
           {/* System Selector - Full Width Row */}
           <div className="flex flex-col gap-4">
             <LabelTooltip label={t("AddLeague.ratingSystem.label")} />
-            <div className="grid grid-cols-2 gap-3 sm:w-1/2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => {
                   setValue("ratingSystem", "elo");
                 }}
                 className={cn(
-                  "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
+                  "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
                   ratingSystem === "elo"
                     ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                     : "border-white/5 bg-white/5 text-white/40 hover:bg-white/10",
                 )}
               >
-                <Trophy className="size-4" />
-                {t("AddLeague.ratingSystem.elo")}
+                <div className="flex items-center gap-2">
+                  <Trophy className="size-4" />
+                  <span className="text-sm font-bold">
+                    {t("AddLeague.ratingSystem.elo")}
+                  </span>
+                </div>
+                <span className="text-xs leading-relaxed text-white/50">
+                  {t("AddLeague.ratingSystem.elo_description")}
+                </span>
               </button>
               <button
                 type="button"
@@ -469,14 +477,21 @@ export function EditLeagueForm({
                   setValue("ratingSystem", "points");
                 }}
                 className={cn(
-                  "flex items-center justify-center gap-2 rounded-2xl border p-4 text-sm font-bold transition-all",
+                  "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
                   ratingSystem === "points"
                     ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                     : "border-white/5 bg-white/5 text-white/40 hover:bg-white/10",
                 )}
               >
-                <Hash className="size-4" />
-                {t("AddLeague.ratingSystem.points")}
+                <div className="flex items-center gap-2">
+                  <Hash className="size-4" />
+                  <span className="text-sm font-bold">
+                    {t("AddLeague.ratingSystem.points")}
+                  </span>
+                </div>
+                <span className="text-xs leading-relaxed text-white/50">
+                  {t("AddLeague.ratingSystem.points_description")}
+                </span>
               </button>
             </div>
           </div>
@@ -779,28 +794,11 @@ export function EditLeagueForm({
                           </span>
                         </div>
 
-                        <div className="mt-1 space-y-2 rounded-2xl bg-white/2 p-4">
-                          <p className="text-[10px] font-bold tracking-wider text-white/30 uppercase">
-                            {t("AddLeague.explanation.elo.thresholds")}
-                          </p>
-                          <div className="grid grid-cols-2 gap-4 gap-y-3 sm:grid-cols-3">
-                            {[1, 3, 5, 10, 20].map((m) => {
-                              const multiplier = 1 + (m - 1) * scoreRelevance;
-                              return (
-                                <div key={m} className="flex flex-col gap-0.5">
-                                  <span className="text-[10px] text-white/40">
-                                    {t("AddLeague.explanation.elo.win_margin", {
-                                      margin: m,
-                                    })}
-                                  </span>
-                                  <span className="text-xs font-bold text-white/90">
-                                    {multiplier.toFixed(1)}x
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
+                        <EloMatchSimulator
+                          scoreRelevance={scoreRelevance}
+                          kFactor={kFactor}
+                          initialElo={initialElo}
+                        />
 
                         <div className="flex items-center gap-3">
                           <div

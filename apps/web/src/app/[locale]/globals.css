@@ -20,6 +20,12 @@
   --success: #10b981;
   --danger: #ff7b7b;
   --warning: #f5c66a;
+  --match-draw: #e05c6f;
+  --match-near-draw: #f97316;
+  --match-close: #eab308;
+  --match-moderate: #84cc16;
+  --match-dominant: #22c55e;
+  --match-shutout: #06b6d4;
 }
 
 @theme inline {
@@ -36,6 +42,12 @@
   --color-success: var(--success);
   --color-danger: var(--danger);
   --color-warning: var(--warning);
+  --color-match-draw: var(--match-draw);
+  --color-match-near-draw: var(--match-near-draw);
+  --color-match-close: var(--match-close);
+  --color-match-moderate: var(--match-moderate);
+  --color-match-dominant: var(--match-dominant);
+  --color-match-shutout: var(--match-shutout);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-ibm-plex-mono);
   --font-signature: "Dancing Script", cursive;
@@ -45,6 +57,14 @@
     both;
   --animate-in: animate-in 0.2s cubic-bezier(0.2, 0, 0, 1) both;
   --animate-pop-in: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-hero-fade-up: hero-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-hero-glow: hero-glow 8s ease-in-out infinite;
+  --animate-hero-line: hero-line 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  --animate-showcase-slide: showcase-slide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-showcase-fade: showcase-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-showcase-progress: showcase-progress var(--showcase-duration, 5500ms) linear both;
+  --animate-slash-pulse: slash-pulse 5s ease-in-out infinite;
+  --animate-slash-sheen: slash-sheen 7s ease-in-out infinite;
 
   @keyframes modal-overlay {
     0% {
@@ -90,6 +110,102 @@
     100% {
       opacity: 1;
       transform: scale(1);
+    }
+  }
+
+  @keyframes hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-glow {
+    0%,
+    100% {
+      opacity: 0.5;
+      scale: 1;
+    }
+    50% {
+      opacity: 1;
+      scale: 1.2;
+    }
+  }
+
+  @keyframes hero-line {
+    from {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes showcase-slide {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes showcase-fade {
+    from {
+      opacity: 0;
+      scale: 1.04;
+    }
+    to {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  @keyframes showcase-progress {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes slash-pulse {
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slash-sheen {
+    0% {
+      transform: translateX(-200%);
+      opacity: 0;
+    }
+    8% {
+      opacity: 0.7;
+    }
+    22% {
+      opacity: 0;
+    }
+    38% {
+      transform: translateX(650%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(650%);
+      opacity: 0;
     }
   }
 }
@@ -251,6 +367,75 @@ button.no-lift:hover {
   box-shadow:
     0 18px 80px rgb(0 0 0 / 0.35),
     inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+/* ── Ember / fire particles ── */
+.ember-field {
+  filter: blur(0.3px);
+}
+
+.ember {
+  position: absolute;
+  bottom: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 6px 2px color-mix(in srgb, var(--primary) 60%, transparent);
+  opacity: 0;
+  animation: ember-rise linear infinite;
+}
+
+.ember--bright {
+  width: 4px;
+  height: 4px;
+  background: #f97316;
+  box-shadow: 0 0 8px 3px rgb(249 115 22 / 0.5);
+}
+
+.ember--large {
+  width: 5px;
+  height: 5px;
+  background: #fbbf24;
+  box-shadow:
+    0 0 10px 3px rgb(251 191 36 / 0.4),
+    0 0 20px 6px rgb(249 115 22 / 0.15);
+}
+
+@keyframes ember-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  10% {
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-380px) translateX(var(--ember-drift, 15px)) scale(0.3);
+  }
+}
+
+.ember:nth-child(odd) {
+  --ember-drift: -12px;
+}
+
+.ember:nth-child(3n) {
+  --ember-drift: 20px;
+}
+
+.ember:nth-child(4n + 1) {
+  --ember-drift: -25px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ember {
+    animation: none;
+    display: none;
+  }
 }
 
 @layer components {
