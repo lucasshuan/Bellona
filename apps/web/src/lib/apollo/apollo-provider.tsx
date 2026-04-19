@@ -3,6 +3,7 @@
 import { HttpLink, ApolloLink } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
+import { CombinedGraphQLErrors } from "@apollo/client/errors";
 import {
   ApolloNextAppProvider,
   ApolloClient,
@@ -29,46 +30,30 @@ function makeClient() {
     };
   });
 
-  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
-    graphQLErrors?.forEach(({ message, locations, path }) => {
+  const errorLink = onError(({ error, operation }) => {
+    if (CombinedGraphQLErrors.is(error)) {
+      error.errors.forEach(({ message, locations, path }) => {
+        console.error(
+          `[GraphQL error] op=${operation.operationName} path=${String(path)} message=${message}`,
+          { locations },
+        );
+      });
+
+      if (
+        error.errors.some((e) => e.extensions?.["code"] === "UNAUTHENTICATED")
+      ) {
+        void signOut({ callbackUrl: "/" });
+      }
+    } else if (error) {
       console.error(
-        `[GraphQL error] op=${operation.operationName} path=${String(path)} message=${message}`,
-        { locations },
+        `[Network error] op=${operation.operationName}: ${error.message}`,
       );
-    });
 
-    if (networkError) {
-      console.error(
-        `[Network error] op=${operation.operationName}: ${networkError.message}`,
-      );
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const networkErr: any = networkError;
-    const statusCode =
-      typeof networkErr === "object" &&
-      networkErr !== null &&
-      "statusCode" in networkErr &&
-      typeof networkErr.statusCode === "number"
-        ? networkErr.statusCode
-        : undefined;
-
-    // Network-level auth failure (REST or HTTP transport)
-    if (statusCode === 401 || statusCode === 403) {
-      void signOut({ callbackUrl: "/auth/signin" });
-      return;
-    }
-
-    // GraphQL-level auth failure
-    // NOTE: verify that NestJS maps UnauthorizedException to extensions.code === "UNAUTHENTICATED"
-    // before relying on this branch. If the code is different, update the check below.
-    if (
-      graphQLErrors?.some(
-        (graphQLError) =>
-          graphQLError.extensions?.["code"] === "UNAUTHENTICATED",
-      )
-    ) {
-      void signOut({ callbackUrl: "/auth/signin" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const statusCode = (error as any).statusCode as number | undefined;
+      if (statusCode === 401 || statusCode === 403) {
+        void signOut({ callbackUrl: "/" });
+      }
     }
   });
 
