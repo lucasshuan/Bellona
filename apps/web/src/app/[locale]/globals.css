@@ -60,6 +60,7 @@
   --animate-hero-fade-up: hero-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-hero-glow: hero-glow 8s ease-in-out infinite;
   --animate-hero-line: hero-line 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  --animate-hero-float: hero-float 6s ease-in-out infinite;
   --animate-showcase-slide: showcase-slide 0.5s cubic-bezier(0.16, 1, 0.3, 1)
     both;
   --animate-showcase-fade: showcase-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -146,6 +147,16 @@
     to {
       transform: scaleX(1);
       opacity: 1;
+    }
+  }
+
+  @keyframes hero-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
     }
   }
 

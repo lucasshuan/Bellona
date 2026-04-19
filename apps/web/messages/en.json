@@ -59,6 +59,9 @@
     "heroSubtitle": "League and tournament management for E-sports and competitive games.",
     "explore": "Explore",
     "join": "Join",
+    "welcomeBack": "Welcome back, {name}",
+    "welcomeSubtitle": "Ready to compete?",
+    "dashboard": "Dashboard",
     "games": {
       "title": "Communities",
       "description": "Join the community, follow the leaderboards, and leave your mark.",

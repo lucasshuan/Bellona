@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/routing";
 import { Suspense } from "react";
-import { Compass } from "lucide-react";
+import { Compass, LayoutDashboard } from "lucide-react";
+import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 
 import { SignInButton } from "@/components/triggers/auth/sign-in-button";
@@ -13,11 +14,14 @@ import { getTranslations } from "next-intl/server";
 import { GET_GAMES } from "@/lib/apollo/queries/games";
 import { GetGamesQuery } from "@/lib/apollo/generated/graphql";
 import { safeServerQuery } from "@/lib/apollo/safe-server-query";
+import { getServerAuthSession } from "@/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const t = await getTranslations("HomePage");
+  const session = await getServerAuthSession();
+  const user = session?.user;
 
   return (
     <main className="relative overflow-hidden">
@@ -34,43 +38,121 @@ export default async function HomePage() {
           </div>
 
           <div className="relative flex flex-col items-center gap-6">
-            {/* Title */}
-            <h1 className="animate-hero-fade-up flex flex-wrap items-baseline justify-center gap-x-5 text-5xl tracking-tight sm:text-6xl lg:text-7xl">
-              <span className="text-primary font-bold drop-shadow-[0_0_40px_rgba(192,11,59,0.3)]">
-                Ares
-                <span className="text-primary/25 font-extralight">:</span>
-              </span>
-              <span className="text-foreground/80 font-extralight">
-                {t("heroTagline")}
-              </span>
-            </h1>
+            {user ? (
+              <>
+                {/* Title */}
+                <h1 className="animate-hero-fade-up flex flex-wrap items-baseline justify-center gap-x-5 text-5xl tracking-tight sm:text-6xl lg:text-7xl">
+                  <span className="text-primary font-bold drop-shadow-[0_0_40px_rgba(192,11,59,0.3)]">
+                    Ares
+                    <span className="text-primary/25 font-extralight">:</span>
+                  </span>
+                  <span className="text-foreground/80 font-extralight">
+                    {t("heroTagline")}
+                  </span>
+                </h1>
 
-            {/* Decorative divider */}
-            <div className="animate-hero-line via-primary/50 h-px w-20 bg-linear-to-r from-transparent to-transparent sm:w-32" />
+                {/* Decorative divider */}
+                <div className="animate-hero-line via-primary/50 h-px w-20 bg-linear-to-r from-transparent to-transparent sm:w-32" />
 
-            {/* Subtitle */}
-            <p className="animate-hero-fade-up text-muted max-w-xl text-base leading-relaxed [animation-delay:150ms] sm:text-lg">
-              {t("heroSubtitle")}
-            </p>
+                {/* Subtitle */}
+                <p className="animate-hero-fade-up text-muted max-w-xl text-base leading-relaxed [animation-delay:150ms] sm:text-lg">
+                  {t("heroSubtitle")}
+                </p>
 
-            {/* CTAs */}
-            <div className="animate-hero-fade-up flex gap-3 pt-2 [animation-delay:300ms] sm:gap-4">
-              <Link
-                href="/games"
-                className={cn(
-                  buttonVariants({ intent: "secondary", size: "lg" }),
-                  "px-8 text-sm sm:text-base",
-                )}
-              >
-                <Compass className="mr-2 size-5" />
-                {t("explore")}
-              </Link>
-              <SignInButton
-                size="lg"
-                label={t("join")}
-                className="text-sm sm:text-base"
-              />
-            </div>
+                {/* CTAs */}
+                <div className="animate-hero-fade-up flex gap-3 pt-2 [animation-delay:300ms] sm:gap-4">
+                  <Link
+                    href="/games"
+                    className={cn(
+                      buttonVariants({ intent: "secondary", size: "lg" }),
+                      "px-8 text-sm sm:text-base",
+                    )}
+                  >
+                    <Compass className="mr-2 size-5" />
+                    {t("explore")}
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className={cn(
+                      buttonVariants({ intent: "primary", size: "lg" }),
+                      "px-8 text-sm sm:text-base",
+                    )}
+                  >
+                    <LayoutDashboard className="mr-2 size-5" />
+                    {t("dashboard")}
+                  </Link>
+                </div>
+                
+                {/* Avatar + Welcome card */}
+                <div className="animate-hero-fade-up mt-16 [animation-delay:150ms]">
+                  <div className="animate-hero-float rounded-4xl border border-white/5 bg-primary-strong/10 px-5 py-3 shadow-lg shadow-black/20 backdrop-blur-sm">
+                    <div className="flex items-center gap-3">
+                    <div className="relative shrink-0">
+                      <div className="bg-primary/15 absolute -inset-2 rounded-full blur-lg" />
+                      <div className="relative overflow-hidden rounded-full border-2 border-white/10 shadow-lg shadow-black/30">
+                        {user.image ? (
+                          <Image
+                            src={user.image}
+                            alt={user.name ?? "Avatar"}
+                            width={40}
+                            height={40}
+                            className="size-10 object-cover"
+                          />
+                        ) : (
+                          <div className="flex size-10 items-center justify-center bg-white/5 text-base font-bold text-white/40">
+                            {(user.name ?? user.username)?.[0]?.toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-muted text-base sm:text-lg">
+                      {t("welcomeBack", { name: user.name ?? user.username })}
+                    </p>
+                  </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Title */}
+                <h1 className="animate-hero-fade-up flex flex-wrap items-baseline justify-center gap-x-5 text-5xl tracking-tight sm:text-6xl lg:text-7xl">
+                  <span className="text-primary font-bold drop-shadow-[0_0_40px_rgba(192,11,59,0.3)]">
+                    Ares
+                    <span className="text-primary/25 font-extralight">:</span>
+                  </span>
+                  <span className="text-foreground/80 font-extralight">
+                    {t("heroTagline")}
+                  </span>
+                </h1>
+
+                {/* Decorative divider */}
+                <div className="animate-hero-line via-primary/50 h-px w-20 bg-linear-to-r from-transparent to-transparent sm:w-32" />
+
+                {/* Subtitle */}
+                <p className="animate-hero-fade-up text-muted max-w-xl text-base leading-relaxed [animation-delay:150ms] sm:text-lg">
+                  {t("heroSubtitle")}
+                </p>
+
+                {/* CTAs */}
+                <div className="animate-hero-fade-up flex gap-3 pt-2 [animation-delay:300ms] sm:gap-4">
+                  <Link
+                    href="/games"
+                    className={cn(
+                      buttonVariants({ intent: "secondary", size: "lg" }),
+                      "px-8 text-sm sm:text-base",
+                    )}
+                  >
+                    <Compass className="mr-2 size-5" />
+                    {t("explore")}
+                  </Link>
+                  <SignInButton
+                    size="lg"
+                    label={t("join")}
+                    className="text-sm sm:text-base"
+                  />
+                </div>
+              </>
+            )}
           </div>
         </section>
 

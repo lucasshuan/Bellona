@@ -620,8 +620,9 @@ function SidebarBody({
   onClose?: () => void;
   ready?: boolean;
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const user = session?.user as SessionUser | undefined;
+  const isLoading = status === "loading";
 
   const t = useTranslations("Sidebar");
   const tNavbar = useTranslations("Navbar");
@@ -784,8 +785,33 @@ function SidebarBody({
 
       {/* ── Nav ─────────────────────────────────────────────────────────── */}
       <nav className="custom-scrollbar flex-1 overflow-x-hidden overflow-y-auto py-2">
-        {/* User menu / Login */}
-        {user ? (
+        {/* User menu / Login / Loading skeleton */}
+        {isLoading ? (
+          <>
+            <div
+              className={cn(
+                "flex items-center",
+                effective
+                  ? "mx-2 justify-center p-1.5"
+                  : "mx-1.5 gap-3 px-2.5 py-2",
+              )}
+            >
+              <div
+                className={cn(
+                  "shrink-0 animate-pulse rounded-full bg-white/8",
+                  effective ? "size-6" : "size-8",
+                )}
+              />
+              {!effective && (
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                  <div className="h-3 w-24 animate-pulse rounded bg-white/8" />
+                  <div className="h-2 w-16 animate-pulse rounded bg-white/5" />
+                </div>
+              )}
+            </div>
+            <div className="mx-3 my-2 h-px bg-white/4" />
+          </>
+        ) : user ? (
           <>
             <UserMenuDropdown
               user={user}
@@ -852,8 +878,10 @@ function SidebarBody({
               : "flex flex-col gap-2.5 p-3",
           )}
         >
-          {/* Login button — only shown when logged out */}
-          {!user && (
+          {/* Login button — only shown when logged out and expanded */}
+          {isLoading && !effective ? (
+            <div className="h-12 w-full animate-pulse rounded-full bg-white/8" />
+          ) : !user && !effective ? (
             <>
               <button
                 onClick={() => setAuthModalOpen(true)}
@@ -874,8 +902,11 @@ function SidebarBody({
                 onClose={() => setAuthModalOpen(false)}
                 isPending={false}
               />
+
+              {/* ── Divider ─────────────────────────────────────────────────────── */}
+              <div className="mx-3 h-px shrink-0 bg-white/4" />
             </>
-          )}
+          ) : null}
 
           {/* Locale switcher — dropdown opens to the right */}
           <LocaleDropdown
@@ -945,6 +976,8 @@ export function SiteSidebar() {
       return next;
     });
   };
+
+  if (pathname === "/") return null;
 
   return (
     <>
