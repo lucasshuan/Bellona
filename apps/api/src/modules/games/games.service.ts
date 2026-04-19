@@ -112,6 +112,7 @@ export class GamesService {
       include: { event: true },
       orderBy: { event: { createdAt: 'desc' } },
     });
+
     return leagues.map(mapLeagueWithEvent);
   }
 
@@ -121,6 +122,7 @@ export class GamesService {
       include: { event: true },
       orderBy: { event: { createdAt: 'desc' } },
     });
+
     return leagues.map(mapLeagueWithEvent);
   }
 

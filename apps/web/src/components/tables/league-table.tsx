@@ -57,7 +57,7 @@ export function LeagueTable({ entries }: LeagueTableProps) {
                     <Globe className="size-3.5 text-white" />
                   )}
                 </div>
-                <span className="hover:text-primary max-w-[120px] truncate text-sm font-bold text-white transition-colors sm:max-w-[200px]">
+                <span className="hover:text-primary max-w-30 truncate text-sm font-bold text-white transition-colors sm:max-w-50">
                   {entry.displayName}
                 </span>
               </div>
