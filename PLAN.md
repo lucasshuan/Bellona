@@ -321,8 +321,8 @@ O deploy básico já existe via GitHub -> Vercel/Render, então CD não é o gar
 
 - [ ] **3.1 Reestruturar Documentação**
   - [ ] Atualizar o README principal com instruções claras de setup do monorepo e variáveis de ambiente.
-  - [ ] Criar um documento de referência arquitetural (`ARCHITECTURE.md`) que sirva como fonte de verdade para qualquer agente ou desenvolvedor que precise fazer alterações no projeto. Deve cobrir: estrutura de diretórios e responsabilidade de cada camada (`apps/web`, `apps/api`, `packages/*`), convenções de naming e casing, padrões obrigatórios (ex: onde criar queries GraphQL, como estruturar resolvers, onde ficam validações), componentes de UI reutilizáveis e quando usar cada um, fluxo de dados entre camadas (Prisma → Service → Resolver → Codegen → Frontend), regras de estilo (Tailwind, tokens, variáveis), padrões de i18n, estratégia de permissões e guards, e qualquer _boa_ decisão arquitetural já tomada que deva ser preservada.
-  - arquivos afetados: `README.md`
+  - [x] Criar um documento de referência arquitetural (`ARCHITECTURE.md`) que sirva como fonte de verdade para qualquer agente ou desenvolvedor que precise fazer alterações no projeto. Deve cobrir: estrutura de diretórios e responsabilidade de cada camada (`apps/web`, `apps/api`, `packages/*`), convenções de naming e casing, padrões obrigatórios (ex: onde criar queries GraphQL, como estruturar resolvers, onde ficam validações), componentes de UI reutilizáveis e quando usar cada um, fluxo de dados entre camadas (Prisma → Service → Resolver → Codegen → Frontend), regras de estilo (Tailwind, tokens, variáveis), padrões de i18n, estratégia de permissões e guards, e qualquer _boa_ decisão arquitetural já tomada que deva ser preservada.
+  - arquivos afetados: `README.md`, `ARCHITECTURE.md`
   - dificuldade: baixa | impacto: baixo
 
 - [x] **3.2 Reduzir hotspots de complexidade**
@@ -375,7 +375,7 @@ O deploy básico já existe via GitHub -> Vercel/Render, então CD não é o gar
 - [ ] **4.5 Apagar arquivos legados**
   - [ ] Identificar e remover arquivos que não estão mais em uso ou que foram substituídos por novas implementações.
   - [ ] Garantir que a remoção de arquivos legados não cause quebras na aplicação.
-  - arquivos afetados: `apps/api/src/modules/auth/strategies/jwt.strategy.ts`, `apps/api/src/modules/auth/guards/jwt-auth.guard.ts`
+  - arquivos afetados: `apps/**/*`, `packages/**/*`
   - dificuldade: baixa | impacto: baixo
 
 ## Validation Basis
