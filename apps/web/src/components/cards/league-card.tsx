@@ -3,7 +3,12 @@ import { GetGameQuery } from "@/lib/apollo/generated/graphql";
 import { useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 
-type LeagueFromGame = NonNullable<GetGameQuery["game"]>["leagues"][number];
+type GameFromQuery = NonNullable<GetGameQuery["game"]>;
+type EloLeagueFromGame = NonNullable<GameFromQuery["eloLeagues"]>[number];
+type StandardLeagueFromGame = NonNullable<
+  GameFromQuery["standardLeagues"]
+>[number];
+type LeagueFromGame = EloLeagueFromGame | StandardLeagueFromGame;
 
 interface LeagueCardProps {
   league: LeagueFromGame;
@@ -65,7 +70,7 @@ export function LeagueCard({ league, game }: LeagueCardProps) {
                   </span>
 
                   <span className="text-secondary shrink-0 font-mono text-[11px] font-bold opacity-60">
-                    {entry.currentElo}
+                    {"currentElo" in entry ? entry.currentElo : entry.points}
                   </span>
                 </div>
               );

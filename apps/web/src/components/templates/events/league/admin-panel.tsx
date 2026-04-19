@@ -5,12 +5,32 @@ import { Settings2, UserPlus } from "lucide-react";
 import { ActionButton } from "@/components/ui/action-button";
 import { EditLeagueModal } from "@/components/modals/league/edit-league-modal";
 import { AddPlayerToLeagueModal } from "@/components/modals/league/add-player-to-league-modal";
-import { type League } from "@/lib/apollo/generated/graphql";
 import { useTranslations } from "next-intl";
 import { useUser } from "@/components/providers";
 
+type LeagueForPanel = {
+  id: string;
+  gameId: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  type: "RANKED_LEAGUE" | "STANDARD_LEAGUE";
+  allowDraw?: boolean;
+  allowedFormats?: string[];
+  game?: { name: string; slug: string; thumbnailImageUrl?: string | null };
+  initialElo?: number;
+  kFactor?: number;
+  scoreRelevance?: number;
+  inactivityDecay?: number;
+  inactivityThresholdHours?: number;
+  inactivityDecayFloor?: number;
+  pointsPerWin?: number;
+  pointsPerDraw?: number;
+  pointsPerLoss?: number;
+};
+
 interface LeagueAdminPanelProps {
-  league: League;
+  league: LeagueForPanel;
 }
 
 export function LeagueAdminPanel({ league }: LeagueAdminPanelProps) {
@@ -50,8 +70,24 @@ export function LeagueAdminPanel({ league }: LeagueAdminPanelProps) {
 
       <EditLeagueModal
         league={{
-          ...league,
-          type: league.type as "RANKED_LEAGUE" | "STANDARD_LEAGUE",
+          id: league.id,
+          gameId: league.gameId,
+          name: league.name,
+          slug: league.slug,
+          description: league.description,
+          type: league.type,
+          allowDraw: league.allowDraw ?? false,
+          allowedFormats: league.allowedFormats ?? ["ONE_V_ONE"],
+          game: league.game ?? { name: "", slug: "" },
+          initialElo: league.initialElo,
+          kFactor: league.kFactor,
+          scoreRelevance: league.scoreRelevance,
+          inactivityDecay: league.inactivityDecay,
+          inactivityThresholdHours: league.inactivityThresholdHours,
+          inactivityDecayFloor: league.inactivityDecayFloor,
+          pointsPerWin: league.pointsPerWin,
+          pointsPerDraw: league.pointsPerDraw,
+          pointsPerLoss: league.pointsPerLoss,
         }}
         isOpen={isEditLeagueOpen}
         onClose={() => setIsEditLeagueOpen(false)}

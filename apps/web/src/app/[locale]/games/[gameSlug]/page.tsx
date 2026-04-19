@@ -87,7 +87,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
   const { game } = data;
   const author = game.author;
-  const leagues = game.leagues || [];
+  const leagues = [...(game.eloLeagues ?? []), ...(game.standardLeagues ?? [])];
 
   const canEditCurrentGame = canEditGame(session, game.authorId);
   const viewerCanManagePlayers = canManagePlayers(session);
@@ -257,7 +257,7 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
           {leagues.length > 0 ? (
             <div className="grid gap-5 xl:grid-cols-2">
-              {leagues.map((league) => (
+              {leagues.map((league: (typeof leagues)[number]) => (
                 <LeagueCard key={league.id} league={league} game={gameSlug} />
               ))}
             </div>

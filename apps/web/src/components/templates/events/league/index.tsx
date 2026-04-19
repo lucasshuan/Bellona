@@ -10,7 +10,7 @@ import { getLocale } from "next-intl/server";
 import { formatDate } from "@/lib/date-utils";
 import { LeagueTable } from "@/components/tables/league-table";
 import { LeagueAdminPanel } from "./admin-panel";
-import { type League, GetLeagueQuery } from "@/lib/apollo/generated/graphql";
+import { GetLeagueQuery } from "@/lib/apollo/generated/graphql";
 import { Session } from "next-auth";
 
 type LeagueFromQuery = NonNullable<GetLeagueQuery["league"]>;
@@ -150,7 +150,9 @@ async function LeagueContent({
                   {t("ratingSystem")}
                 </span>
                 <span className="text-xs font-semibold uppercase">
-                  {league.ratingSystem}
+                  {league.type === "RANKED_LEAGUE"
+                    ? t("eloSystem")
+                    : t("pointsSystem")}
                 </span>
               </div>
               <div className="flex items-center justify-between py-1">
@@ -179,7 +181,25 @@ async function LeagueContent({
           )}
 
           {game.status === "APPROVED" && isEditor && (
-            <LeagueAdminPanel league={league as League} />
+            <LeagueAdminPanel
+              league={{
+                id: league.id,
+                gameId: league.gameId,
+                name: league.name,
+                slug: league.slug,
+                description: league.description,
+                type: "RANKED_LEAGUE",
+                allowDraw: league.allowDraw,
+                initialElo: league.initialElo,
+                kFactor: league.kFactor,
+                scoreRelevance: league.scoreRelevance,
+                inactivityDecay: league.inactivityDecay,
+                inactivityThresholdHours: league.inactivityThresholdHours,
+                inactivityDecayFloor: league.inactivityDecayFloor,
+                allowedFormats: league.allowedFormats,
+                game: league.game,
+              }}
+            />
           )}
         </div>
       </aside>
