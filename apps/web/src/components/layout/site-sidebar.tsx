@@ -9,7 +9,6 @@ import {
   Gamepad2,
   Trophy,
   BarChart3,
-  LayoutDashboard,
   User,
   Users,
   History,
@@ -634,28 +633,15 @@ function SidebarBody({
 
   const sections = useMemo<SectionDef[]>(
     () => [
-      {
-        titleKey: "discover",
-        items: [
-          { href: "/games", labelKey: "games", icon: Gamepad2 },
-          { href: "/events", labelKey: "events", icon: Trophy },
-          {
-            href: "/leaderboards",
-            labelKey: "leaderboards",
-            icon: BarChart3,
-            soon: true,
-          },
-        ],
-      },
       ...(user
         ? [
             {
               titleKey: "mySpace",
               items: [
                 {
-                  href: "/dashboard",
-                  labelKey: "dashboard",
-                  icon: LayoutDashboard,
+                  href: "/start",
+                  labelKey: "home",
+                  icon: Home,
                 },
 
                 {
@@ -689,6 +675,19 @@ function SidebarBody({
               : []),
           ]
         : []),
+      {
+        titleKey: "discover",
+        items: [
+          { href: "/games", labelKey: "games", icon: Gamepad2 },
+          { href: "/events", labelKey: "events", icon: Trophy },
+          {
+            href: "/leaderboards",
+            labelKey: "leaderboards",
+            icon: BarChart3,
+            soon: true,
+          },
+        ],
+      },
     ],
     [user],
   );
@@ -816,16 +815,6 @@ function SidebarBody({
             <div className="mx-3 my-2 h-px bg-white/4" />
           </>
         ) : null}
-
-        {/* Home */}
-        <div className="space-y-0.5">
-          <NavItem
-            item={{ href: "/", labelKey: "home", icon: Home }}
-            collapsed={effective}
-            t={t}
-            onClose={onClose}
-          />
-        </div>
 
         <div className="mx-3 my-2 h-px bg-white/4" />
         {sections.map((section, i) => {

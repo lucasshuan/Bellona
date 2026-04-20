@@ -70,7 +70,7 @@
     "join": "Join",
     "welcomeBack": "Welcome back, {name}",
     "welcomeSubtitle": "Ready to compete?",
-    "dashboard": "Dashboard",
+    "start": "Home",
     "games": {
       "title": "Communities",
       "description": "Join the community, follow the leaderboards, and leave your mark.",

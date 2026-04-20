@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/routing";
 import { Suspense } from "react";
-import { Compass, LayoutDashboard } from "lucide-react";
+import { Compass, Home } from "lucide-react";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -72,20 +72,20 @@ export default async function HomePage() {
                     {t("explore")}
                   </Link>
                   <Link
-                    href="/dashboard"
+                    href="/start"
                     className={cn(
                       buttonVariants({ intent: "primary", size: "lg" }),
                       "px-8 text-sm sm:text-base",
                     )}
                   >
-                    <LayoutDashboard className="mr-2 size-5" />
-                    {t("dashboard")}
+                    <Home className="mr-2 size-5" />
+                    {t("start")}
                   </Link>
                 </div>
                 
                 {/* Avatar + Welcome card */}
                 <div className="animate-hero-fade-up mt-16 [animation-delay:150ms]">
-                  <div className="animate-hero-float rounded-4xl border border-white/5 bg-primary-strong/10 px-5 py-3 shadow-lg shadow-black/20 backdrop-blur-sm">
+                  <div className="glow-border-card animate-hero-float rounded-4xl px-5 py-3">
                     <div className="flex items-center gap-3">
                     <div className="relative shrink-0">
                       <div className="bg-primary/15 absolute -inset-2 rounded-full blur-lg" />

@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap");
 @import "tailwindcss";
 
+@property --glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 :root {
   --transparent-scrollbar-image: url("/scrollbar-track.png");
   --font-space-grotesk:
@@ -61,6 +67,7 @@
   --animate-hero-glow: hero-glow 8s ease-in-out infinite;
   --animate-hero-line: hero-line 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
   --animate-hero-float: hero-float 6s ease-in-out infinite;
+  --animate-glow-border: glow-border-rotate 4s linear infinite;
   --animate-showcase-slide: showcase-slide 0.5s cubic-bezier(0.16, 1, 0.3, 1)
     both;
   --animate-showcase-fade: showcase-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -157,6 +164,15 @@
     }
     50% {
       transform: translateY(-6px);
+    }
+  }
+
+  @keyframes glow-border-rotate {
+    from {
+      --glow-angle: 0deg;
+    }
+    to {
+      --glow-angle: 360deg;
     }
   }
 
@@ -341,6 +357,46 @@ button.no-lift:hover {
   100% {
     transform: translate(84px, 84px);
   }
+}
+
+/* ── Glow border card ──────────────────────────────────────────────────── */
+.glow-border-card {
+  --glow-size: 1px;
+  position: relative;
+  background: transparent;
+  isolation: isolate;
+}
+
+.glow-border-card::before,
+.glow-border-card::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--glow-size));
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    transparent 0%,
+    var(--primary) 10%,
+    transparent 20%,
+    transparent 50%,
+    var(--primary-strong) 60%,
+    transparent 70%
+  );
+  animation: glow-border-rotate 4s linear infinite;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: var(--glow-size);
+}
+
+.glow-border-card::after {
+  filter: blur(12px);
+  opacity: 0.5;
 }
 
 .grid-surface {

@@ -39,7 +39,7 @@ See [ARCHITECTURE.md](../ARCHITECTURE.md) for the full reference. Key rules enfo
 
 ## Workflow
 
-**After any task that modifies more than 2 files**, run lint-staged from the repo root before considering the task complete:
+**After any task that modifies more than 2 code files**, run lint-staged from the repo root before considering the task complete:
 
 ```bash
 pnpm exec lint-staged
