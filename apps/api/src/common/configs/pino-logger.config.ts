@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'http';
 import { Params } from 'nestjs-pino';
 
 export const pinoLoggerConfig: Params = {
@@ -22,6 +23,18 @@ export const pinoLoggerConfig: Params = {
     autoLogging: {
       // Não loga health-checks ou rotas internas de infraestrutura.
       ignore: (req) => req.url === '/health',
+    },
+    // Queries GraphQL são logadas em debug (ruído desnecessário em info).
+    // Erros HTTP continuam em error independente da rota.
+    customLogLevel: (
+      req: IncomingMessage,
+      res: ServerResponse,
+      err?: Error,
+    ) => {
+      if (err || res.statusCode >= 500) return 'error';
+      if (res.statusCode >= 400) return 'warn';
+      if (req.url?.startsWith('/graphql')) return 'debug';
+      return 'info';
     },
     // Podemos extrair o operationName do GraphQL se disponível
     customProps: () => {
