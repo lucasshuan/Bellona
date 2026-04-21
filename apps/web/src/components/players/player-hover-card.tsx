@@ -3,25 +3,14 @@
 import * as React from "react";
 import { Portal } from "@/components/ui/portal";
 import { cn } from "@/lib/utils";
-import { LoaderCircle, Calendar, Hash } from "lucide-react";
-import Image from "next/image";
-import { useQuery } from "@apollo/client/react";
-import { GET_PLAYER } from "@/lib/apollo/queries/players";
-import {
-  type PlayerUsername,
-  GetPlayerQuery,
-} from "@/lib/apollo/generated/graphql";
-import { formatDate } from "@/lib/date-utils";
 
 interface PlayerHoverCardProps {
-  playerId: string;
   displayName: string;
   country: string | null;
   children: React.ReactNode;
 }
 
 export function PlayerHoverCard({
-  playerId,
   displayName,
   country,
   children,
@@ -35,19 +24,13 @@ export function PlayerHoverCard({
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const triggerRef = React.useRef<HTMLDivElement>(null);
 
-  const { data: apolloData, loading } = useQuery<GetPlayerQuery>(GET_PLAYER, {
-    variables: { id: playerId },
-    skip: !isOpen,
-  });
-  const data = apolloData?.player;
-
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const estimatedHeight = 320;
+      const estimatedHeight = 160;
       const spaceBelow = viewportHeight - rect.bottom;
 
       const newSide =
@@ -84,104 +67,33 @@ export function PlayerHoverCard({
         <Portal>
           <div
             className={cn(
-              "animate-in fade-in fixed z-9999 w-72 duration-200",
+              "animate-in fade-in fixed z-9999 w-56 duration-200",
               side === "top" ? "zoom-in-95 -translate-y-full" : "zoom-in-95",
             )}
             style={{
               top: coords.top,
               left: coords.left,
             }}
-            onMouseEnter={handleMouseEnter} // Keep open when hovering the card
+            onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <div className="glass-panel overflow-hidden rounded-3xl bg-[#0a080f] shadow-2xl ring-1 ring-white/10">
-              <div className="flex flex-col">
-                {/* Header - Always show immediately using props or fetched data */}
-                <div className="h-20 bg-white/5" />
-
-                <div className="relative px-5 pb-5">
-                  <div className="-mt-8 mb-4 flex items-end justify-between">
-                    <div className="relative size-16 overflow-hidden rounded-2xl bg-[#0a080f] ring-4 ring-[#0a080f]">
-                      {data?.user?.imageUrl ? (
-                        <Image
-                          src={data.user.imageUrl}
-                          alt={data.user.name || data.user.username}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="flex size-full items-center justify-center bg-white/5 text-xl font-bold text-white/20">
-                          {(data?.user?.name ?? displayName)
-                            .slice(0, 1)
-                            .toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    {(data?.user?.country ?? country) && (
-                      <div className="flex items-center gap-1.5 rounded-full bg-white/5 px-3 py-1 text-[10px] font-bold tracking-tight text-white/60">
-                        <span
-                          className={`fi fi-${(data?.user?.country ?? country)?.toLowerCase()} h-3 w-4 rounded-xs`}
-                        />
-                        {data?.user?.country ?? country}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-lg font-bold text-white">
-                        {data?.user?.name ?? displayName}
-                      </h4>
-                      {data ? (
-                        data.user?.username && (
-                          <p className="text-muted text-xs">
-                            Account: @{data.user.username}
-                          </p>
-                        )
-                      ) : (
-                        <p className="h-4 w-24 animate-pulse rounded bg-white/5" />
-                      )}
-                    </div>
-
-                    {loading && !data ? (
-                      <div className="flex items-center justify-center py-4">
-                        <LoaderCircle className="text-primary size-5 animate-spin" />
-                      </div>
-                    ) : data ? (
-                      <>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-[10px] font-bold tracking-widest text-white/30 uppercase">
-                            <Hash className="size-3" />
-                            Nicknames
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {data.usernames?.map((u: PlayerUsername) => (
-                              <span
-                                key={u.id}
-                                className="rounded-lg bg-white/5 px-2 py-0.5 text-xs text-white/50"
-                              >
-                                {u.username}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 pt-2">
-                          <div className="flex items-center gap-2 text-white/40">
-                            <Calendar className="size-3.5" />
-                            <span className="text-[11px] font-medium">
-                              Joined{" "}
-                              {formatDate(data.user?.createdAt || "", "en")}
-                            </span>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="text-muted text-center text-[10px] italic">
-                        Failed to load details
-                      </div>
-                    )}
-                  </div>
+            <div className="glass-panel overflow-hidden rounded-2xl bg-[#0a080f] px-4 py-3 shadow-2xl ring-1 ring-white/10">
+              <div className="flex items-center gap-3">
+                <div className="flex size-9 items-center justify-center rounded-xl bg-white/5 text-sm font-bold text-white/40">
+                  {displayName.slice(0, 1).toUpperCase()}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-white">
+                    {displayName}
+                  </p>
+                  {country && (
+                    <p className="text-muted flex items-center gap-1 text-[10px]">
+                      <span
+                        className={`fi fi-${country.toLowerCase()} h-2.5 w-3.5 rounded-xs`}
+                      />
+                      {country.toUpperCase()}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

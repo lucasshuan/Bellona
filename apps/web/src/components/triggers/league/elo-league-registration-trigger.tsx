@@ -8,15 +8,13 @@ import { SignInButton } from "@/components/triggers/auth/sign-in-button";
 import { EloRegistrationConfirmModal } from "@/components/modals/elo-league/elo-registration-confirm-modal";
 
 interface EloLeagueRegistrationTriggerProps {
-  leagueId: string;
-  initialElo: number;
+  eventId: string;
   isRegistered: boolean;
   isLoggedIn: boolean;
 }
 
 export function EloLeagueRegistrationTrigger({
-  leagueId,
-  initialElo,
+  eventId,
   isRegistered,
   isLoggedIn,
 }: EloLeagueRegistrationTriggerProps) {
@@ -58,8 +56,7 @@ export function EloLeagueRegistrationTrigger({
       <EloRegistrationConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
-        leagueId={leagueId}
-        initialElo={initialElo}
+        eventId={eventId}
       />
     </>
   );

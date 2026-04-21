@@ -20,11 +20,7 @@ import {
   Check,
   X,
 } from "lucide-react";
-import {
-  updateEloLeague,
-  updateStandardLeague,
-  checkLeagueSlugAvailability,
-} from "@/actions/game";
+import { updateLeague, checkLeagueSlugAvailability } from "@/actions/game";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
 import { Slider } from "@/components/ui/slider";
@@ -36,22 +32,13 @@ import { MATCH_FORMATS } from "@ares/core";
 import { EloMatchSimulator } from "./elo-match-simulator";
 
 type LeagueForEdit = {
-  id: string;
-  gameId: string;
+  eventId: string;
   name: string;
   slug: string;
   description?: string | null;
-  type: "RANKED_LEAGUE" | "STANDARD_LEAGUE";
-  initialElo?: number | null;
+  classificationSystem: "ELO" | "POINTS";
   allowDraw?: boolean | null;
-  kFactor?: number | null;
-  scoreRelevance?: number | null;
-  inactivityDecay?: number | null;
-  inactivityThresholdHours?: number | null;
-  inactivityDecayFloor?: number | null;
-  pointsPerWin?: number | null;
-  pointsPerDraw?: number | null;
-  pointsPerLoss?: number | null;
+  config: Record<string, unknown>;
   allowedFormats?: string[] | null;
   game?: {
     name: string;
@@ -93,27 +80,29 @@ export function EditLeagueForm({
     formState: { errors, isValid },
   } = useForm<EditLeagueValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      name: league.name,
-      slug: league.slug,
-      description: league.description || "",
-      ratingSystem:
-        (league.type as "RANKED_LEAGUE" | "STANDARD_LEAGUE") || "RANKED_LEAGUE",
-      initialElo: league.initialElo ?? 1000,
-      allowDraw: league.allowDraw ?? true,
-      kFactor: league.kFactor ?? 20,
-      scoreRelevance: league.scoreRelevance ?? 0,
-      inactivityDecay: league.inactivityDecay ?? 0,
-      inactivityThresholdHours: league.inactivityThresholdHours ?? 120,
-      inactivityDecayFloor: league.inactivityDecayFloor ?? 1000,
-      pointsPerWin: league.pointsPerWin ?? 3,
-      pointsPerDraw: league.pointsPerDraw ?? 1,
-      pointsPerLoss: league.pointsPerLoss ?? 0,
-      allowedFormats:
-        (league.allowedFormats?.length ?? 0) > 0
-          ? [...(league.allowedFormats as string[])]
-          : ["ONE_V_ONE"],
-    },
+    defaultValues: (() => {
+      const cfg = league.config as Record<string, number>;
+      return {
+        name: league.name,
+        slug: league.slug,
+        description: league.description || "",
+        ratingSystem: league.classificationSystem,
+        initialElo: cfg.initialElo ?? 1000,
+        allowDraw: league.allowDraw ?? true,
+        kFactor: cfg.kFactor ?? 20,
+        scoreRelevance: cfg.scoreRelevance ?? 0,
+        inactivityDecay: cfg.inactivityDecay ?? 0,
+        inactivityThresholdHours: cfg.inactivityThresholdHours ?? 120,
+        inactivityDecayFloor: cfg.inactivityDecayFloor ?? 1000,
+        pointsPerWin: cfg.pointsPerWin ?? 3,
+        pointsPerDraw: cfg.pointsPerDraw ?? 1,
+        pointsPerLoss: cfg.pointsPerLoss ?? 0,
+        allowedFormats:
+          (league.allowedFormats?.length ?? 0) > 0
+            ? [...(league.allowedFormats as string[])]
+            : ["ONE_V_ONE"],
+      };
+    })(),
     mode: "onChange",
   });
 
@@ -185,9 +174,9 @@ export function EditLeagueForm({
 
     const timeoutId = window.setTimeout(async () => {
       const result = await checkLeagueSlugAvailability(
-        league.gameId,
+        league.eventId,
         slug,
-        league.id,
+        league.eventId,
       );
 
       if (slugRequestRef.current !== requestId) {
@@ -211,7 +200,7 @@ export function EditLeagueForm({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [canCheckSlug, slug, league.gameId, league.id, league.slug]);
+  }, [canCheckSlug, slug, league.eventId, league.slug]);
 
   // Auto-generate slug from name if not manually modified
   useEffect(() => {
@@ -282,40 +271,36 @@ export function EditLeagueForm({
 
   const onSubmit = async (values: EditLeagueValues) => {
     startTransition(async () => {
-      const isElo = values.ratingSystem === "RANKED_LEAGUE";
-      let result;
+      const isElo = values.ratingSystem === "ELO";
+      const cfg = league.config as Record<string, number>;
 
-      if (isElo) {
-        result = await updateEloLeague(league.id, {
-          name: values.name,
-          slug: values.slug,
-          allowDraw: values.allowDraw,
-          description: values.description ?? null,
-          initialElo: values.initialElo ?? league.initialElo ?? 1000,
-          kFactor: values.kFactor ?? league.kFactor ?? 20,
-          scoreRelevance: values.scoreRelevance ?? league.scoreRelevance ?? 0,
-          inactivityDecay:
-            values.inactivityDecay ?? league.inactivityDecay ?? 0,
-          inactivityThresholdHours:
-            values.inactivityThresholdHours ??
-            league.inactivityThresholdHours ??
-            120,
-          inactivityDecayFloor:
-            values.inactivityDecayFloor ?? league.inactivityDecayFloor ?? 1000,
-          allowedFormats: values.allowedFormats,
-        });
-      } else {
-        result = await updateStandardLeague(league.id, {
-          name: values.name,
-          slug: values.slug,
-          allowDraw: values.allowDraw,
-          description: values.description ?? null,
-          pointsPerWin: values.pointsPerWin ?? league.pointsPerWin ?? 3,
-          pointsPerDraw: values.pointsPerDraw ?? league.pointsPerDraw ?? 1,
-          pointsPerLoss: values.pointsPerLoss ?? league.pointsPerLoss ?? 0,
-          allowedFormats: values.allowedFormats,
-        });
-      }
+      const config = isElo
+        ? {
+            initialElo: values.initialElo ?? cfg.initialElo ?? 1000,
+            kFactor: values.kFactor ?? cfg.kFactor ?? 20,
+            scoreRelevance: values.scoreRelevance ?? cfg.scoreRelevance ?? 0,
+            inactivityDecay: values.inactivityDecay ?? cfg.inactivityDecay ?? 0,
+            inactivityThresholdHours:
+              values.inactivityThresholdHours ??
+              cfg.inactivityThresholdHours ??
+              120,
+            inactivityDecayFloor:
+              values.inactivityDecayFloor ?? cfg.inactivityDecayFloor ?? 1000,
+          }
+        : {
+            pointsPerWin: values.pointsPerWin ?? cfg.pointsPerWin ?? 3,
+            pointsPerDraw: values.pointsPerDraw ?? cfg.pointsPerDraw ?? 1,
+            pointsPerLoss: values.pointsPerLoss ?? cfg.pointsPerLoss ?? 0,
+          };
+
+      const result = await updateLeague(league.eventId, {
+        name: values.name,
+        slug: values.slug,
+        allowDraw: values.allowDraw,
+        description: values.description ?? null,
+        allowedFormats: values.allowedFormats,
+        config,
+      });
 
       if (result.success) {
         toast.success(t("EditLeague.success"));
@@ -468,7 +453,7 @@ export function EditLeagueForm({
                   disabled
                   className={cn(
                     "flex cursor-not-allowed flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
-                    ratingSystem === "RANKED_LEAGUE"
+                    ratingSystem === "ELO"
                       ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                       : "border-white/5 bg-white/5 text-white/40 opacity-40",
                   )}
@@ -488,7 +473,7 @@ export function EditLeagueForm({
                   disabled
                   className={cn(
                     "flex cursor-not-allowed flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
-                    ratingSystem === "STANDARD_LEAGUE"
+                    ratingSystem === "POINTS"
                       ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                       : "border-white/5 bg-white/5 text-white/40 opacity-40",
                   )}
@@ -533,7 +518,7 @@ export function EditLeagueForm({
                 </div>
 
                 <div className="space-y-6">
-                  {ratingSystem === "RANKED_LEAGUE" ? (
+                  {ratingSystem === "ELO" ? (
                     <div className="grid gap-6">
                       <div className="flex flex-col gap-2">
                         <LabelTooltip label={t("AddLeague.initialElo.label")} />
@@ -658,7 +643,7 @@ export function EditLeagueForm({
               {/* Right Column: Inactivity & Explanation Box */}
               <div className="space-y-6 md:col-span-3">
                 {/* Inactivity Settings (Elo only) */}
-                {ratingSystem === "RANKED_LEAGUE" && (
+                {ratingSystem === "ELO" && (
                   <div className="space-y-4 rounded-2xl border border-white/5 bg-white/2 p-5">
                     <div className="flex items-center gap-2 text-white/40">
                       <Clock className="size-3.5" />
@@ -744,13 +729,13 @@ export function EditLeagueForm({
 
                   <div className="space-y-5 text-xs leading-relaxed text-white/60">
                     <p className="font-medium text-white/80 italic">
-                      {ratingSystem === "RANKED_LEAGUE"
+                      {ratingSystem === "ELO"
                         ? t("AddLeague.explanation.elo.description")
                         : t("AddLeague.explanation.points.description")}
                     </p>
 
                     <div className="grid gap-3 pt-2">
-                      {ratingSystem === "RANKED_LEAGUE" ? (
+                      {ratingSystem === "ELO" ? (
                         <>
                           <div className="flex items-center gap-3">
                             <div className="text-primary flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/5">

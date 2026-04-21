@@ -32,7 +32,12 @@ type GamePageProps = {
 export const dynamic = "force-dynamic";
 
 import { GET_GAME } from "@/lib/apollo/queries/games";
-import { type Game, GetGameQuery } from "@/lib/apollo/generated/graphql";
+import { GET_LEAGUES } from "@/lib/apollo/queries/leagues";
+import {
+  type Game,
+  type GetGameQuery,
+  type GetLeaguesQuery,
+} from "@/lib/apollo/generated/graphql";
 
 export async function generateMetadata({
   params,
@@ -87,7 +92,12 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
   const { game } = data;
   const author = game.author;
-  const leagues = [...(game.eloLeagues ?? []), ...(game.standardLeagues ?? [])];
+
+  const leaguesData = await safeServerQuery<GetLeaguesQuery>({
+    query: GET_LEAGUES,
+    variables: { gameId: game.id },
+  });
+  const leagues = leaguesData?.leagues?.nodes ?? [];
 
   const canEditCurrentGame = canEditGame(session, game.authorId);
   const viewerCanManagePlayers = canManagePlayers(session);
@@ -101,8 +111,8 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
 
   const gameWithCounts = {
     ...game,
-    leagueCount: game._count?.leagues || 0,
-    playerCount: game._count?.players || 0,
+    leagueCount: game._count?.events || 0,
+    playerCount: 0,
     tourneyCount: 0,
     postCount: 0,
   };
@@ -280,7 +290,11 @@ async function GamePageContent({ gameSlug }: { gameSlug: string }) {
           {leagues.length > 0 ? (
             <div className="grid gap-5 xl:grid-cols-2">
               {leagues.map((league: (typeof leagues)[number]) => (
-                <LeagueCard key={league.id} league={league} game={gameSlug} />
+                <LeagueCard
+                  key={league.eventId}
+                  league={league}
+                  game={gameSlug}
+                />
               ))}
             </div>
           ) : (

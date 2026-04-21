@@ -82,33 +82,33 @@ export default async function HomePage() {
                     {t("start")}
                   </Link>
                 </div>
-                
+
                 {/* Avatar + Welcome card */}
                 <div className="animate-hero-fade-up mt-16 [animation-delay:150ms]">
                   <div className="glow-border-card animate-hero-float rounded-4xl px-5 py-3">
                     <div className="flex items-center gap-3">
-                    <div className="relative shrink-0">
-                      <div className="bg-primary/15 absolute -inset-2 rounded-full blur-lg" />
-                      <div className="relative overflow-hidden rounded-full border-2 border-white/10 shadow-lg shadow-black/30">
-                        {user.image ? (
-                          <Image
-                            src={user.image}
-                            alt={user.name ?? "Avatar"}
-                            width={40}
-                            height={40}
-                            className="size-10 object-cover"
-                          />
-                        ) : (
-                          <div className="flex size-10 items-center justify-center bg-white/5 text-base font-bold text-white/40">
-                            {(user.name ?? user.username)?.[0]?.toUpperCase()}
-                          </div>
-                        )}
+                      <div className="relative shrink-0">
+                        <div className="bg-primary/15 absolute -inset-2 rounded-full blur-lg" />
+                        <div className="relative overflow-hidden rounded-full border-2 border-white/10 shadow-lg shadow-black/30">
+                          {user.image ? (
+                            <Image
+                              src={user.image}
+                              alt={user.name ?? "Avatar"}
+                              width={40}
+                              height={40}
+                              className="size-10 object-cover"
+                            />
+                          ) : (
+                            <div className="flex size-10 items-center justify-center bg-white/5 text-base font-bold text-white/40">
+                              {(user.name ?? user.username)?.[0]?.toUpperCase()}
+                            </div>
+                          )}
+                        </div>
                       </div>
+                      <p className="text-muted text-base sm:text-lg">
+                        {t("welcomeBack", { name: user.name ?? user.username })}
+                      </p>
                     </div>
-                    <p className="text-muted text-base sm:text-lg">
-                      {t("welcomeBack", { name: user.name ?? user.username })}
-                    </p>
-                  </div>
                   </div>
                 </div>
               </>
@@ -347,8 +347,8 @@ async function PublicGamesList({ labels }: PublicGamesListProps) {
     description: game.description,
     thumbnailImageUrl: game.thumbnailImageUrl,
     backgroundImageUrl: game.backgroundImageUrl,
-    leagueCount: game._count?.leagues || 0,
-    playerCount: game._count?.players || 0,
+    leagueCount: game._count?.events || 0,
+    playerCount: 0,
   }));
 
   return <GameShowcase games={gameList} labels={labels} />;

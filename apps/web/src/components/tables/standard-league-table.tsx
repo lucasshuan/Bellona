@@ -44,7 +44,6 @@ export function StandardLeagueTable({ entries }: StandardLeagueTableProps) {
         cell: (entry: StandardLeagueEntry) => (
           <div className="flex items-center">
             <PlayerHoverCard
-              playerId={entry.playerId}
               displayName={entry.displayName}
               country={entry.country}
             >

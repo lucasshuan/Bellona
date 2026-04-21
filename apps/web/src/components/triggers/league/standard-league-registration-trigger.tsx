@@ -8,13 +8,13 @@ import { SignInButton } from "@/components/triggers/auth/sign-in-button";
 import { StandardRegistrationConfirmModal } from "@/components/modals/standard-league/standard-registration-confirm-modal";
 
 interface StandardLeagueRegistrationTriggerProps {
-  leagueId: string;
+  eventId: string;
   isRegistered: boolean;
   isLoggedIn: boolean;
 }
 
 export function StandardLeagueRegistrationTrigger({
-  leagueId,
+  eventId,
   isRegistered,
   isLoggedIn,
 }: StandardLeagueRegistrationTriggerProps) {
@@ -56,7 +56,7 @@ export function StandardLeagueRegistrationTrigger({
       <StandardRegistrationConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
-        leagueId={leagueId}
+        eventId={eventId}
       />
     </>
   );

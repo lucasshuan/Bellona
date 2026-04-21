@@ -28,11 +28,7 @@ import {
   X,
 } from "lucide-react";
 // Removido Popover import se não for usado em outro lugar, mas vou manter se necessário.
-import {
-  addEloLeague,
-  addStandardLeague,
-  checkLeagueSlugAvailability,
-} from "@/actions/game";
+import { createLeague, checkLeagueSlugAvailability } from "@/actions/game";
 import { getGamesSimple, type SimpleGame } from "@/actions/get-games";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
@@ -89,7 +85,7 @@ export function AddLeagueForm({
       slug: "",
       description: "",
       about: "",
-      ratingSystem: "RANKED_LEAGUE",
+      ratingSystem: "ELO",
       initialElo: LEAGUE_DEFAULT_SETTINGS.initialElo,
       allowDraw: false,
       kFactor: LEAGUE_DEFAULT_SETTINGS.kFactor,
@@ -380,17 +376,10 @@ export function AddLeagueForm({
     }
 
     startTransition(async () => {
-      const isElo = values.ratingSystem === "RANKED_LEAGUE";
+      const isElo = values.ratingSystem === "ELO";
 
-      const result = isElo
-        ? await addEloLeague({
-            gameId: values.gameId,
-            gameName: values.gameName,
-            name: values.name,
-            slug: values.slug,
-            description: values.description ?? null,
-            about: values.about ?? null,
-            allowDraw: values.allowDraw,
+      const eloConfig = isElo
+        ? {
             initialElo: values.initialElo ?? LEAGUE_DEFAULT_SETTINGS.initialElo,
             kFactor: values.kFactor ?? LEAGUE_DEFAULT_SETTINGS.kFactor,
             scoreRelevance:
@@ -403,26 +392,29 @@ export function AddLeagueForm({
             inactivityDecayFloor:
               values.inactivityDecayFloor ??
               LEAGUE_DEFAULT_SETTINGS.inactivityDecayFloor,
-            allowedFormats: values.allowedFormats,
-            participationMode,
-          })
-        : await addStandardLeague({
-            gameId: values.gameId,
-            gameName: values.gameName,
-            name: values.name,
-            slug: values.slug,
-            description: values.description ?? null,
-            about: values.about ?? null,
-            allowDraw: values.allowDraw,
+          }
+        : {
             pointsPerWin:
               values.pointsPerWin ?? LEAGUE_DEFAULT_SETTINGS.pointsPerWin,
             pointsPerDraw:
               values.pointsPerDraw ?? LEAGUE_DEFAULT_SETTINGS.pointsPerDraw,
             pointsPerLoss:
               values.pointsPerLoss ?? LEAGUE_DEFAULT_SETTINGS.pointsPerLoss,
-            allowedFormats: values.allowedFormats,
-            participationMode,
-          });
+          };
+
+      const result = await createLeague({
+        gameId: values.gameId,
+        gameName: values.gameName,
+        name: values.name,
+        slug: values.slug,
+        description: values.description ?? null,
+        about: values.about ?? null,
+        participationMode,
+        classificationSystem: isElo ? "ELO" : "POINTS",
+        allowDraw: values.allowDraw,
+        allowedFormats: values.allowedFormats,
+        config: eloConfig,
+      });
 
       if (result.success) {
         toast.success(t("success"));
@@ -819,10 +811,10 @@ export function AddLeagueForm({
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <button
                   type="button"
-                  onClick={() => setValue("ratingSystem", "RANKED_LEAGUE")}
+                  onClick={() => setValue("ratingSystem", "ELO")}
                   className={cn(
                     "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
-                    ratingSystem === "RANKED_LEAGUE"
+                    ratingSystem === "ELO"
                       ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                       : "border-white/5 bg-white/5 text-white/40 hover:bg-white/10",
                   )}
@@ -836,10 +828,10 @@ export function AddLeagueForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setValue("ratingSystem", "STANDARD_LEAGUE")}
+                  onClick={() => setValue("ratingSystem", "POINTS")}
                   className={cn(
                     "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all",
-                    ratingSystem === "STANDARD_LEAGUE"
+                    ratingSystem === "POINTS"
                       ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-lg"
                       : "border-white/5 bg-white/5 text-white/40 hover:bg-white/10",
                   )}
@@ -923,7 +915,7 @@ export function AddLeagueForm({
                 </div>
 
                 <div className="space-y-6">
-                  {ratingSystem === "RANKED_LEAGUE" ? (
+                  {ratingSystem === "ELO" ? (
                     <div className="grid gap-6">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">
@@ -1127,12 +1119,12 @@ export function AddLeagueForm({
                   </h4>
                   <div className="space-y-5 text-xs leading-relaxed text-white/60">
                     <p className="font-medium text-white/80 italic">
-                      {ratingSystem === "RANKED_LEAGUE"
+                      {ratingSystem === "ELO"
                         ? t("explanation.elo.description")
                         : t("explanation.points.description")}
                     </p>
                     <div className="grid gap-3 pt-2">
-                      {ratingSystem === "RANKED_LEAGUE" ? (
+                      {ratingSystem === "ELO" ? (
                         <>
                           <div className="flex items-center gap-3">
                             <div

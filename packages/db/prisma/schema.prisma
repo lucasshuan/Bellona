@@ -236,8 +236,8 @@ model Event {
   author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   // Extensions by type
-  league           League?
-  tournamentPhases TournamentPhase[]
+  league     League?
+  tournament Tournament?
 
   // Participants, staff, matches, media
   entries     EventEntry[]
@@ -275,11 +275,28 @@ model League {
   @@map("leagues")
 }
 
-// Ordered phase in a Tournament event
-model TournamentPhase {
-  id      String @id @default(cuid())
-  eventId String @map("event_id")
+// 1:1 extension of Event when type = TOURNAMENT
+model Tournament {
+  eventId String @id @map("event_id")
   event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  // Global tournament config (seeding strategy, progression rules, etc.)
+  // Ex.: { seedingStrategy: "MANUAL", progressionMode: "TOP_N" }
+  config Json
+
+  // Schema for organizer-defined dynamic stats fields shared across phases
+  customFieldSchema Json? @map("custom_field_schema")
+
+  phases TournamentPhase[]
+
+  @@map("tournaments")
+}
+
+// Ordered phase in a Tournament
+model TournamentPhase {
+  id           String     @id @default(cuid())
+  tournamentId String     @map("tournament_id")
+  tournament   Tournament @relation(fields: [tournamentId], references: [eventId], onDelete: Cascade)
 
   order  Int         // position in sequence (1, 2, 3…)
   name   String

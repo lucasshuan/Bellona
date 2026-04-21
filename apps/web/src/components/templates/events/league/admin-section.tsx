@@ -9,34 +9,23 @@ import { EditLeagueModal } from "@/components/modals/league/edit-league-modal";
 import { AddPlayerToLeagueModal } from "@/components/modals/league/add-player-to-league-modal";
 
 type LeagueAdminData = {
-  id: string;
-  gameId: string;
+  eventId: string;
   name: string;
   slug: string;
   description?: string | null;
-  type: "RANKED_LEAGUE" | "STANDARD_LEAGUE";
+  classificationSystem: "ELO" | "POINTS";
   allowDraw: boolean;
+  config: Record<string, unknown>;
   allowedFormats: string[];
   game: { name: string; slug: string; thumbnailImageUrl?: string | null };
-  initialElo?: number;
-  kFactor?: number;
-  scoreRelevance?: number;
-  inactivityDecay?: number;
-  inactivityThresholdHours?: number;
-  inactivityDecayFloor?: number;
-  pointsPerWin?: number;
-  pointsPerDraw?: number;
-  pointsPerLoss?: number;
 };
 
 interface LeagueAdminSectionProps {
   league: LeagueAdminData;
-  leagueType: "elo" | "standard";
 }
 
 export function LeagueAdminSection({
   league,
-  leagueType,
 }: LeagueAdminSectionProps) {
   const { canManageLeagues, canManagePlayers } = useUser();
   const t = useTranslations();
@@ -78,9 +67,7 @@ export function LeagueAdminSection({
       />
 
       <AddPlayerToLeagueModal
-        gameId={league.gameId}
-        leagueId={league.id}
-        leagueType={leagueType}
+        leagueId={league.eventId}
         isOpen={isAddPlayerOpen}
         onClose={() => setIsAddPlayerOpen(false)}
       />

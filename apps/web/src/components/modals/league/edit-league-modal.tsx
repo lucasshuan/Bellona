@@ -6,24 +6,15 @@ import { useTranslations } from "next-intl";
 import { EditLeagueForm } from "@/components/forms/league/edit-league-form";
 
 type LeagueForEdit = {
-  id: string;
-  gameId: string;
+  eventId: string;
   name: string;
   slug: string;
   description?: string | null;
-  type: "RANKED_LEAGUE" | "STANDARD_LEAGUE";
+  classificationSystem: "ELO" | "POINTS";
   allowDraw: boolean;
+  config: Record<string, unknown>;
   allowedFormats: string[];
   game: { name: string; slug: string; thumbnailImageUrl?: string | null };
-  initialElo?: number;
-  kFactor?: number;
-  scoreRelevance?: number;
-  inactivityDecay?: number;
-  inactivityThresholdHours?: number;
-  inactivityDecayFloor?: number;
-  pointsPerWin?: number;
-  pointsPerDraw?: number;
-  pointsPerLoss?: number;
 };
 
 interface EditLeagueModalProps {

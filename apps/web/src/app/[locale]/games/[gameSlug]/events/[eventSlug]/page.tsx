@@ -1,17 +1,10 @@
 import { notFound } from "next/navigation";
 import { getServerAuthSession } from "@/auth";
 import { canManageLeagues } from "@/lib/permissions";
-import { EloLeagueTemplate } from "@/components/templates/events/elo-league";
-import { StandardLeagueTemplate } from "@/components/templates/events/standard-league";
-
 import { GET_EVENT_META } from "@/lib/apollo/queries/events";
-import { GET_ELO_LEAGUE } from "@/lib/apollo/queries/elo-leagues";
-import { GET_STANDARD_LEAGUE } from "@/lib/apollo/queries/standard-leagues";
+import { GET_LEAGUE } from "@/lib/apollo/queries/leagues";
 import { safeServerQuery } from "@/lib/apollo/safe-server-query";
-import {
-  type GetEloLeagueQuery,
-  type GetStandardLeagueQuery,
-} from "@/lib/apollo/generated/graphql";
+import { type GetLeagueQuery } from "@/lib/apollo/generated/graphql";
 
 interface EventPageProps {
   params: Promise<{
@@ -54,37 +47,21 @@ async function EventPageContent({
 
   const { type } = metaData.eventMeta;
 
-  if (type === "RANKED_LEAGUE") {
-    const data = await safeServerQuery<GetEloLeagueQuery>({
-      query: GET_ELO_LEAGUE,
+  if (type === "LEAGUE") {
+    const data = await safeServerQuery<GetLeagueQuery>({
+      query: GET_LEAGUE,
       variables: { gameSlug, leagueSlug: eventSlug },
     });
 
-    if (!data?.eloLeague) notFound();
+    if (!data?.league) notFound();
 
     return (
-      <EloLeagueTemplate
-        league={data.eloLeague}
-        session={session}
-        isEditor={isEditor}
-      />
-    );
-  }
-
-  if (type === "STANDARD_LEAGUE") {
-    const data = await safeServerQuery<GetStandardLeagueQuery>({
-      query: GET_STANDARD_LEAGUE,
-      variables: { gameSlug, leagueSlug: eventSlug },
-    });
-
-    if (!data?.standardLeague) notFound();
-
-    return (
-      <StandardLeagueTemplate
-        league={data.standardLeague}
-        session={session}
-        isEditor={isEditor}
-      />
+      <div className="flex min-h-[50vh] flex-col items-center justify-center p-12 text-center">
+        <h1 className="text-3xl font-bold">{data.league.event?.name}</h1>
+        <p className="text-muted mt-4">
+          League details — {data.league.classificationSystem}
+        </p>
+      </div>
     );
   }
 

@@ -65,21 +65,22 @@ src/modules/<domain>/
 
 #### Padrão de Entidade Base: `Event`
 
-O modelo `Event` no schema Prisma é a entidade raiz de todos os tipos de competição (ligas, futuros torneios). `EloLeague` e `StandardLeague` estendem `Event` via relação 1:1 (`eventId` FK).
+O modelo `Event` no schema Prisma é a entidade raiz de todos os tipos de competição. `League` é a única especialização atual: uma relação 1:1 com `Event` via `eventId` FK, com `classificationSystem: ClassificationSystem` (ELO | POINTS) e `config: Json` (parâmetros específicos do sistema de pontuação).
 
 **No GraphQL (code-first)**:
 
 - `Event` tem seu próprio `@ObjectType()` em `src/modules/events/event.model.ts`.
-- `EloLeague` e `StandardLeague` expõem `event: Event` como campo direto — **não** repetem campos como `name`, `slug`, `type`, `participationMode` etc.
+- `League` expõe `event: Event` como campo direto — **não** repete campos como `name`, `slug`, `type`, `participationMode` etc.
 - O campo `game` não está declarado em `event.model.ts` com `@Field()`. Ele é adicionado ao schema pelo `@ResolveField` em `EventsResolver`, evitando imports circulares.
 - A propriedade `gameId: string` existe no modelo TypeScript de `Event` (sem `@Field()`), permitindo que o resolver carregue `game` via `DataLoaderService.gameLoader`.
 
 **Regras derivadas**:
 
-- Campos de evento (nome, slug, descrição, datas, status, participationMode) vivem em `event.*` — nunca duplicados no `EloLeague`/`StandardLeague`.
-- Mutations `createEloLeague` / `createStandardLeague` recebem **dois argumentos separados**: `event: CreateEventInput` e `league: CreateEloLeagueInput` (ou Standard).
+- Campos de evento (nome, slug, descrição, datas, status, participationMode) vivem em `event.*` — nunca duplicados em `League`.
+- `createLeague` recebe dois argumentos separados: `event: CreateLeagueEventInput` e `league: CreateLeagueConfigInput`.
 - No frontend, acesse `league.event.name`, `league.event.slug`, `league.event.game`, etc.
 - Para obter o `gameId` no cliente, use `league.event.game.id` (query o campo `game { id }` dentro de `event`).
+- `League` usa `eventId` como chave primária (não um `id` separado). No GQL, o campo é `eventId: ID`.
 - Ao adicionar um novo tipo de evento (ex: torneio), crie um novo modelo que referencia `Event` 1:1 e siga o mesmo padrão.
 
 ### `apps/web`

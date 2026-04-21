@@ -101,8 +101,8 @@ async function GamesGrid({ search }: { search?: string }) {
   const games = data?.games?.nodes || [];
   const gameList = games.map((game) => ({
     ...game,
-    leagueCount: game._count?.leagues || 0,
-    playerCount: game._count?.players || 0,
+    leagueCount: game._count?.events || 0,
+    playerCount: 0,
     tourneyCount: 0,
     postCount: 0,
   }));

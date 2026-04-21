@@ -3,33 +3,27 @@
 import { useTransition } from "react";
 import { Trophy } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
-import { registerSelfToStandardLeague } from "@/actions/game";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
 interface StandardRegistrationConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  leagueId: string;
+  eventId: string;
 }
 
 export function StandardRegistrationConfirmModal({
   isOpen,
   onClose,
-  leagueId,
 }: StandardRegistrationConfirmModalProps) {
   const t = useTranslations("Modals.RegisterConfirm");
   const [isPending, startTransition] = useTransition();
 
   const onConfirm = () => {
     startTransition(async () => {
-      const result = await registerSelfToStandardLeague(leagueId);
-      if (result.success) {
-        toast.success(t("success"));
-        onClose();
-      } else {
-        toast.error(result.error || t("error") || "Error registering.");
-      }
+      // Registration is now handled via EventEntries
+      toast.info("Registration via EventEntries — coming soon.");
+      onClose();
     });
   };
 

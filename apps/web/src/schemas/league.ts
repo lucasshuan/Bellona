@@ -28,7 +28,7 @@ export const getAddLeagueSchema = (t: TFunction) => {
       allowDraw: z.boolean(),
       gameId: z.string().optional(),
       gameName: z.string().optional(),
-      ratingSystem: z.enum(["RANKED_LEAGUE", "STANDARD_LEAGUE"]),
+      ratingSystem: z.enum(["ELO", "POINTS"]),
       // Elo fields (optional in base object, required by superRefine)
       initialElo: z.number().min(0).optional(),
       kFactor: z.number().min(1).max(100).optional(),
@@ -60,7 +60,7 @@ export const getAddLeagueSchema = (t: TFunction) => {
         });
       }
 
-      if (data.ratingSystem === "RANKED_LEAGUE") {
+      if (data.ratingSystem === "ELO") {
         if (data.initialElo === undefined) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -155,7 +155,7 @@ export const getEditLeagueSchema = (t: TFunction) => {
         .optional(),
       about: z.string().optional(),
       allowDraw: z.boolean(),
-      ratingSystem: z.enum(["RANKED_LEAGUE", "STANDARD_LEAGUE"]),
+      ratingSystem: z.enum(["ELO", "POINTS"]),
       // Elo fields
       initialElo: z.number().min(0).optional(),
       kFactor: z.number().min(1).max(100).optional(),
@@ -179,7 +179,7 @@ export const getEditLeagueSchema = (t: TFunction) => {
         .min(1, t("required")),
     })
     .superRefine((data, ctx) => {
-      if (data.ratingSystem === "RANKED_LEAGUE") {
+      if (data.ratingSystem === "ELO") {
         if (data.initialElo === undefined) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

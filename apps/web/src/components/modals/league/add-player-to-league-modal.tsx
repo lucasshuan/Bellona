@@ -6,17 +6,13 @@ import { useTranslations } from "next-intl";
 import { AddPlayerToLeagueForm } from "@/components/forms/league/add-player-to-league-form";
 
 interface AddPlayerToLeagueModalProps {
-  gameId: string;
   leagueId: string;
-  leagueType: "elo" | "standard";
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function AddPlayerToLeagueModal({
-  gameId,
   leagueId,
-  leagueType,
   isOpen,
   onClose,
 }: AddPlayerToLeagueModalProps) {
@@ -33,9 +29,7 @@ export function AddPlayerToLeagueModal({
       isPending={isPending}
     >
       <AddPlayerToLeagueForm
-        gameId={gameId}
         leagueId={leagueId}
-        leagueType={leagueType}
         onSuccess={onClose}
         onLoadingChange={setIsPending}
       />
