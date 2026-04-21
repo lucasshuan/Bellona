@@ -49,9 +49,16 @@ export class StandardLeaguesResolver {
     return this.standardLeaguesService.findByGameAndSlug(gameSlug, slug);
   }
 
+  @ResolveField(() => ID, { name: 'id' })
+  getId(@Parent() league: StandardLeague & { eventId?: string }) {
+    return league.id ?? league.eventId;
+  }
+
   @ResolveField(() => [StandardLeagueEntry], { name: 'entries' })
-  async getEntries(@Parent() league: StandardLeague) {
-    return this.dataLoaderService.standardLeagueEntriesLoader.load(league.id);
+  async getEntries(@Parent() league: StandardLeague & { eventId?: string }) {
+    return this.dataLoaderService.standardLeagueEntriesLoader.load(
+      league.id ?? league.eventId!,
+    );
   }
 
   @Mutation(() => StandardLeague)

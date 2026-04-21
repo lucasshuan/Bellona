@@ -48,9 +48,16 @@ export class EloLeaguesResolver {
     return this.eloLeaguesService.findByGameAndSlug(gameSlug, slug);
   }
 
+  @ResolveField(() => ID, { name: 'id' })
+  getId(@Parent() league: EloLeague & { eventId?: string }) {
+    return league.id ?? league.eventId;
+  }
+
   @ResolveField(() => [EloLeagueEntry], { name: 'entries' })
-  async getEntries(@Parent() league: EloLeague) {
-    return this.dataLoaderService.eloLeagueEntriesLoader.load(league.id);
+  async getEntries(@Parent() league: EloLeague & { eventId?: string }) {
+    return this.dataLoaderService.eloLeagueEntriesLoader.load(
+      league.id ?? league.eventId!,
+    );
   }
 
   @Mutation(() => EloLeague)
