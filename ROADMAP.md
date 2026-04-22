@@ -99,6 +99,28 @@ O Ares está evoluindo de uma ferramenta de ligas para uma **plataforma de comun
 
 ---
 
+## Expansões de Identidade (Ideias Outside the Box)
+
+Além do formato clássico de "torneios e ligas", o Ares possui espaço natural para acomodar conceitos adjacentes que enriquecem o ecossistema e atraem novos tipos de público:
+
+### Confirmadas
+
+- **Metajogo de Facções (Controle de Território)**: Jogadores escolhem uma facção (casas/guildas globais). Vitórias em partidas avulsas ou torneios geram "pontos de influência" para a facção. O próprio site ganha um metajogo onde facções dominam o ranking mês a mês, dando propósito ao jogador que nunca ganharia um torneio individualmente.
+- **Hub de Caçadores de Recompensas (Bounties & Challenges)**: Organização de competições assíncronas. Um mural de contratos ("O primeiro a matar o Boss X sem tomar dano", "Speedrun em menos de 2min"). Jogadores dão claim e mandam provas em vídeo. Focado em speedrunners e criadores engajados, não e-sports tradicionais.
+- **Economia de Mentoria (Ares Academy)**: Jogadores de alto Elo criam "Bootcamps". Jogadores experientes têm um _Elo de Ensino_ baseado exclusivamente no percentual de evolução dos seus aprendizes. Incentiva cooperação no lugar de toxicidade.
+- **Ecossistema LFG Avançado (O "Clube da Esquina")**: Matchmaking baseado em comportamento e "vibe", não ranking. Eventos de confraternização no fim de semana focados na união de perfis parecidos (`[Microfone ON]`, `[Zero Tryhard]`, `[Joga Bebendo]`). Trata do problema crônico da falta com quem jogar em ambientes sem estresse.
+- **Oráculo (Mercado de Previsões)**: Jogadores fazem apostas virtuais (sem dinheiro) em partidas e torneios antes de acontecerem — quem vai ganhar, por quanto, quem cai na fase de grupos. Acertos acumulam um _Elo de Previsão_ separado. Cria um e-sport paralelo para espectadores e analistas que nunca competem mas têm prestígio por prever.
+- **Bairrismo / Identidade Geográfica**: Jogadores representam sua cidade, estado ou país. Rankings regionais reais com contribuição agregada. Eventos do tipo "clássico regional" ou "cidade vs cidade" emergem naturalmente dos dados. Dá identidade local a uma cultura que hoje é puramente online-anônima.
+- **Crônicas (Narrador Automático)**: O site observa padrões nos dados e gera manchetes estilo jornalismo esportivo automaticamente — _"Fulano está há 6 partidas sem perder — maior sequência da temporada"_, _"Estes dois nunca se enfrentaram, e podem ser os finalistas"_. Transforma dados frios em storytelling emergente sem moderação humana. Alto impacto, baixo custo técnico.
+- **Laboratório de Formatos**: Usuários inventam formatos de competição próprios, testam em sandbox com partidas simuladas, publicam e outros organizadores adotam. Formatos viram entidades rankeadas por popularidade. Democratiza o game design de competições e cria uma comunidade em torno da criatividade estrutural.
+
+### Possibilidades
+
+- **Hall das Partidas Lendárias**: Partidas podem ser "eternizadas" por voto da comunidade via reações (emojis estilo Discord). O critério de entrada no Hall é o engajamento acumulado. Integração com YouTube e Twitch permite embedar vídeos diretamente no site, com timestamp-linking — usuários comentam e reagem em momentos específicos, e esses links funcionam em posts e fóruns.
+- **Wiki por Jogo**: Cada jogo no Ares teria uma wiki própria, funcionando como um Fandom/Wikia integrado — edição colaborativa com controle de moderação. Complementa os fóruns com conteúdo evergreen (guias, lore, mapa de personagens, meta). O organizador ou a comunidade do jogo gerencia o acesso de edição.
+
+---
+
 ## Backlog de Implementação
 
 Itens planejados ou em progresso, sem data definida:
