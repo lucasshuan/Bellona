@@ -189,6 +189,10 @@
     "panel": "Gerenciar"
   },
   "Auth": {
+    "Callback": {
+      "title": "Autenticando",
+      "subtitle": "Preparando tudo para você..."
+    },
     "Errors": {
       "title": "Falha no login",
       "cancelled": "O login com Discord foi cancelado.",

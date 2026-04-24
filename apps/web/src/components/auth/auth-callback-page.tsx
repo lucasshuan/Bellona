@@ -2,11 +2,12 @@
 
 import { Suspense, useCallback, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Image from "next/image";
 
-import { getLocalizedPathname, getPreferredClientLocale } from "@/i18n/locale";
+import { type AppLocale, getLocalizedPathname } from "@/i18n/locale";
 import { getApiUrl } from "@/lib/api";
 
 // Module-level set survives React StrictMode's double-mount in development,
@@ -16,14 +17,14 @@ const processedCodes = new Set<string>();
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale() as AppLocale;
   const processing = useRef(false);
 
   const redirectWithLocale = useCallback(
     (href: string | { pathname: string; query?: Record<string, string> }) => {
-      const locale = getPreferredClientLocale();
       router.replace(getLocalizedPathname(href, locale));
     },
-    [router],
+    [router, locale],
   );
 
   useEffect(() => {
@@ -106,7 +107,7 @@ function AuthCallbackContent() {
     })();
   }, [redirectWithLocale, router, searchParams]);
 
-  const locale = getPreferredClientLocale();
+  const t = useTranslations("Auth.Callback");
 
   return (
     <div className="bg-background fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden">
@@ -137,12 +138,10 @@ function AuthCallbackContent() {
         {/* Text */}
         <div className="flex flex-col items-center gap-2">
           <p className="text-foreground/80 text-lg font-medium tracking-wide">
-            {locale === "pt" ? "Autenticando" : "Authenticating"}
+            {t("title")}
           </p>
           <p className="text-muted text-sm">
-            {locale === "pt"
-              ? "Preparando tudo para você..."
-              : "Getting everything ready for you..."}
+            {t("subtitle")}
           </p>
         </div>
 

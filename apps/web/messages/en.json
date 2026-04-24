@@ -189,6 +189,10 @@
     "panel": "Manage"
   },
   "Auth": {
+    "Callback": {
+      "title": "Authenticating",
+      "subtitle": "Getting everything ready for you..."
+    },
     "Errors": {
       "title": "Login failed",
       "cancelled": "Discord sign-in was cancelled.",
