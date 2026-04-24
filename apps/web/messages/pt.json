@@ -323,8 +323,8 @@
         "taken": "Este identificador já está em uso neste jogo."
       },
       "descriptionField": {
-        "label": "Descrição",
-        "placeholder": "Descreva esta liga..."
+        "label": "Descrição Curta",
+        "placeholder": "Descreva esta liga brevemente..."
       },
       "aboutField": {
         "label": "Sobre",
@@ -555,8 +555,8 @@
         "description": "Personaliza a URL desta liga (ex: /events/blitz)."
       },
       "descriptionField": {
-        "label": "Descrição",
-        "placeholder": "Descreva esta liga..."
+        "label": "Descrição Curta",
+        "placeholder": "Descreva esta liga brevemente..."
       },
       "initialElo": {
         "label": "Pontuação Inicial (Elo)"

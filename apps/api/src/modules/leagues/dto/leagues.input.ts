@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsArray,
   IsDate,
+  IsObject,
 } from 'class-validator';
 
 @InputType()
@@ -76,7 +77,8 @@ export class CreateLeagueConfigInput {
    * POINTS: { pointsPerWin, pointsPerDraw, pointsPerLoss }
    */
   @Field(() => Object)
-  config!: unknown;
+  @IsObject()
+  config!: object;
 
   @Field({ nullable: true })
   @IsBoolean()

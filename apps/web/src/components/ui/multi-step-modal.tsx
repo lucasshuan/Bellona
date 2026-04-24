@@ -92,7 +92,7 @@ export function MultiStepModal({
     >
       <div
         className={cn(
-          "glass-panel animate-modal-content flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-3xl bg-[#0a080f] will-change-[transform,opacity]",
+          "glass-panel no-hover animate-modal-content flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-3xl bg-[#0a080f] will-change-[transform,opacity]",
           className,
         )}
       >

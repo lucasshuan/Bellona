@@ -323,8 +323,8 @@
         "taken": "This identifier is already in use for this game."
       },
       "descriptionField": {
-        "label": "Description",
-        "placeholder": "Describe this league..."
+        "label": "Short Description",
+        "placeholder": "Describe this league shortly..."
       },
       "aboutField": {
         "label": "About",
@@ -555,8 +555,8 @@
         "description": "Personalizes the URL for this league (e.g., /events/blitz)."
       },
       "descriptionField": {
-        "label": "Description",
-        "placeholder": "Describe this league..."
+        "label": "Short Description",
+        "placeholder": "Describe this league shortly..."
       },
       "initialElo": {
         "label": "Initial Rating (Elo)"
