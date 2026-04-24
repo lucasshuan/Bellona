@@ -41,7 +41,7 @@ export function AddEventForm({
   initialGame,
   isGameFixed,
 }: AddEventFormProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const schema = useAddLeagueSchema();
   const [isPending, startTransition] = useTransition();
   const [participationMode, setParticipationMode] = useState<"SOLO" | "TEAM">(

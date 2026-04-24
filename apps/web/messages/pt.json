@@ -302,10 +302,10 @@
       "success": "Jogo aprovado com sucesso!",
       "error": "Erro ao aprovar o jogo."
     },
-    "AddLeague": {
+    "AddEvent": {
       "trigger": "Adicionar evento",
       "headerTrigger": "Novo Evento",
-      "title": "Adicionar Liga",
+      "title": "Adicionar Evento",
       "description": "Preencha os dados de uma nova competição.",
       "types": {
         "league": "Nova Liga",
@@ -502,17 +502,17 @@
       },
       "next": "Próxima Etapa",
       "back": "Voltar",
-      "submit": "Criar Liga",
+      "submit": "Criar Evento",
       "confirm": {
         "title": "Confirmar Criação",
-        "description": "Deseja criar esta liga com as configurações definidas?",
+        "description": "Deseja criar este evento com as configurações definidas?",
         "submit": "Confirmar Criação",
         "cancel": "Cancelar"
       },
       "submitting": "Criando...",
       "cancel": "Cancelar",
-      "success": "Liga criada com sucesso!",
-      "error": "Erro ao criar liga.",
+      "success": "Evento criado com sucesso!",
+      "error": "Erro ao criar evento.",
       "soon": "Em breve"
     },
     "AddPlayer": {
@@ -538,10 +538,10 @@
       "successExisting": "O usuário já tinha um cadastro para este jogo. O novo nome de usuário foi anexado ao player existente.",
       "error": "Erro ao adicionar jogador."
     },
-    "EditLeague": {
-      "trigger": "Modificar liga",
-      "title": "Modificar Liga",
-      "description": "Atualize as informações desta categoria de liga.",
+    "EditEvent": {
+      "trigger": "Modificar evento",
+      "title": "Modificar Evento",
+      "description": "Atualize as informações deste evento.",
       "steps": {
         "game": "Jogo",
         "general": "Geral",
@@ -574,8 +574,8 @@
       "submit": "Salvar Alterações",
       "submitting": "Salvando...",
       "cancel": "Cancelar",
-      "success": "Liga atualizada com sucesso!",
-      "error": "Erro ao atualizar liga."
+      "success": "Evento atualizado com sucesso!",
+      "error": "Erro ao atualizar evento."
     },
     "AddPlayerToLeague": {
       "trigger": "Registrar jogador",

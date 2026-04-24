@@ -21,7 +21,7 @@ export function AddEventButton({
   game,
   variant = "sidebar",
 }: AddEventButtonProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const { user, isLoading } = useUser();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAddLeagueOpen, setIsAddLeagueOpen] = useState(false);

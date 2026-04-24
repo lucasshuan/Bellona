@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useUser } from "@/components/providers";
 import { ActionButton } from "@/components/ui/action-button";
 import { EditEventModal } from "@/components/modals/events/edit-event-modal";
-import { AddPlayerToLeagueModal } from "@/components/modals/league/add-player-to-league-modal";
+import { AddPlayerToLeagueModal } from "@/components/modals/events/add-player-to-league-modal";
 
 type LeagueAdminData = {
   eventId: string;
@@ -48,7 +48,7 @@ export function LeagueAdminSection({
       {canManageLeagues && (
         <ActionButton
           icon={Settings2}
-          label={t("Modals.EditLeague.trigger")}
+          label={t("Modals.EditEvent.trigger")}
           onClick={() => setIsEditOpen(true)}
         />
       )}

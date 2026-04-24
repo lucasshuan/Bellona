@@ -12,7 +12,7 @@ type MatchFormatsValues = {
 };
 
 export function MatchFormatsFieldset() {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const { control, setValue, getValues } = useFormContext<MatchFormatsValues>();
   const allowedFormats = useWatch({ control, name: "allowedFormats" }) ?? [];
 

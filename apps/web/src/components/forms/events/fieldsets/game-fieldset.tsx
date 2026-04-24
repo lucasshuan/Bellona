@@ -27,7 +27,7 @@ export function GameSearchFieldset({
   initialGame,
   isGameFixed,
 }: GameSearchFieldsetProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const {
     setValue,
     formState: { errors },
@@ -267,7 +267,7 @@ interface GameDisplayFieldsetProps {
 }
 
 export function GameDisplayFieldset({ game }: GameDisplayFieldsetProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
 
   return (
     <section className="animate-in fade-in slide-in-from-right-4 space-y-6 duration-500">

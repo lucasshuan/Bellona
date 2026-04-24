@@ -28,7 +28,7 @@ export function GeneralFieldset({
   checkSlugAvailability,
   originalSlug,
 }: GeneralFieldsetProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const {
     register,
     control,

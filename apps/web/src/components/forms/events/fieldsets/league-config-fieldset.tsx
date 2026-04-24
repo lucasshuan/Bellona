@@ -18,7 +18,7 @@ import { LabelTooltip } from "@/components/ui/label-tooltip";
 import { NumberInput } from "@/components/ui/number-input";
 import { formatHoursDuration } from "@/lib/date-utils";
 import { cn } from "@/lib/utils";
-import { EloMatchSimulator } from "@/components/forms/league/elo-match-simulator";
+import { EloMatchSimulator } from "@/components/forms/events/league/elo-match-simulator";
 
 type LeagueConfigValues = {
   ratingSystem: "ELO" | "POINTS";
@@ -41,7 +41,7 @@ interface LeagueConfigFieldsetProps {
 export function LeagueConfigFieldset({
   disableRatingSystemChange,
 }: LeagueConfigFieldsetProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const locale = useLocale();
   const { control, setValue } = useFormContext<LeagueConfigValues>();
 

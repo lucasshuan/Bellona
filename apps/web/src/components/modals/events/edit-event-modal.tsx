@@ -34,7 +34,7 @@ export function EditEventModal({
   isOpen,
   onClose,
 }: EditEventModalProps) {
-  const t = useTranslations("Modals.EditLeague");
+  const t = useTranslations("Modals.EditEvent");
   const [isPending, setIsPending] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);

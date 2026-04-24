@@ -72,7 +72,7 @@ export function EloMatchSimulator({
   kFactor,
   initialElo,
 }: EloMatchSimulatorProps) {
-  const t = useTranslations("Modals.AddLeague.explanation.elo.simulate");
+  const t = useTranslations("Modals.AddEvent.explanation.elo.simulate");
 
   const defaultElo = initialElo > 0 ? initialElo : 1000;
   const k = kFactor > 0 ? kFactor : 20;
@@ -121,11 +121,11 @@ export function EloMatchSimulator({
           : "text-secondary/45";
 
   return (
-    <div className="mt-1 rounded-2xl bg-card-strong/25 p-4">
+    <div className="bg-card-strong/25 mt-1 rounded-2xl p-4">
       {/* Header */}
       <div className="mb-3 flex items-center gap-2">
-        <Gamepad2 className="size-3 text-secondary/30" />
-        <span className="text-[10px] font-bold tracking-wider text-secondary/30 uppercase">
+        <Gamepad2 className="text-secondary/30 size-3" />
+        <span className="text-secondary/30 text-[10px] font-bold tracking-wider uppercase">
           {t("title")}
         </span>
       </div>
@@ -136,12 +136,12 @@ export function EloMatchSimulator({
         <div className="flex flex-col gap-3">
           {/* Rating */}
           <div className="space-y-1.5">
-            <span className="text-[9px] font-medium tracking-wider text-secondary/30 uppercase">
+            <span className="text-secondary/30 text-[9px] font-medium tracking-wider uppercase">
               {t("rating")}
             </span>
             <div className="flex items-end gap-2">
               <div className="flex flex-col gap-0.5">
-                <span className="text-[9px] text-secondary/35">
+                <span className="text-secondary/35 text-[9px]">
                   {t("player_a")}
                 </span>
                 <SimInput
@@ -151,11 +151,11 @@ export function EloMatchSimulator({
                   wide
                 />
               </div>
-              <span className="mb-1.5 text-[9px] font-medium text-secondary/25">
+              <span className="text-secondary/25 mb-1.5 text-[9px] font-medium">
                 vs
               </span>
               <div className="flex flex-col gap-0.5">
-                <span className="text-[9px] text-secondary/35">
+                <span className="text-secondary/35 text-[9px]">
                   {t("player_b")}
                 </span>
                 <SimInput
@@ -170,12 +170,12 @@ export function EloMatchSimulator({
 
           {/* Score */}
           <div className="space-y-1.5">
-            <span className="text-[9px] font-medium tracking-wider text-secondary/30 uppercase">
+            <span className="text-secondary/30 text-[9px] font-medium tracking-wider uppercase">
               {t("score")}
             </span>
             <div className="flex items-center gap-1.5">
               <SimInput value={scoreA} onChange={setScoreA} accent="success" />
-              <span className="text-[10px] font-bold text-secondary/25">
+              <span className="text-secondary/25 text-[10px] font-bold">
                 {"\u00d7"}
               </span>
               <SimInput value={scoreB} onChange={setScoreB} accent="danger" />{" "}
@@ -194,7 +194,7 @@ export function EloMatchSimulator({
         {/* Right: results (border-l serves as divider) */}
         <div className="ml-auto flex flex-col items-end justify-center gap-3 border-l border-white/6 pr-6 pl-6">
           <div className="space-y-0.5">
-            <span className="text-[9px] font-medium tracking-wider text-secondary/30 uppercase">
+            <span className="text-secondary/30 text-[9px] font-medium tracking-wider uppercase">
               {t("score_value")}
             </span>
             <div className="flex items-baseline gap-1">
@@ -210,7 +210,7 @@ export function EloMatchSimulator({
           </div>
 
           <div className="space-y-0.5">
-            <span className="text-[9px] font-medium tracking-wider text-secondary/30 uppercase">
+            <span className="text-secondary/30 text-[9px] font-medium tracking-wider uppercase">
               {t("estimated_elo")}
             </span>
             <div className="flex items-baseline gap-1">
@@ -222,14 +222,14 @@ export function EloMatchSimulator({
               >
                 {delta === null ? "—" : delta >= 0 ? `+${delta}` : `${delta}`}
               </span>
-              <span className="text-[9px] text-secondary/35">{t("pts")}</span>
+              <span className="text-secondary/35 text-[9px]">{t("pts")}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Footer note */}
-      <p className="mt-3 text-[9px] leading-relaxed text-secondary/25">
+      <p className="text-secondary/25 mt-3 text-[9px] leading-relaxed">
         {t("footer")}
       </p>
     </div>
@@ -264,9 +264,9 @@ function SimInput({ value, onChange, accent, wide }: SimInputProps) {
         if (!isNaN(v) && v >= 0) onChange(Math.floor(v));
       }}
       className={cn(
-        "rounded-lg border border-gold-dim/35 bg-white/6 py-1 text-center",
+        "border-gold-dim/35 rounded-lg border bg-white/6 py-1 text-center",
         "text-[11px] font-bold tabular-nums",
-        "transition-colors focus:border-white/25 focus:bg-card-strong/70 focus:outline-none",
+        "focus:bg-card-strong/70 transition-colors focus:border-white/25 focus:outline-none",
         "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
         wide ? "w-13 px-1" : "w-8 px-0.5",
         accent === "success" ? "text-success/70" : "text-danger/70",

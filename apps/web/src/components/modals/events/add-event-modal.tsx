@@ -23,21 +23,21 @@ export function AddEventModal({
   onClose,
   isGameFixed,
 }: AddEventModalProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
   const locale = useLocale();
 
   const confirmFallbacks =
     locale === "pt"
       ? {
           title: "Confirmar Criação",
-          description: "Deseja criar esta liga com as configurações definidas?",
+          description: "Deseja criar este evento com as configurações definidas?",
           submit: "Confirmar Criação",
           cancel: "Cancelar",
         }
       : {
           title: "Confirm Creation",
           description:
-            "Do you want to create this league with the current settings?",
+            "Do you want to create this event with the current settings?",
           submit: "Confirm Creation",
           cancel: "Cancel",
         };

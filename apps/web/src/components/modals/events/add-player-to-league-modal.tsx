@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useTranslations } from "next-intl";
-import { AddPlayerToLeagueForm } from "@/components/forms/league/add-player-to-league-form";
+import { AddPlayerToLeagueForm } from "@/components/forms/events/add-player-to-league-form";
 
 interface AddPlayerToLeagueModalProps {
   leagueId: string;

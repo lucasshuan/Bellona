@@ -49,7 +49,7 @@ export function EditEventForm({
   currentStep,
   formId,
 }: EditEventFormProps) {
-  const t = useTranslations("Modals.EditLeague");
+  const t = useTranslations("Modals.EditEvent");
   const schema = useEditLeagueSchema();
   const [isPending, startTransition] = useTransition();
   const [isSlugChecking, setIsSlugChecking] = useState(false);

@@ -302,10 +302,10 @@
       "success": "Game approved successfully!",
       "error": "Error approving game."
     },
-    "AddLeague": {
+    "AddEvent": {
       "trigger": "Add event",
       "headerTrigger": "New Event",
-      "title": "Add League",
+      "title": "Add Event",
       "description": "Fill in the details for the new event or competition.",
       "types": {
         "league": "New League",
@@ -502,17 +502,17 @@
       },
       "next": "Next Step",
       "back": "Back",
-      "submit": "Create League",
+      "submit": "Create Event",
       "confirm": {
         "title": "Confirm Creation",
-        "description": "Do you want to create this league with the current settings?",
+        "description": "Do you want to create this event with the current settings?",
         "submit": "Confirm Creation",
         "cancel": "Cancel"
       },
       "submitting": "Creating...",
       "cancel": "Cancel",
-      "success": "League created successfully!",
-      "error": "Error creating league.",
+      "success": "Event created successfully!",
+      "error": "Error creating event.",
       "soon": "Soon"
     },
     "AddPlayer": {
@@ -538,10 +538,10 @@
       "successExisting": "The user already has a registration for this game. The new username has been attached to the existing player.",
       "error": "Error adding player."
     },
-    "EditLeague": {
-      "trigger": "Edit league",
-      "title": "Modify League",
-      "description": "Update information for this league category.",
+    "EditEvent": {
+      "trigger": "Edit event",
+      "title": "Modify Event",
+      "description": "Update information for this event.",
       "steps": {
         "game": "Game",
         "general": "General",
@@ -574,8 +574,8 @@
       "submit": "Save Changes",
       "submitting": "Saving...",
       "cancel": "Cancel",
-      "success": "League updated successfully!",
-      "error": "Error updating league."
+      "success": "Event updated successfully!",
+      "error": "Error updating event."
     },
     "AddPlayerToLeague": {
       "trigger": "Register player",

@@ -18,7 +18,7 @@ export function TypeFieldset({
   eventType,
   onEventTypeChange,
 }: TypeFieldsetProps) {
-  const t = useTranslations("Modals.AddLeague");
+  const t = useTranslations("Modals.AddEvent");
 
   return (
     <section className="animate-in fade-in slide-in-from-right-4 space-y-8 duration-500">
