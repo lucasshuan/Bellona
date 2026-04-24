@@ -5,7 +5,7 @@ import { Settings2, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useUser } from "@/components/providers";
 import { ActionButton } from "@/components/ui/action-button";
-import { EditLeagueModal } from "@/components/modals/league/edit-league-modal";
+import { EditEventModal } from "@/components/modals/events/edit-event-modal";
 import { AddPlayerToLeagueModal } from "@/components/modals/league/add-player-to-league-modal";
 
 type LeagueAdminData = {
@@ -61,7 +61,7 @@ export function LeagueAdminSection({
         />
       )}
 
-      <EditLeagueModal
+      <EditEventModal
         league={league}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}

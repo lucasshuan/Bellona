@@ -4,7 +4,7 @@ Before making any structural change, read `ARCHITECTURE.md` at the repo root. It
 
 ## Architecture
 
-Always refer to [ARCHITECTURE.md](../ARCHITECTURE.md) for the full reference before starting a conversation. Key rules enforced here:
+Always refer to [ARCHITECTURE.md](../ARCHITECTURE.md) for the full reference before making any changes. Key rules enforced here:
 
 **Directory layout**
 

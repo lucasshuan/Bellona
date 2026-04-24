@@ -36,7 +36,7 @@ export default async function HomePage() {
             alt=""
             width={1718}
             height={916}
-            className="h-full w-auto max-w-none brightness-70"
+            className="h-full w-auto max-w-none brightness-90"
             priority
           />
         </div>

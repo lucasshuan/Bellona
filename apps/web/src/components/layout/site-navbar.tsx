@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Link } from "@/i18n/routing";
 
 import { SignInButton } from "@/components/triggers/auth/sign-in-button";
@@ -16,22 +18,12 @@ export async function SiteNavbar() {
       <div className="mx-auto flex w-full items-center justify-between px-6 py-4 sm:px-10 lg:px-12">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <div
-              className="bg-primary shrink-0"
-              style={{
-                width: 22,
-                height: 22,
-                maskImage: `url(/icon.svg)`,
-                WebkitMaskImage: `url(/icon.svg)`,
-                maskSize: "contain",
-                WebkitMaskSize: "contain",
-                maskRepeat: "no-repeat",
-                WebkitMaskRepeat: "no-repeat",
-                maskPosition: "center",
-                WebkitMaskPosition: "center",
-              }}
-              aria-label="Bellona icon"
-              role="img"
+            <Image
+              src="/logo.png"
+              alt="Bellona"
+              width={28}
+              height={28}
+              className="shrink-0"
             />
             <div className="flex flex-col leading-none">
               <span className="text-foreground font-display text-base font-semibold tracking-[0.2em] uppercase">

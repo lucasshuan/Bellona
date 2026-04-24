@@ -37,6 +37,7 @@
   --match-moderate: #84cc16;
   --match-dominant: #22c55e;
   --match-shutout: #06b6d4;
+  --discord: #5865F2;
 }
 
 @theme inline {
@@ -61,6 +62,7 @@
   --color-match-moderate: var(--match-moderate);
   --color-match-dominant: var(--match-dominant);
   --color-match-shutout: var(--match-shutout);
+  --color-discord: var(--discord);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-ibm-plex-mono);
   --font-display: var(--font-cinzel), "Trajan Pro", "Cormorant Garamond", serif;

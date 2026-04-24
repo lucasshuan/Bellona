@@ -26,6 +26,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { AuthModal } from "@/components/modals/auth/auth-modal";
 import { EditProfileModal } from "@/components/modals/profile/edit-profile-modal";
 
@@ -650,6 +651,28 @@ function SidebarBody({
             />
             <div className="bg-gold-dim/25 mx-3 my-2 h-px" />
           </>
+        ) : !effective ? (
+          <>
+            <div className="px-3 pb-2">
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                title={tUser("login")}
+                className={cn(
+                  buttonVariants({ intent: "primary" }),
+                  "w-full gap-3 rounded-2xl px-5 text-sm",
+                )}
+              >
+                <LogIn className="size-4 shrink-0" />
+                <span>{tUser("login")}</span>
+              </button>
+            </div>
+            <div className="bg-gold-dim/25 mx-3 my-2 h-px" />
+            <AuthModal
+              isOpen={authModalOpen}
+              onClose={() => setAuthModalOpen(false)}
+              isPending={false}
+            />
+          </>
         ) : null}
 
         {sections.map((section, i) => {
@@ -703,43 +726,7 @@ function SidebarBody({
         })}
       </nav>
 
-      {/* ── Footer ──────────────────────────────────────────────────────── */}
-      <div className="shrink-0">
-        <div
-          className={cn(
-            effective
-              ? "flex flex-col gap-0.5 py-2"
-              : "flex flex-col gap-2.5 p-3",
-          )}
-        >
-          {/* Login button — only shown when logged out and expanded */}
-          {isLoading && !effective ? (
-            <div className="bg-secondary/8 h-12 w-full animate-pulse rounded-full" />
-          ) : !user && !effective ? (
-            <>
-              <button
-                onClick={() => setAuthModalOpen(true)}
-                title={tUser("login")}
-                className={cn(
-                  "flex items-center justify-center text-sm font-medium",
-                  "bg-primary/90 hover:bg-primary text-white transition-colors",
-                  effective
-                    ? "mx-2 w-auto rounded-lg py-1.5"
-                    : "h-12 w-full gap-3 rounded-2xl px-5",
-                )}
-              >
-                <LogIn className="size-4 shrink-0" />
-                {!effective && <span>{tUser("login")}</span>}
-              </button>
-              <AuthModal
-                isOpen={authModalOpen}
-                onClose={() => setAuthModalOpen(false)}
-                isPending={false}
-              />
-            </>
-          ) : null}
-        </div>
-      </div>
+
     </div>
   );
 }

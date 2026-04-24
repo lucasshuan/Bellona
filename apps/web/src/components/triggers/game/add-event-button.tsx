@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { Trophy, ChevronRight, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useUser } from "@/components/providers";
-import { AddLeagueModal } from "@/components/modals/league/add-league-modal";
+import { AddEventModal } from "@/components/modals/events/add-event-modal";
 import { AuthModal } from "@/components/modals/auth/auth-modal";
 import type { SimpleGame } from "@/actions/get-games";
 
@@ -68,7 +68,7 @@ export function AddEventButton({
     <>
       {menuButton}
 
-      <AddLeagueModal
+      <AddEventModal
         gameId={gameId}
         initialGame={game}
         isGameFixed={true}

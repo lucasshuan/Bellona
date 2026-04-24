@@ -4,6 +4,8 @@ import { Suspense, useCallback, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import Image from "next/image";
+
 import { getLocalizedPathname, getPreferredClientLocale } from "@/i18n/locale";
 import { getApiUrl } from "@/lib/api";
 
@@ -122,19 +124,7 @@ function AuthCallbackContent() {
         {/* Ares logo mark */}
         <div className="relative">
           <div className="bg-primary/20 absolute -inset-8 animate-pulse rounded-full blur-2xl" />
-          <div
-            className="bg-primary relative size-10"
-            style={{
-              maskImage: "url(/icon.svg)",
-              WebkitMaskImage: "url(/icon.svg)",
-              maskSize: "contain",
-              WebkitMaskSize: "contain",
-              maskRepeat: "no-repeat",
-              WebkitMaskRepeat: "no-repeat",
-              maskPosition: "center",
-              WebkitMaskPosition: "center",
-            }}
-          />
+          <Image src="/logo.png" alt="Bellona" width={40} height={40} className="relative size-10 object-contain" />
         </div>
 
         {/* Spinner ring */}

@@ -47,18 +47,12 @@ async function EventsGrid() {
 
   if (events.length === 0) {
     return (
-      <div className="glass-panel no-hover flex flex-col items-center justify-center gap-4 rounded-3xl px-8 py-20 text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl border border-white/8 bg-white/5">
-          <CalendarX2 className="size-7 text-white/30" />
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <div className="glass-panel mb-6 flex size-20 items-center justify-center rounded-2xl">
+          <CalendarX2 className="text-muted size-10" />
         </div>
-        <div className="flex flex-col gap-1">
-          <p className="text-sm font-semibold text-white/60">
-            {t("noEventsTitle")}
-          </p>
-          <p className="max-w-xs text-xs text-white/30">
-            {t("noEventsDescription")}
-          </p>
-        </div>
+        <h3 className="text-xl font-semibold">{t("noEventsTitle")}</h3>
+        <p className="text-muted mt-2 max-w-sm">{t("noEventsDescription")}</p>
       </div>
     );
   }
