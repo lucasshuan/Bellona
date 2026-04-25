@@ -6,7 +6,6 @@ import { EventCard, EventCardSkeleton } from "@/components/cards/event-card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { safeServerQuery } from "@/lib/apollo/safe-server-query";
 import { CalendarX2 } from "lucide-react";
-import { getServerAuthSession } from "@/auth";
 import { AddEventButton } from "@/components/triggers/game/add-event-button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Link } from "@/i18n/routing";
@@ -21,23 +20,23 @@ type EventsPageProps = {
 export default async function EventsPage({ searchParams }: EventsPageProps) {
   const t = await getTranslations("EventsPage");
   const { search, sort } = await searchParams;
-  const session = await getServerAuthSession();
-  const isLoggedIn = !!session?.user;
 
   return (
     <main className="mx-auto flex w-full flex-col gap-8 px-6 pt-20 pb-12 sm:px-10 lg:px-12">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-6">
           <SectionHeader title={t("title")} description={t("description")} />
-          {isLoggedIn && (
-            <div>
-              <AddEventButton gameId="" variant="header" />
-            </div>
-          )}
+          <div>
+            <AddEventButton gameId="" variant="header" />
+          </div>
         </div>
 
         <div className="flex w-full flex-col gap-4 lg:max-w-sm lg:items-end">
-          <Suspense fallback={<div className="h-10 w-full animate-pulse rounded-xl bg-white/5" />}>
+          <Suspense
+            fallback={
+              <div className="h-10 w-full animate-pulse rounded-xl bg-white/5" />
+            }
+          >
             <SearchInput
               defaultValue={search}
               placeholder={t("searchPlaceholder")}
